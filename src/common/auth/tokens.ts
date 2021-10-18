@@ -20,7 +20,9 @@ export const getTokens = (): Tokens | null => {
 export const isAccessTokenExpired = (accessToken: string) => {
   const decodedAccessToken = jwtDecode<JwtPayload>(accessToken);
 
-  return decodedAccessToken.exp ? decodedAccessToken.exp < Date.now() : true;
+  return decodedAccessToken.exp
+    ? decodedAccessToken.exp < Date.now() / 1000
+    : true;
 };
 
 export const removeTokens = () => {
