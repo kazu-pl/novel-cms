@@ -27,3 +27,36 @@ export interface AccessToken {
   /** token used to authenticate and authorize user. */
   accessToken: string;
 }
+
+/**
+ * @example {"login":"myLogin","password":"Pa$sWorD","repeatedPassword":"Pa$sWorD"}
+ */
+export interface RequestRegisterCredentials {
+  /** login used to register */
+  login: string;
+
+  /** password */
+  password: string;
+
+  /** the same password passed twice */
+  repeatedPassword: string;
+}
+
+/**
+ * @example {"login":"myLogin","password":"Pa$sWorD"}
+ */
+export interface RequestLoginCredentials {
+  /** Login that is used to log in */
+  login: string;
+
+  /** password */
+  password: string;
+}
+
+/**
+ * @example {"refreshToken":"5bhk88956redhjjgfhI1NiIsInR5cCI6IkpXVCJ9.B6rfTYJr4GHhdbig56y7h7hg4g4ghy6Hh6MTYzNDM3MjQ3fggfghreeghute3NjM0T.KVLILQs_Brp_WRtOmPGi86l40hOnoxnd32XK5rI33EQ"}
+ */
+export interface RequestRefreshTokenCredentials {
+  /** refreshToken */
+  refreshToken: string;
+}
