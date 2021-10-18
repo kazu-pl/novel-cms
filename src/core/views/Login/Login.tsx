@@ -8,8 +8,10 @@ import Button from "novel-ui/lib/buttons/Button";
 import { login } from "core/store/userSlice";
 import { useAppDispatch } from "common/store/hooks";
 import { RequestLoginCredentials } from "types/novel-server.types";
-import { useHistory } from "react-router";
+import { Redirect, useHistory } from "react-router";
 import { PATHS_DASHBOARD } from "common/constants/paths";
+import { useLayoutEffect } from "react";
+import { getTokens } from "common/auth/tokens";
 
 const validationSchema = yup.object({
   login: yup.string().required(),
@@ -24,6 +26,11 @@ const initialValues: RequestLoginCredentials = {
 const LoginView = () => {
   const dispatch = useAppDispatch();
   const history = useHistory();
+
+  useLayoutEffect(() => {
+    const tokens = getTokens();
+    if (tokens) history.push(PATHS_DASHBOARD.DASHBOARD);
+  }, [history]);
 
   const handleSubmit = async (values: RequestLoginCredentials) => {
     try {

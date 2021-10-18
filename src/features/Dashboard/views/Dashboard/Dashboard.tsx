@@ -1,13 +1,7 @@
-import { PATHS_CORE } from "common/constants/paths";
-import { Link } from "react-router-dom";
+import DashboardLayoutWrapper from "common/wrappers/DashboardLayoutWrapper";
 
 const Dashboard = () => {
-  return (
-    <div>
-      <p>DASHBOARD - PROTECTED</p>
-      <Link to={PATHS_CORE.LOGOUT}>LOGOUT</Link>
-    </div>
-  );
+  return <DashboardLayoutWrapper>Dashboard</DashboardLayoutWrapper>;
 };
 
 export default Dashboard;
