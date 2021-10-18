@@ -1,10 +1,59 @@
+# How to use `Try/Catch` block in component where you dispatch redux-toolkit action and do something in catch if error occured:
+
+normally, Redux Toolkit will always return resolved promise even i `catch` block of `createThunkAction`. That is because by default you're supposed to handle error in `catch` block of `createThunkAction` by add error message to store in slice rejected method. So in your component you can't go to `catch` block because Redux will always return resolved promise. To correct this and be able to enter `catch` block in your component you need to add middleware like so:
+
+```
+// store.ts
+
+import { Middleware } from "@reduxjs/toolkit";
+
+export const throwMiddleware: Middleware = () => (next) => (action) => {
+  next(action);
+  if (action?.error) {
+    throw action.payload; // originally here was `throw action.error` but I consoled it and payload contains message returned from rejectedWithValue
+  }
+};
+
+
+export const store = configureStore({
+  reducer: {
+    counter: counterReducer,
+    user: userSlice,
+  },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(throwMiddleware),
+});
+
+```
+
+Now, in every async thunk action you can return original error like this:
+
+```
+export const login = createAsyncThunk(
+  "login",
+  async (values: RequestLoginCredentials, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.post("/login", values);
+      return response.data;
+    } catch (error: any) { // has to be `any` because by default it's unknown which won't allow to use .response (in really its type is AxiosResponse from axios package)
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+```
+
+This was found [here](https://github.com/reduxjs/redux-toolkit/issues/910#issuecomment-801211740)
+
+---
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), using the [Redux](https://redux.js.org/) and [Redux Toolkit](https://redux-toolkit.js.org/) template.
 
-## Available Scripts
+### Available Scripts
 
 In the project directory, you can run:
 
-### `yarn start`
+#### `yarn start`
 
 Runs the app in the development mode.<br />
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
@@ -12,12 +61,12 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 The page will reload if you make edits.<br />
 You will also see any lint errors in the console.
 
-### `yarn test`
+#### `yarn test`
 
 Launches the test runner in the interactive watch mode.<br />
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `yarn build`
+#### `yarn build`
 
 Builds the app for production to the `build` folder.<br />
 It correctly bundles React in production mode and optimizes the build for the best performance.
@@ -27,7 +76,7 @@ Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `yarn eject`
+#### `yarn eject`
 
 **Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
@@ -37,7 +86,7 @@ Instead, it will copy all the configuration files and the transitive dependencie
 
 You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
-## Learn More
+### Learn More
 
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
