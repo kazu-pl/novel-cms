@@ -7,6 +7,11 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import ColoredIconWrapper from "novel-ui/lib/ColoredIconWrapper";
 import { PATHS_CORE, PATHS_DASHBOARD } from "common/constants/paths";
 
+import { useAppDispatch, useAppSelector } from "common/store/hooks";
+import { getUserData } from "core/store/userSlice";
+import Button from "novel-ui/lib/buttons/Button";
+import { selectUserProfile } from "core/store/userSlice";
+
 export interface DashboardLayoutWrapperProps {
   children: React.ReactNode;
   title?: string;
@@ -16,6 +21,18 @@ const DashboardLayoutWrapper = ({
   children,
   title = "Dashboard",
 }: DashboardLayoutWrapperProps) => {
+  const dispatch = useAppDispatch();
+
+  const userProfileData = useAppSelector(selectUserProfile);
+
+  const handleGetData = async () => {
+    try {
+      await dispatch(getUserData());
+    } catch (err) {
+      console.log({ message: "ERROR IN REACT", err });
+    }
+  };
+
   return (
     <Dashboard
       title={title}
@@ -26,7 +43,9 @@ const DashboardLayoutWrapper = ({
           </ColoredIconWrapper>
         ),
         userData: {
-          title: "John Doe",
+          title: userProfileData
+            ? `${userProfileData.name} ${userProfileData.surname}`
+            : " ",
         },
         userDropdown: [
           {
@@ -57,6 +76,7 @@ const DashboardLayoutWrapper = ({
         ],
       }}
     >
+      <Button onClick={handleGetData}>POBIERZ DANE UŻYTKOWNIKA</Button>
       {children}
     </Dashboard>
   );
