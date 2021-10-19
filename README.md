@@ -45,6 +45,138 @@ export const login = createAsyncThunk(
 
 This was found [here](https://github.com/reduxjs/redux-toolkit/issues/910#issuecomment-801211740)
 
+# How to reset globally whole store on logout:
+
+Redux-toolkit is some kind of a wrap over standard redux and it re-exports some of original redux functions.
+
+you can create `rootReducer` which can get every action type and just return empty state if `logout` action occured. You can do it like so:
+
+```
+// store.ts
+
+import { logout } from "core/store/userSlice"; // this is logout redux action
+
+
+// first, create app reducer
+const combinedReducer = combineReducers({
+  counter: counterReducer,
+  user: userSlice,
+});
+
+
+// below type is RootState equivalent (type of whole store state)
+export type AppReducerType = ReturnType<typeof combinedReducer>;
+
+
+const rootReducer = (
+  rootState: AppReducerType | undefined,
+  action: AnyAction
+) => {
+  if (action.type === logout.fulfilled.type) { // instead of logout.fulfilled.type you can pass stirng like "/logout/fulfilled"
+    if (rootState) {
+      rootState = undefined; // reset whole store
+
+     // rootState = {
+     //   auth: undefined,
+     //   books: rootState.books, // in case you would like to keep some data
+     // }
+    }
+  }
+  return combinedReducer(rootState, action);
+};
+
+// then, just use your rootReducer instead of manually assign every reducer
+export const store = configureStore({
+  reducer: rootReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(throwMiddleware),
+});
+
+
+```
+
+Not it will reset whole store every time `logout` action occurs. But it turns out that types `AppReducerType` and type `RootState` created automatically by redux-toolkit tempalte are the same thing. You can rename `AppReducerType` to `RootState` and delete the original `RootState` like so:
+
+```
+// store.ts
+
+
+// export type AppReducerType = ReturnType<typeof combinedReducer>; // CHANGE NAME TO `RootState`
+export type RootState = ReturnType<typeof combinedReducer>;
+
+
+const rootReducer = (
+  rootState: RootState | undefined, // notice that rootState arg type changed from AppReducerType to RootState
+  action: AnyAction
+) => {
+  if (action.type === logout.fulfilled.type) {
+    if (rootState) {
+      rootState = undefined;
+    }
+  }
+  return combinedReducer(rootState, action);
+};
+
+
+export type AppDispatch = typeof store.dispatch;
+// export type RootState = ReturnType<typeof store.getState>; // REMOVE THAT
+export type AppThunk<ReturnType = void> = ThunkAction<
+  ReturnType,
+  RootState,
+  unknown,
+  Action<string>
+>;
+
+
+```
+
+Solution was found [here](https://ittone.ma/ittone/reactjs-redux-toolkit-reset-all-states-on-logout-except-one/)
+
+# How to keep users logged in when they close tab and then open again on /login route:
+
+You have to create function that checks whether user is logged or not (whether you can find tokens in LocalStorage) and if user's token is still valid (not expired yet). You can do it like that:
+
+```
+// tokens.ts
+
+export const getTokens = (): Tokens | null => {
+  const tokens = localStorage.getItem(LOCALSTORAGE_AUTH_TOKENS);
+
+  if (!tokens) return null;
+
+  return JSON.parse(tokens);
+};
+
+export const isAccessTokenExpired = (accessToken: string) => {
+  const decodedAccessToken = jwtDecode<JwtPayload>(accessToken);
+
+  return decodedAccessToken.exp
+    ? decodedAccessToken.exp < Date.now() / 1000
+    : true;
+};
+
+```
+
+Then, in Login view component you can check before mount html markup whether access token exists and is valid:
+
+```
+// LoginView.tsx
+
+import { getTokens, isAccessTokenExpired } from "common/auth/tokens";
+
+
+  useLayoutEffect(() => {
+    const tokens = getTokens();
+    if (tokens && !isAccessTokenExpired(tokens.accessToken))
+      history.push(PATHS_DASHBOARD.DASHBOARD);
+  });
+
+```
+
+---
+
+---
+
 ---
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), using the [Redux](https://redux.js.org/) and [Redux Toolkit](https://redux-toolkit.js.org/) template.

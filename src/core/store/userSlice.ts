@@ -1,10 +1,15 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { axiosInstance } from "common/axios";
+import { axiosInstance, axiosSecureInstance } from "common/axios";
 import { removeTokens, saveTokens, getTokens } from "common/auth/tokens";
-import { RequestLoginCredentials, Tokens } from "types/novel-server.types";
+import {
+  RequestLoginCredentials,
+  Tokens,
+  UserProfile,
+} from "types/novel-server.types";
+import { RootState } from "common/store/store";
 
 interface UserState {
-  userProfile: number | null;
+  userProfile: UserProfile | null;
 }
 
 const initialState: UserState = {
@@ -39,10 +44,22 @@ export const logout = createAsyncThunk(
   }
 );
 
+export const getUserData = createAsyncThunk("user/getUserData", async () => {
+  const response = await axiosSecureInstance.get<UserProfile>("/users/me");
+  return response.data;
+});
+
 const counterSlice = createSlice({
   name: "user",
   initialState,
   reducers: {},
+  extraReducers: (builder) => {
+    builder.addCase(getUserData.fulfilled, (state, action) => {
+      state.userProfile = action.payload;
+    });
+  },
 });
+
+export const selectUserProfile = (state: RootState) => state.user.userProfile;
 
 export default counterSlice.reducer;

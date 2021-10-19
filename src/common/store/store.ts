@@ -1,6 +1,12 @@
-import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
+import {
+  configureStore,
+  ThunkAction,
+  AnyAction,
+  Action,
+  combineReducers,
+} from "@reduxjs/toolkit";
 import counterReducer from "../../features/counter/counterSlice";
-import userSlice from "core/store/userSlice";
+import userSlice, { logout } from "core/store/userSlice";
 
 import { Middleware } from "@reduxjs/toolkit";
 
@@ -11,17 +17,30 @@ export const throwMiddleware: Middleware = () => (next) => (action) => {
   }
 };
 
+const combinedReducer = combineReducers({
+  counter: counterReducer,
+  user: userSlice,
+});
+
+export type RootState = ReturnType<typeof combinedReducer>;
+
+const rootReducer = (rootState: RootState | undefined, action: AnyAction) => {
+  if (action.type === logout.fulfilled.type) {
+    if (rootState) {
+      rootState = undefined;
+    }
+  }
+  return combinedReducer(rootState, action);
+};
+
 export const store = configureStore({
-  reducer: {
-    counter: counterReducer,
-    user: userSlice,
-  },
+  reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(throwMiddleware),
 });
 
 export type AppDispatch = typeof store.dispatch;
-export type RootState = ReturnType<typeof store.getState>;
+
 export type AppThunk<ReturnType = void> = ThunkAction<
   ReturnType,
   RootState,
