@@ -44,17 +44,25 @@ export const logout = createAsyncThunk(
   }
 );
 
-export const getUserData = createAsyncThunk("user/getUserData", async () => {
+export const fetchUserData = createAsyncThunk("user/getUserData", async () => {
   const response = await axiosSecureInstance.get<UserProfile>("/users/me");
   return response.data;
 });
+
+export const fetchSomeProtectedData = createAsyncThunk(
+  "user/fetchSomeProtectedData",
+  async () => {
+    const response = await axiosSecureInstance.get("/cms/protected");
+    return response.data;
+  }
+);
 
 const counterSlice = createSlice({
   name: "user",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(getUserData.fulfilled, (state, action) => {
+    builder.addCase(fetchUserData.fulfilled, (state, action) => {
       state.userProfile = action.payload;
     });
   },

@@ -8,7 +8,7 @@ import ColoredIconWrapper from "novel-ui/lib/ColoredIconWrapper";
 import { PATHS_CORE, PATHS_DASHBOARD } from "common/constants/paths";
 
 import { useAppDispatch, useAppSelector } from "common/store/hooks";
-import { getUserData } from "core/store/userSlice";
+import { fetchSomeProtectedData } from "core/store/userSlice";
 import Button from "novel-ui/lib/buttons/Button";
 import { selectUserProfile } from "core/store/userSlice";
 
@@ -27,7 +27,7 @@ const DashboardLayoutWrapper = ({
 
   const handleGetData = async () => {
     try {
-      await dispatch(getUserData());
+      await dispatch(fetchSomeProtectedData());
     } catch (err) {
       console.log({ message: "ERROR IN REACT", err });
     }
@@ -76,7 +76,7 @@ const DashboardLayoutWrapper = ({
         ],
       }}
     >
-      <Button onClick={handleGetData}>POBIERZ DANE UŻYTKOWNIKA</Button>
+      <Button onClick={handleGetData}>POBIERZ COŚ Z API</Button>
       {children}
     </Dashboard>
   );
