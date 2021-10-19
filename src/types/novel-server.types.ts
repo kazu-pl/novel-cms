@@ -60,3 +60,14 @@ export interface RequestRefreshTokenCredentials {
   /** refreshToken */
   refreshToken: string;
 }
+
+/**
+ * @example {"name":"John","surname":"Doe"}
+ */
+export interface UserProfile {
+  /** user name */
+  name: string;
+
+  /** user surname */
+  surname: string;
+}

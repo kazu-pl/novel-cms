@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { axiosInstance, axiosSecureInstance } from "common/axios";
+import { axiosInstance } from "common/axios";
 import { removeTokens, saveTokens, getTokens } from "common/auth/tokens";
 import { RequestLoginCredentials, Tokens } from "types/novel-server.types";
 
@@ -15,7 +15,7 @@ export const login = createAsyncThunk(
   "login",
   async (values: RequestLoginCredentials, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.post<Tokens>("/login", values);
+      const response = await axiosInstance.post<Tokens>("/cms/login", values);
       saveTokens(response.data);
       return response.data;
     } catch (error: any) {
@@ -30,7 +30,7 @@ export const logout = createAsyncThunk(
     const tokens = getTokens();
     try {
       removeTokens(); // you have remove tokens before request, removing after awaiting for response will run iunto infinite loop of redirecting between dashboard and login
-      const response = await axiosInstance.post("/logout", tokens);
+      const response = await axiosInstance.post("/cms/logout", tokens);
       return response.data;
     } catch (error: any) {
       removeTokens();
