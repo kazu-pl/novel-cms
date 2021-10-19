@@ -173,6 +173,116 @@ import { getTokens, isAccessTokenExpired } from "common/auth/tokens";
 
 ```
 
+# How to logout user from all tabs once logout occured:
+
+- `1` - create listener that listends to LocalStorage and pushes to `.logout` route if tokens were removed:
+
+```
+import { PATHS_CORE } from "common/constants/paths";
+import { useHistory } from "react-router-dom";
+import { useCallback, useEffect } from "react";
+import { LOCALSTORAGE_AUTH_TOKENS } from "common/constants/auth";
+
+const useTokenListener = () => {
+  const history = useHistory();
+
+  const handleStorageChange = useCallback(
+    (e: StorageEvent) => {
+      if (e.key === LOCALSTORAGE_AUTH_TOKENS && e.newValue === null) {
+        history.push(PATHS_CORE.LOGOUT);
+      }
+    },
+    [history]
+  );
+
+  useEffect(() => {
+    window.addEventListener("storage", handleStorageChange);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, [handleStorageChange]);
+};
+
+export default useTokenListener;
+
+```
+
+- `2` - import that listener in `Router.tsx`:
+
+```
+// Router.tsx
+
+import useTokenListener from "common/auth/useTokenListener";
+
+const Router = () => {
+  useTokenListener();
+  return (
+    <Switch>
+      <Route path={PATHS_CORE.LOGIN} exact component={Login} />
+      <Route path={PATHS_CORE.LOGOUT} exact component={Logout} />
+      <PrivateRoute
+        path={PATHS_DASHBOARD.DASHBOARD}
+        exact
+        component={Dashboard}
+      />
+      <Route component={NotFound} />
+    </Switch>
+  );
+};
+
+export default Router;
+
+```
+
+- `3` - you can send your tokens to server to blacklist them which won't allow to get protected data if user logged out but tokens have not expired yet:
+
+```
+export const logout = createAsyncThunk(
+  "logout",
+  async (_, { rejectWithValue }) => {
+    const tokens = getTokens();
+    try {
+      removeTokens();
+      const response = await axiosInstance.post("/cms/logout", tokens);
+      return response.data;
+    } catch (error: any) {
+      removeTokens();
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+```
+
+- `4` - if on logout you send your tokens to server to blacklist them, then make sure you won't send that kind of request if tokens are already removed (they will be removed if you logout on another tab):
+
+```
+import { Redirect } from "react-router-dom";
+import { PATHS_CORE } from "common/constants/paths";
+import { useAppDispatch } from "common/store/hooks";
+import { useLayoutEffect, useCallback } from "react";
+import { logout } from "core/store/userSlice";
+import { getTokens } from "common/auth/tokens";
+
+const Logout = () => {
+  const dispatch = useAppDispatch();
+
+  const logoutUser = useCallback(async () => {
+    getTokens() && (await dispatch(logout())); // if tokens have been removed already then do not send them to blacklist them
+  }, [dispatch]);
+
+  useLayoutEffect(() => {
+    logoutUser();
+  }, [logoutUser]);
+
+  return <Redirect to={PATHS_CORE.LOGIN} />;
+};
+
+export default Logout;
+
+```
+
 ---
 
 ---

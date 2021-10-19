@@ -8,7 +8,10 @@ import NotFound from "core/views/NotFound";
 
 import Dashboard from "features/Dashboard/views/Dashboard";
 
+import useTokenListener from "common/auth/useTokenListener";
+
 const Router = () => {
+  useTokenListener();
   return (
     <Switch>
       <Route path={PATHS_CORE.LOGIN} exact component={Login} />
