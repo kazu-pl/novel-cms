@@ -11,7 +11,7 @@ import { RequestLoginCredentials } from "types/novel-server.types";
 import { useHistory } from "react-router-dom";
 import { PATHS_DASHBOARD } from "common/constants/paths";
 import { useLayoutEffect } from "react";
-import { getTokens } from "common/auth/tokens";
+import { getTokens, isAccessTokenExpired } from "common/auth/tokens";
 
 const validationSchema = yup.object({
   login: yup.string().required(),
@@ -29,8 +29,9 @@ const LoginView = () => {
 
   useLayoutEffect(() => {
     const tokens = getTokens();
-    if (tokens) history.push(PATHS_DASHBOARD.DASHBOARD);
-  }, [history]);
+    if (tokens && !isAccessTokenExpired(tokens.accessToken))
+      history.push(PATHS_DASHBOARD.DASHBOARD);
+  });
 
   const handleSubmit = async (values: RequestLoginCredentials) => {
     try {
