@@ -8,7 +8,7 @@ import Button from "novel-ui/lib/buttons/Button";
 import { login } from "core/store/userSlice";
 import { useAppDispatch } from "common/store/hooks";
 import { RequestLoginCredentials } from "types/novel-server.types";
-import { Redirect, useHistory } from "react-router";
+import { useHistory } from "react-router-dom";
 import { PATHS_DASHBOARD } from "common/constants/paths";
 import { useLayoutEffect } from "react";
 import { getTokens } from "common/auth/tokens";
