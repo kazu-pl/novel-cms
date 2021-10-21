@@ -12,6 +12,8 @@ import { useHistory } from "react-router-dom";
 import { PATHS_DASHBOARD } from "common/constants/paths";
 import { useLayoutEffect } from "react";
 import { getTokens, isAccessTokenExpired } from "common/auth/tokens";
+import LangSwitcher from "components/LangSwitcher";
+import useLocalizedPath from "common/router/useLocalizedPath";
 
 const validationSchema = yup.object({
   login: yup.string().required(),
@@ -26,6 +28,7 @@ const initialValues: RequestLoginCredentials = {
 const LoginView = () => {
   const dispatch = useAppDispatch();
   const history = useHistory();
+  const { path } = useLocalizedPath();
 
   useLayoutEffect(() => {
     const tokens = getTokens();
@@ -36,7 +39,7 @@ const LoginView = () => {
   const handleSubmit = async (values: RequestLoginCredentials) => {
     try {
       await dispatch(login(values));
-      history.push(PATHS_DASHBOARD.DASHBOARD);
+      history.push(path(PATHS_DASHBOARD.DASHBOARD));
     } catch (err: any) {
       alert(err.message);
     }
@@ -44,6 +47,16 @@ const LoginView = () => {
 
   return (
     <StyledLoginPageWrapper>
+      <Box
+        sx={{
+          position: "absolute",
+          right: (theme) => theme.spacing(1),
+          top: (theme) => theme.spacing(1),
+        }}
+      >
+        <LangSwitcher />
+      </Box>
+
       <Box
         minWidth={330}
         p={4}

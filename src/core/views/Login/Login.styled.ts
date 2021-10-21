@@ -12,4 +12,5 @@ export const StyledLoginPageWrapper = styled.div`
     rgba(62, 144, 240, 1) 45%,
     rgba(150, 177, 208, 1) 100%
   );
+  position: relative;
 `;
