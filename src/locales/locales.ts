@@ -13,6 +13,34 @@ export interface Translation {
 
 export type Lang = "pl" | "en" | "de"; // those literals are names of folders with tranalstions
 
-export const avaliableLanguages = ["pl", "en", "de"]; // this has to be string[] type because in Route.tsx I'm checking if avaliableLanguages includes a lang obtained from url which of course is allways string type
+export const extendedAvaliableLangs: {
+  langFullName: string;
+  lang: Lang;
+  iconUrl: string;
+}[] = [
+  {
+    langFullName: "Polski",
+    lang: "pl",
+    iconUrl:
+      "https://upload.wikimedia.org/wikipedia/en/1/12/Flag_of_Poland.svg",
+  },
+  {
+    langFullName: "English",
+    lang: "en",
+    iconUrl:
+      "https://upload.wikimedia.org/wikipedia/commons/a/ae/Flag_of_the_United_Kingdom.svg",
+  },
+  {
+    langFullName: "Germany",
+    lang: "de",
+    iconUrl:
+      "https://upload.wikimedia.org/wikipedia/commons/b/ba/Flag_of_Germany.svg",
+  },
+];
 
-export const fallbackLng: Lang = "pl"; // it's default lang for "/" page in react-snap and in browser (but only if fallbackLng in src/i18n.ts is COMMENTED - see src/i18n.ts for more info)
+export const avaliableLanguages: Lang[] = extendedAvaliableLangs.reduce(
+  (prev, current) => [...prev, current.lang],
+  [] as Lang[]
+);
+
+export const fallbackLng: Lang = "pl"; // it's default lang for "/" pages (pages without lang prefix)

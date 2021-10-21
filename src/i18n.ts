@@ -31,6 +31,7 @@ i18n
     // fallbackLng, // IMPORTANT!!! default lang (will be downloaded even if you switched to other and refreshed page - you will download 2 langs then) that will be used if user has browser lang set to a lang that you didn't provide. I DISABLED IT BECAUSE IN URL-BASED LOCALIZATION IT'S NOT AS MUCH USEFUL BECAUSE YOU WILL NEED TO DOWNLOAD TRANSLATION FILE BASED ON URL ANYWAY (you won't be able to change translation without changing url so fallbackLng option is useless)
 
     debug: process.env.NODE_ENV === "development", // IMPORTANT!!!
+    supportedLngs: avaliableLanguages, // whitelist prop was surpased by supportedLngs ?
     // whitelist: avaliableLanguages, // IMPORTANT!!! needed because without whitelist with explicitly specified langs react-snap would create files for 'en-US' langs even if you use just 'en'  (react-snap would create both routes)
 
     interpolation: {

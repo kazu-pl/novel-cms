@@ -10,7 +10,7 @@ const DashboardNew = (props: DashboardNewProps) => {
   return (
     <DashboardLayoutWrapper>
       <Link to={path(PATHS_DASHBOARD.DASHBOARD)}>Dashboard </Link>
-      Dashboard NEW
+      this is Dashboard NEW
     </DashboardLayoutWrapper>
   );
 };

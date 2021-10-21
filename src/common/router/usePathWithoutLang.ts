@@ -1,4 +1,4 @@
-import { avaliableLanguages } from "locales";
+import { avaliableLanguages, Lang } from "locales";
 
 const usePathWithoutLang = () => {
   const getPathWithoutLang = () => {
@@ -13,7 +13,7 @@ const usePathWithoutLang = () => {
       // 3 - /login/asd/asd   // <-- the same case as 2 but first item don't have to be only lang prefix, it can be anything
 
       const pathElementsWithoutLangPrefix = avaliableLanguages.includes(
-        pathElements[1] // pathElements[1] because pathElements[0] is always empty "" string because it splits first / in url into separate item
+        pathElements[1] as Lang // pathElements[1] because pathElements[0] is always empty "" string because it splits first / in url into separate item
       )
         ? pathElements.slice(2) // if pathElements[1] was element from avaliableLanguages then slice array after lang to get rid of lang
         : pathElements.slice(1); // if pathElements[1] wasn't in from avaliableLanguages it means we are on path for default lang so everyting is path elements
@@ -24,7 +24,7 @@ const usePathWithoutLang = () => {
     } else {
       // ROUTES LIKE: "/de" OR "/de/" OR "" [empty string] OR "/account"
 
-      newPath = avaliableLanguages.includes(pathElements[1])
+      newPath = avaliableLanguages.includes(pathElements[1] as Lang)
         ? ``
         : `/${pathElements[1]}`;
     }

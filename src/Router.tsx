@@ -18,6 +18,7 @@ import useLocalizedPath from "common/router/useLocalizedPath";
 const Router = () => {
   useTokenListener();
   const { path } = useLocalizedPath();
+
   return (
     <Switch>
       {avaliableLanguages.map((lang) => {
