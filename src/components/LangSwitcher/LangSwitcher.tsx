@@ -34,6 +34,5 @@ export default LangSwicher;
 
 // TODO:
 
-// 3 - trzeba ogarnąć tłumaczenia słów
 // 4 - pousuwać zbędne console.logi itd
-// 7 - zrobić update readme mojego repo z i18n. Dodałem już info o link vs history.push() oraz error z console.logiem ale trzeba też zrobić update readme np jak dodawać nowe języki itd
+// 5 - ogarnąc komponenty takie jak LangSwitcher, HelmetDecorator albo MetaTagsWrapper

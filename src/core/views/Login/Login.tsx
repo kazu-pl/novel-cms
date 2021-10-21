@@ -1,7 +1,7 @@
 import { StyledLoginPageWrapper } from "./Login.styled";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import yup from "common/yup";
+import { useLocalizedYup } from "common/yup";
 import { Formik, Form } from "formik";
 import TextFieldFormik from "novel-ui/lib/formik/TextFieldFormik";
 import Button from "novel-ui/lib/buttons/Button";
@@ -14,11 +14,7 @@ import { useLayoutEffect } from "react";
 import { getTokens, isAccessTokenExpired } from "common/auth/tokens";
 import LangSwitcher from "components/LangSwitcher";
 import useLocalizedPath from "common/router/useLocalizedPath";
-
-const validationSchema = yup.object({
-  login: yup.string().required(),
-  password: yup.string().required(),
-});
+import { useTranslation } from "react-i18next";
 
 const initialValues: RequestLoginCredentials = {
   login: "",
@@ -29,6 +25,13 @@ const LoginView = () => {
   const dispatch = useAppDispatch();
   const history = useHistory();
   const { path } = useLocalizedPath();
+  const { t } = useTranslation();
+  const yup = useLocalizedYup();
+
+  const validationSchema = yup.object({
+    login: yup.string().required(),
+    password: yup.string().required(),
+  });
 
   useLayoutEffect(() => {
     const tokens = getTokens();
@@ -72,14 +75,14 @@ const LoginView = () => {
           {({ isSubmitting }) => (
             <Form>
               <Typography variant="h5" component="h1">
-                Login
+                {t("loginPage.title")}
               </Typography>
               <Box pt={2}>
                 <TextFieldFormik
                   name="login"
                   type="text"
                   id="login"
-                  label="Enter Your login"
+                  label={t("loginPage.form.loginInputLabel")}
                   fullWidth
                 />
               </Box>
@@ -88,7 +91,7 @@ const LoginView = () => {
                   name="password"
                   type="password"
                   id="password"
-                  label="Enter Your password"
+                  label={t("loginPage.form.passwordInputLabel")}
                   fullWidth
                 />
               </Box>
@@ -99,7 +102,7 @@ const LoginView = () => {
                   isLoading={isSubmitting}
                   fullWidth
                 >
-                  Submit
+                  {t("loginPage.submitButton")}
                 </Button>
               </Box>
             </Form>

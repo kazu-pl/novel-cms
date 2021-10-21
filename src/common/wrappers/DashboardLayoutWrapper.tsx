@@ -16,6 +16,8 @@ import LangSwicher from "components/LangSwitcher/LangSwitcher";
 
 import getLocalizedPath from "common/router/useLocalizedPath";
 
+import { useTranslation } from "react-i18next";
+
 export interface DashboardLayoutWrapperProps {
   children: React.ReactNode;
   title?: string;
@@ -28,6 +30,7 @@ const DashboardLayoutWrapper = ({
   const dispatch = useAppDispatch();
   const { path } = getLocalizedPath();
   const userProfileData = useAppSelector(selectUserProfile);
+  const { t } = useTranslation();
 
   const handleGetData = async () => {
     try {
@@ -55,7 +58,7 @@ const DashboardLayoutWrapper = ({
           {
             icon: <LogoutIcon />,
             to: PATHS_CORE.LOGOUT,
-            label: "Logout",
+            label: t("dashboardPage.userDropdown.logout"),
             isErrorColor: true,
           },
         ],

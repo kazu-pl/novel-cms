@@ -1,15 +1,29 @@
-import { Translation } from "../locales";
+import { Translation } from "../Translation";
 
 const en: Translation = {
-  title: "Welcome to react using react-i18next",
-  navigation: {
-    homepage: "Homepage",
-    login: "Login page",
-    account: "Account",
+  form: {
+    requiredFieldInputMsg: "This field is required",
+    wrongEmailMsg: "Wrong email format",
   },
-  description: {
-    part1: "To get started, edit  and save to reload.",
-    part2: "Switch language between english and german using buttons above.",
+  loginPage: {
+    title: "Login",
+    submitButton: "submit",
+    form: {
+      loginInputLabel: "Enter your login",
+      passwordInputLabel: "Enter your password",
+    },
+  },
+  dashboardPage: {
+    userDropdown: {
+      logout: "Logout",
+    },
+  },
+  notFoundPage: {
+    title: "Not found",
+    SEO: {
+      description: "Not found",
+      imageAlt: "Not found",
+    },
   },
 };
 

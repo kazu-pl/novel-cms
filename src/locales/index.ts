@@ -3,4 +3,5 @@ export {
   fallbackLng,
   extendedAvaliableLangs,
 } from "./locales";
-export type { Translation, Lang } from "./locales";
+export type { Lang } from "./locales";
+export type { Translation } from "./Translation";

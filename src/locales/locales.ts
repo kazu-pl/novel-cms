@@ -1,16 +1,3 @@
-export interface Translation {
-  title: string;
-  navigation: {
-    homepage: string;
-    login: string;
-    account: string;
-  };
-  description: {
-    part1: string;
-    part2: string;
-  };
-}
-
 export type Lang = "pl" | "en" | "de"; // those literals are names of folders with tranalstions
 
 export const extendedAvaliableLangs: {
