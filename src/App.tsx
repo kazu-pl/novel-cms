@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import LoadingLangIndicator from "components/LoadingLangIndicator";
+import CircularProgress from "@mui/material/CircularProgress";
 
 import {
   ThemeProvider as MuiThemeProvider,
@@ -16,7 +16,7 @@ import muiTheme from "common/theme/muiTheme";
 
 function App() {
   return (
-    <Suspense fallback={<LoadingLangIndicator />}>
+    <Suspense fallback={<CircularProgress size={80} />}>
       <StyledEngineProvider injectFirst>
         <MuiThemeProvider theme={muiTheme}>
           <StyledThemeProvider theme={muiTheme}>

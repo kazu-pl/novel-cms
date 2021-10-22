@@ -24,7 +24,7 @@ const HelmetDecorator = ({
   return (
     <Helmet>
       <html lang={lang} />
-      <title>{title}</title>
+      <title>Novel | {title}</title>
       <meta name="description" content={description} />
 
       <meta property="og:title" content={title} />

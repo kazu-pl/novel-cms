@@ -10,15 +10,25 @@ export interface Translation {
       loginInputLabel: string;
       passwordInputLabel: string;
     };
+    metaData: {
+      title: string;
+      descrption: string;
+      imageAlt: string;
+    };
   };
   dashboardPage: {
     userDropdown: {
       logout: string;
     };
+    metaData: {
+      descrption: string;
+      imageAlt: string;
+      title: string;
+    };
   };
   notFoundPage: {
     title: string;
-    SEO: {
+    metaData: {
       description: string;
       imageAlt: string;
     };

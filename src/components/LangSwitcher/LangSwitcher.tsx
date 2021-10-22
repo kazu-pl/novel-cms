@@ -29,10 +29,3 @@ const LangSwicher = () => {
 };
 
 export default LangSwicher;
-
-// ---------------------------------------------------------
-
-// TODO:
-
-// 4 - pousuwać zbędne console.logi itd
-// 5 - ogarnąc komponenty takie jak LangSwitcher, HelmetDecorator albo MetaTagsWrapper

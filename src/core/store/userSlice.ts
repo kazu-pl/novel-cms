@@ -34,7 +34,7 @@ export const logout = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     const tokens = getTokens();
     try {
-      removeTokens(); // you have remove tokens before request, removing after awaiting for response will run iunto infinite loop of redirecting between dashboard and login
+      removeTokens(); // you have to remove tokens before request, removing after awaiting for response will run iunto infinite loop of redirecting between dashboard and login
       const response = await axiosInstance.post("/cms/logout", tokens);
       return response.data;
     } catch (error: any) {

@@ -12,15 +12,25 @@ const en: Translation = {
       loginInputLabel: "Enter your login",
       passwordInputLabel: "Enter your password",
     },
+    metaData: {
+      title: "Login",
+      descrption: "Login page description",
+      imageAlt: "login image",
+    },
   },
   dashboardPage: {
     userDropdown: {
       logout: "Logout",
     },
+    metaData: {
+      title: "Dashboard",
+      descrption: "Dashboard page description",
+      imageAlt: "Dashboard image",
+    },
   },
   notFoundPage: {
     title: "Not found",
-    SEO: {
+    metaData: {
       description: "Not found",
       imageAlt: "Not found",
     },
