@@ -1,3 +1,6 @@
+import { Suspense } from "react";
+import CircularProgress from "@mui/material/CircularProgress";
+
 import {
   ThemeProvider as MuiThemeProvider,
   StyledEngineProvider,
@@ -13,17 +16,19 @@ import muiTheme from "common/theme/muiTheme";
 
 function App() {
   return (
-    <StyledEngineProvider injectFirst>
-      <MuiThemeProvider theme={muiTheme}>
-        <StyledThemeProvider theme={muiTheme}>
-          <CssBaseline />
-          <CreateGlobalStyle />
-          <ReactRouter history={history}>
-            <Router />
-          </ReactRouter>
-        </StyledThemeProvider>
-      </MuiThemeProvider>
-    </StyledEngineProvider>
+    <Suspense fallback={<CircularProgress size={80} />}>
+      <StyledEngineProvider injectFirst>
+        <MuiThemeProvider theme={muiTheme}>
+          <StyledThemeProvider theme={muiTheme}>
+            <CssBaseline />
+            <CreateGlobalStyle />
+            <ReactRouter history={history}>
+              <Router />
+            </ReactRouter>
+          </StyledThemeProvider>
+        </MuiThemeProvider>
+      </StyledEngineProvider>
+    </Suspense>
   );
 }
 

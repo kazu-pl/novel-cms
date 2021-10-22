@@ -1,7 +1,9 @@
-import { Route, RouteProps, Redirect } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import { PATHS_CORE } from "common/constants/paths";
 import { getTokens, isAccessTokenExpired } from "common/auth/tokens";
 import UserProfileWrapper from "common/wrappers/UserProfileWrapper";
+
+import Route, { RouteProps } from "./Route";
 
 export interface PrivateRouteProps extends RouteProps {}
 

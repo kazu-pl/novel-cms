@@ -17,13 +17,19 @@
     "@types/react-redux": "^7.1.7",
     "axios": "^0.23.0",
     "formik": "^2.2.9",
+    "i18next": "^21.3.2",
+    "i18next-browser-languagedetector": "^6.1.2",
+    "i18next-resources-to-backend": "^1.0.0",
     "jwt-decode": "^3.1.2",
     "novel-ui": "https://github.com/kazu-pl/novel-ui.git",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-helmet": "^6.1.0",
+    "react-i18next": "^11.12.0",
     "react-redux": "^7.2.0",
     "react-router-dom": "^5.3.0",
     "react-scripts": "4.0.3",
+    "react-snap": "^1.23.0",
     "styled-components": "^5.3.1",
     "typescript": "~4.1.5",
     "yup": "^0.32.11"
@@ -36,7 +42,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "generateTypes": "node ./generateTypes.ts"
+    "generateTypes": "node ./generateTypes.ts",
+    "postbuild": "react-snap"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -54,6 +61,7 @@
     ]
   },
   "devDependencies": {
+    "@types/react-helmet": "^6.1.4",
     "@types/react-router-dom": "^5.3.1",
     "@types/styled-components": "^5.1.15",
     "swagger-typescript-api": "^9.2.0"

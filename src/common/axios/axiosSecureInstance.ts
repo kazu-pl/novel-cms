@@ -46,7 +46,7 @@ axiosSecureInstance.interceptors.response.use(
           return axiosSecureInstance(originalConfig);
         } catch (err: any) {
           history.push(PATHS_CORE.LOGOUT);
-          alert("you were  logged out due to ended session");
+          alert("you were logged out due to ended session");
           // TODO: show snackbar and inform about timed out session as a reason for logging out
           if (err.response && err.response.data) {
             return Promise.reject(err.response.data);

@@ -1,7 +1,7 @@
 import Dashboard from "novel-ui/lib/layouts/Dashboard";
 import AcUnitIcon from "@mui/icons-material/AcUnit";
 import LogoutIcon from "@mui/icons-material/Logout";
-import LanguageIcon from "@mui/icons-material/Language";
+
 import DashboardIcon from "@mui/icons-material/Dashboard";
 
 import ColoredIconWrapper from "novel-ui/lib/ColoredIconWrapper";
@@ -11,6 +11,12 @@ import { useAppDispatch, useAppSelector } from "common/store/hooks";
 import { fetchSomeProtectedData } from "core/store/userSlice";
 import Button from "novel-ui/lib/buttons/Button";
 import { selectUserProfile } from "core/store/userSlice";
+
+import LangSwicher from "components/LangSwitcher/LangSwitcher";
+
+import getLocalizedPath from "common/router/useLocalizedPath";
+
+import { useTranslation } from "react-i18next";
 
 export interface DashboardLayoutWrapperProps {
   children: React.ReactNode;
@@ -22,8 +28,9 @@ const DashboardLayoutWrapper = ({
   title = "Dashboard",
 }: DashboardLayoutWrapperProps) => {
   const dispatch = useAppDispatch();
-
+  const { path } = getLocalizedPath();
   const userProfileData = useAppSelector(selectUserProfile);
+  const { t } = useTranslation();
 
   const handleGetData = async () => {
     try {
@@ -51,15 +58,11 @@ const DashboardLayoutWrapper = ({
           {
             icon: <LogoutIcon />,
             to: PATHS_CORE.LOGOUT,
-            label: "Logout",
+            label: t("dashboardPage.userDropdown.logout"),
             isErrorColor: true,
           },
         ],
-        additionalControls: (
-          <ColoredIconWrapper color="white">
-            <LanguageIcon />
-          </ColoredIconWrapper>
-        ),
+        additionalControls: <LangSwicher />,
       }}
       sidebarProps={{
         sidebarItems: [
@@ -71,7 +74,7 @@ const DashboardLayoutWrapper = ({
               </ColoredIconWrapper>
             ),
             label: "Dashboard",
-            to: PATHS_DASHBOARD.DASHBOARD,
+            to: path(PATHS_DASHBOARD.DASHBOARD),
           },
         ],
       }}

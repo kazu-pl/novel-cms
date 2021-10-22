@@ -1,1 +1,1 @@
-export { default } from "./yup";
+export { useLocalizedYup } from "./useLocalizedYup";
