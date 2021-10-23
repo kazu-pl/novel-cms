@@ -29,25 +29,31 @@ export interface AccessToken {
 }
 
 /**
- * @example {"login":"myLogin","password":"Pa$sWorD","repeatedPassword":"Pa$sWorD"}
+ * @example {"password":"admin123","repeatedPassword":"admin123","email":"admin@asd.pl","name":"John","surname":"Doe"}
  */
 export interface RequestRegisterCredentials {
-  /** login used to register */
-  login: string;
-
   /** password */
   password: string;
 
   /** the same password passed twice */
   repeatedPassword: string;
+
+  /** email */
+  email: string;
+
+  /** your name */
+  name: string;
+
+  /** your surname */
+  surname: string;
 }
 
 /**
- * @example {"login":"myLogin","password":"Pa$sWorD"}
+ * @example {"email":"admin@asd.pl","password":"admin123"}
  */
 export interface RequestLoginCredentials {
-  /** Login that is used to log in */
-  login: string;
+  /** email that is used to log in */
+  email: string;
 
   /** password */
   password: string;
@@ -62,7 +68,7 @@ export interface RequestRefreshTokenCredentials {
 }
 
 /**
- * @example {"name":"John","surname":"Doe"}
+ * @example {"name":"John","surname":"Doe","email":"admin@asd.pl"}
  */
 export interface UserProfile {
   /** user name */
@@ -70,4 +76,38 @@ export interface UserProfile {
 
   /** user surname */
   surname: string;
+
+  /** email */
+  email: string;
+}
+
+/**
+ * @example {"name":"John","surname":"Doe","email":"admin@asd.pl"}
+ */
+export interface RequestUpdateUser {
+  /** user name */
+  name: string;
+
+  /** user surname */
+  surname: string;
+
+  /** user email */
+  email: string;
+}
+
+/**
+ * @example {"email":"admin@asd.pl"}
+ */
+export interface RequestRemindPasswordCredentials {
+  /** On the email we will send you your password */
+  email: string;
+}
+
+/**
+ * @example {"password":"qwerty123","repeatedPassword":"qwerty123"}
+ */
+export interface RequestRenewPassword {
+  /** new password */
+  password: string;
+  repeatedPassword: string;
 }

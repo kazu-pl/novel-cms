@@ -7,7 +7,7 @@ export interface Translation {
     title: string;
     submitButton: string;
     form: {
-      loginInputLabel: string;
+      emailInputLabel: string;
       passwordInputLabel: string;
     };
     metaData: {

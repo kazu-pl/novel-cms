@@ -9,7 +9,7 @@ const pl: Translation = {
     title: "Zaloguj się",
     submitButton: "Potwierdź",
     form: {
-      loginInputLabel: "Wprowadź login",
+      emailInputLabel: "Wprowadź email",
       passwordInputLabel: "Wprowadź hasło",
     },
     metaData: {

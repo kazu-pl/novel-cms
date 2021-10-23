@@ -9,7 +9,7 @@ const de: Translation = {
     title: "Anmeldung",
     submitButton: "einreichen",
     form: {
-      loginInputLabel: "Geben Sie Ihr Login ein",
+      emailInputLabel: "Geben Sie Ihr email ein",
       passwordInputLabel: "Geben Sie Ihr Passwort ein",
     },
     metaData: {
