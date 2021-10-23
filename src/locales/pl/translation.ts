@@ -39,6 +39,14 @@ const pl: Translation = {
   },
   accountPage: {
     title: "Konto",
+    forms: {
+      password: {
+        title: "Zmień dane konta",
+      },
+      account: {
+        title: "Zmień hasło",
+      },
+    },
     metaData: {
       title: "Konto",
       descrption: "moje konto",

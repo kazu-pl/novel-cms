@@ -96,6 +96,21 @@ export const resetUserPassword = createAsyncThunk(
   }
 );
 
+export const updateUserPassword = createAsyncThunk(
+  "user/updateUserPassword",
+  async (values: RequestRenewPassword, { rejectWithValue }) => {
+    try {
+      const response = await axiosSecureInstance.put(
+        `/users/me/update-password`,
+        values
+      );
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 const counterSlice = createSlice({
   name: "user",
   initialState,

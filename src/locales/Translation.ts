@@ -37,6 +37,10 @@ export interface Translation {
   };
   accountPage: {
     title: string;
+    forms: {
+      account: { title: string };
+      password: { title: string };
+    };
     metaData: {
       descrption: string;
       imageAlt: string;
