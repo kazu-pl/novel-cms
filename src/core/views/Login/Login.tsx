@@ -91,7 +91,7 @@ const LoginView = () => {
                     name="email"
                     type="text"
                     id="email"
-                    label={t("loginPage.form.emailInputLabel")}
+                    label={t("form.emailInputLabel")}
                     fullWidth
                   />
                 </Box>
@@ -100,7 +100,7 @@ const LoginView = () => {
                     name="password"
                     type="password"
                     id="password"
-                    label={t("loginPage.form.passwordInputLabel")}
+                    label={t("form.passwordInputLabel")}
                     fullWidth
                   />
                 </Box>
@@ -111,7 +111,7 @@ const LoginView = () => {
                     isLoading={isSubmitting}
                     fullWidth
                   >
-                    {t("loginPage.submitButton")}
+                    {t("buttons.submit")}
                   </Button>
                 </Box>
               </Form>

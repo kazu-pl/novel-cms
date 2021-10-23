@@ -9,6 +9,7 @@ import NotFound from "core/views/NotFound";
 
 import Dashboard from "features/Dashboard/views/Dashboard";
 import DashboardNew from "features/Dashboard/views/DashboardNew/DashboardNew";
+import Account from "core/views/Account/Account";
 
 import useTokenListener from "common/auth/useTokenListener";
 
@@ -27,6 +28,11 @@ const Router = () => {
           <Route
             path={path(PATHS_CORE.LOGOUT, lang)}
             component={Logout}
+            exact
+          />,
+          <PrivateRoute
+            path={`${path(PATHS_CORE.ACCOUNT, lang)}`}
+            component={Account}
             exact
           />,
           <PrivateRoute
