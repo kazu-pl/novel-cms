@@ -11,6 +11,7 @@ import Dashboard from "features/Dashboard/views/Dashboard";
 import DashboardNew from "features/Dashboard/views/DashboardNew/DashboardNew";
 import Account from "core/views/Account/Account";
 import ForgotPassword from "core/views/ForgotPassword/ForgotPassword";
+import ResetPassword from "core/views/ResetPassword/ResetPassword";
 
 import useTokenListener from "common/auth/useTokenListener";
 
@@ -34,6 +35,11 @@ const Router = () => {
           <Route
             path={path(PATHS_CORE.PASSWORD_FORGOT, lang)}
             component={ForgotPassword}
+            exact
+          />,
+          <Route
+            path={path(PATHS_CORE.PASSWORD_RESET, lang)}
+            component={ResetPassword}
             exact
           />,
           <PrivateRoute

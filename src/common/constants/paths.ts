@@ -7,7 +7,7 @@ export const PATHS_CORE = {
   NOT_FOUND: `/${NOT_FOUND_LINK_WITHOUT_SLASH}`,
   ACCOUNT: "/account",
   PASSWORD_FORGOT: "/forgot-password",
-  PASSWORD_RESET: "/reset-password",
+  PASSWORD_RESET: "/reset-password/:userId",
 };
 
 export const PATHS_DASHBOARD = {

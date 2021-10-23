@@ -60,6 +60,14 @@ const en: Translation = {
       title: "forgot Password",
     },
   },
+  resetPasswordPage: {
+    title: "Set new password",
+    metaData: {
+      descrption: "Set new password",
+      imageAlt: "Set new password",
+      title: "Set new password",
+    },
+  },
   notFoundPage: {
     title: "Not found",
     metaData: {

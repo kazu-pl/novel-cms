@@ -56,6 +56,14 @@ export interface Translation {
       title: string;
     };
   };
+  resetPasswordPage: {
+    title: string;
+    metaData: {
+      descrption: string;
+      imageAlt: string;
+      title: string;
+    };
+  };
   notFoundPage: {
     title: string;
     metaData: {

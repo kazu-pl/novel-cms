@@ -60,6 +60,14 @@ const pl: Translation = {
       title: "Przypomnij hasło",
     },
   },
+  resetPasswordPage: {
+    title: "Ustaw nowe hasło",
+    metaData: {
+      descrption: "ustaw nowe hasło",
+      imageAlt: "ustaw nowe hasło",
+      title: "ustaw nowe hasło",
+    },
+  },
   notFoundPage: {
     title: "nie znaleziono",
     metaData: {

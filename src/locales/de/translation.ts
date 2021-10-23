@@ -52,6 +52,14 @@ const de: Translation = {
       title: "Passwort vergessen",
     },
   },
+  resetPasswordPage: {
+    title: "Neues Passwort setzen",
+    metaData: {
+      descrption: "Neues Passwort setzen",
+      imageAlt: "Neues Passwort setzen",
+      title: "Neues Passwort setzen",
+    },
+  },
   accountPage: {
     title: "Konto",
     metaData: {
