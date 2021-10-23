@@ -3,6 +3,7 @@ import { axiosInstance, axiosSecureInstance } from "common/axios";
 import { removeTokens, saveTokens, getTokens } from "common/auth/tokens";
 import {
   RequestLoginCredentials,
+  RequestRemindPasswordCredentials,
   RequestUpdateUser,
   Tokens,
   UserProfile,
@@ -55,6 +56,21 @@ export const updateUserData = createAsyncThunk(
   async (values: RequestUpdateUser) => {
     const response = await axiosSecureInstance.put("/users/me", values);
     return response.data;
+  }
+);
+
+export const sendEmailToRemindPassword = createAsyncThunk(
+  "user/sendEmailToRemindPassword",
+  async (values: RequestRemindPasswordCredentials, { rejectWithValue }) => {
+    try {
+      const response = await axiosSecureInstance.post(
+        "/users/remind-password",
+        values
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
   }
 );
 

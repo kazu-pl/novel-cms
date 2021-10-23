@@ -8,6 +8,7 @@ const en: Translation = {
     passwordInputLabel: "Enter your password",
     nameInputLabel: "Name",
     surnameInputLabel: "Surname",
+    forgotPassword: "I forgot my password",
   },
   buttons: {
     submit: "Submit",
@@ -42,6 +43,21 @@ const en: Translation = {
       title: "Account",
       descrption: "my Account",
       imageAlt: "Account img",
+    },
+  },
+  forgotPassword: {
+    title: "forgot Password",
+    description:
+      "Have you forgotten your password? Leave your email. We will send You resetting password link.",
+    links: {
+      login: "Login",
+      dashboard: "Dashboard",
+    },
+    metaData: {
+      descrption:
+        "Have you forgotten your password? Leave your email. We will send You resetting password link.",
+      imageAlt: "Reminding password",
+      title: "forgot Password",
     },
   },
   notFoundPage: {

@@ -8,6 +8,7 @@ const pl: Translation = {
     passwordInputLabel: "Wprowadź hasło",
     nameInputLabel: "Imię",
     surnameInputLabel: "Nazwisko",
+    forgotPassword: "Zapomniałem hasła",
   },
   buttons: {
     submit: "potwierdź",
@@ -42,6 +43,21 @@ const pl: Translation = {
       title: "Konto",
       descrption: "moje konto",
       imageAlt: "konto obrazek",
+    },
+  },
+  forgotPassword: {
+    title: "Zapomniałem hasła",
+    description:
+      "Zapomniałeś hasła? Podaj twój email. Wyślemy na niego link do resetowania hasła.",
+    links: {
+      login: "Logowanie",
+      dashboard: "Dashboard",
+    },
+    metaData: {
+      descrption:
+        "Zapomniałeś hasła? Podaj twój email. Wyślemy na niego link do resetowania hasła.",
+      imageAlt: "przypomnienie hasła",
+      title: "Przypomnij hasło",
     },
   },
   notFoundPage: {
