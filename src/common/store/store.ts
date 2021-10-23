@@ -5,7 +5,6 @@ import {
   Action,
   combineReducers,
 } from "@reduxjs/toolkit";
-import counterReducer from "../../features/counter/counterSlice";
 import userSlice, { logout } from "core/store/userSlice";
 
 import { Middleware } from "@reduxjs/toolkit";
@@ -18,7 +17,6 @@ export const throwMiddleware: Middleware = () => (next) => (action) => {
 };
 
 const combinedReducer = combineReducers({
-  counter: counterReducer,
   user: userSlice,
 });
 
