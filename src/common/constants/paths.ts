@@ -5,6 +5,7 @@ export const PATHS_CORE = {
   LOGIN: "/",
   LOGOUT: "/logout",
   NOT_FOUND: `/${NOT_FOUND_LINK_WITHOUT_SLASH}`,
+  ACCOUNT: "/account",
 };
 
 export const PATHS_DASHBOARD = {

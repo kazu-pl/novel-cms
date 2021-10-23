@@ -3,6 +3,7 @@ import { axiosInstance, axiosSecureInstance } from "common/axios";
 import { removeTokens, saveTokens, getTokens } from "common/auth/tokens";
 import {
   RequestLoginCredentials,
+  RequestUpdateUser,
   Tokens,
   UserProfile,
 } from "types/novel-server.types";
@@ -49,10 +50,10 @@ export const fetchUserData = createAsyncThunk("user/getUserData", async () => {
   return response.data;
 });
 
-export const fetchSomeProtectedData = createAsyncThunk(
-  "user/fetchSomeProtectedData",
-  async () => {
-    const response = await axiosSecureInstance.get("/cms/protected");
+export const updateUserData = createAsyncThunk(
+  "user/updateUserData",
+  async (values: RequestUpdateUser) => {
+    const response = await axiosSecureInstance.put("/users/me", values);
     return response.data;
   }
 );

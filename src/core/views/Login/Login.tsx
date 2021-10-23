@@ -18,7 +18,7 @@ import { useTranslation } from "react-i18next";
 import HelmetDecorator from "components/HelmetDecorator";
 
 const initialValues: RequestLoginCredentials = {
-  login: "",
+  email: "",
   password: "",
 };
 
@@ -30,7 +30,7 @@ const LoginView = () => {
   const yup = useLocalizedYup();
 
   const validationSchema = yup.object({
-    login: yup.string().required(),
+    email: yup.string().email().required(),
     password: yup.string().required(),
   });
 
@@ -88,10 +88,10 @@ const LoginView = () => {
                 </Typography>
                 <Box pt={2}>
                   <TextFieldFormik
-                    name="login"
+                    name="email"
                     type="text"
-                    id="login"
-                    label={t("loginPage.form.loginInputLabel")}
+                    id="email"
+                    label={t("form.emailInputLabel")}
                     fullWidth
                   />
                 </Box>
@@ -100,7 +100,7 @@ const LoginView = () => {
                     name="password"
                     type="password"
                     id="password"
-                    label={t("loginPage.form.passwordInputLabel")}
+                    label={t("form.passwordInputLabel")}
                     fullWidth
                   />
                 </Box>
@@ -111,7 +111,7 @@ const LoginView = () => {
                     isLoading={isSubmitting}
                     fullWidth
                   >
-                    {t("loginPage.submitButton")}
+                    {t("buttons.submit")}
                   </Button>
                 </Box>
               </Form>

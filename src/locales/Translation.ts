@@ -2,14 +2,17 @@ export interface Translation {
   form: {
     requiredFieldInputMsg: string;
     wrongEmailMsg: string;
+    emailInputLabel: string;
+    passwordInputLabel: string;
+    nameInputLabel: string;
+    surnameInputLabel: string;
+  };
+  buttons: {
+    submit: string;
+    cancel: string;
   };
   loginPage: {
     title: string;
-    submitButton: string;
-    form: {
-      loginInputLabel: string;
-      passwordInputLabel: string;
-    };
     metaData: {
       title: string;
       descrption: string;
@@ -17,9 +20,22 @@ export interface Translation {
     };
   };
   dashboardPage: {
+    sidebar: {
+      dashboard: string;
+      account: string;
+    };
     userDropdown: {
+      account: string;
       logout: string;
     };
+    metaData: {
+      descrption: string;
+      imageAlt: string;
+      title: string;
+    };
+  };
+  accountPage: {
+    title: string;
     metaData: {
       descrption: string;
       imageAlt: string;
