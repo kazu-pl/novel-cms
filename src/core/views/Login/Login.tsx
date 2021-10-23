@@ -1,6 +1,4 @@
-import { StyledLoginPageWrapper } from "./Login.styled";
 import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
 import { useLocalizedYup } from "common/yup";
 import { Formik, Form } from "formik";
 import TextFieldFormik from "novel-ui/lib/formik/TextFieldFormik";
@@ -9,13 +7,16 @@ import { login } from "core/store/userSlice";
 import { useAppDispatch } from "common/store/hooks";
 import { RequestLoginCredentials } from "types/novel-server.types";
 import { useHistory } from "react-router-dom";
-import { PATHS_DASHBOARD } from "common/constants/paths";
+import { PATHS_CORE, PATHS_DASHBOARD } from "common/constants/paths";
 import { useLayoutEffect } from "react";
 import { getTokens, isAccessTokenExpired } from "common/auth/tokens";
-import LangSwitcher from "components/LangSwitcher";
+
 import useLocalizedPath from "common/router/useLocalizedPath";
 import { useTranslation } from "react-i18next";
 import HelmetDecorator from "components/HelmetDecorator";
+import CoreViewsLayoutWrapper, {
+  LowerFormLink,
+} from "common/wrappers/CoreViewsLayoutWrapper";
 
 const initialValues: RequestLoginCredentials = {
   email: "",
@@ -58,67 +59,51 @@ const LoginView = () => {
         lang={i18n.language}
         title={t("loginPage.metaData.title")}
       />
-      <StyledLoginPageWrapper>
-        <Box
-          sx={{
-            position: "absolute",
-            right: (theme) => theme.spacing(1),
-            top: (theme) => theme.spacing(1),
-          }}
+      <CoreViewsLayoutWrapper title={t("loginPage.title")}>
+        <Formik
+          initialValues={initialValues}
+          onSubmit={handleSubmit}
+          validationSchema={validationSchema}
         >
-          <LangSwitcher />
-        </Box>
+          {({ isSubmitting }) => (
+            <Form>
+              <TextFieldFormik
+                name="email"
+                type="text"
+                id="email"
+                label={t("form.emailInputLabel")}
+                fullWidth
+              />
 
-        <Box
-          minWidth={330}
-          p={4}
-          borderRadius={4}
-          bgcolor="white"
-          textAlign="center"
-        >
-          <Formik
-            initialValues={initialValues}
-            onSubmit={handleSubmit}
-            validationSchema={validationSchema}
-          >
-            {({ isSubmitting }) => (
-              <Form>
-                <Typography variant="h5" component="h1">
-                  {t("loginPage.title")}
-                </Typography>
-                <Box pt={2}>
-                  <TextFieldFormik
-                    name="email"
-                    type="text"
-                    id="email"
-                    label={t("form.emailInputLabel")}
-                    fullWidth
-                  />
-                </Box>
-                <Box pt={2}>
-                  <TextFieldFormik
-                    name="password"
-                    type="password"
-                    id="password"
-                    label={t("form.passwordInputLabel")}
-                    fullWidth
-                  />
-                </Box>
-                <Box pt={2} display="flex" justifyContent="flex-end">
-                  <Button
-                    variant="contained"
-                    type="submit"
-                    isLoading={isSubmitting}
-                    fullWidth
-                  >
-                    {t("buttons.submit")}
-                  </Button>
-                </Box>
-              </Form>
-            )}
-          </Formik>
-        </Box>
-      </StyledLoginPageWrapper>
+              <Box pt={2}>
+                <TextFieldFormik
+                  name="password"
+                  type="password"
+                  id="password"
+                  label={t("form.passwordInputLabel")}
+                  fullWidth
+                />
+              </Box>
+              <Box pt={2} display="flex" justifyContent="flex-end">
+                <Button
+                  variant="contained"
+                  type="submit"
+                  isLoading={isSubmitting}
+                  fullWidth
+                >
+                  {t("buttons.submit")}
+                </Button>
+              </Box>
+              <Box pt={2} display="flex" justifyContent="flex-end">
+                <LowerFormLink
+                  to={PATHS_CORE.PASSWORD_FORGOT}
+                  label={t("form.forgotPassword")}
+                />
+              </Box>
+            </Form>
+          )}
+        </Formik>
+      </CoreViewsLayoutWrapper>
     </>
   );
 };

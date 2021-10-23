@@ -6,6 +6,7 @@ export interface Translation {
     passwordInputLabel: string;
     nameInputLabel: string;
     surnameInputLabel: string;
+    forgotPassword: string;
   };
   buttons: {
     submit: string;
@@ -35,6 +36,31 @@ export interface Translation {
     };
   };
   accountPage: {
+    title: string;
+    forms: {
+      account: { title: string };
+      password: { title: string };
+    };
+    metaData: {
+      descrption: string;
+      imageAlt: string;
+      title: string;
+    };
+  };
+  forgotPassword: {
+    title: string;
+    description: string;
+    links: {
+      login: string;
+      dashboard: string;
+    };
+    metaData: {
+      descrption: string;
+      imageAlt: string;
+      title: string;
+    };
+  };
+  resetPasswordPage: {
     title: string;
     metaData: {
       descrption: string;

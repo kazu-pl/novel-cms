@@ -1,14 +1,15 @@
 import usePathWithoutLang from "common/router/usePathWithoutLang";
 import { avaliableLanguages, fallbackLng } from "locales";
 import { Helmet } from "react-helmet";
+import { useTranslation } from "react-i18next";
 
 const hostname = `https://address.com`;
 
 export interface HelmetDecoratorProps {
-  lang: string;
+  lang?: string;
   title: string;
   description: string;
-  imageUrl: string;
+  imageUrl?: string;
   imageAlt: string;
 }
 
@@ -20,16 +21,17 @@ const HelmetDecorator = ({
   lang,
 }: HelmetDecoratorProps) => {
   const { pathWithoutLang } = usePathWithoutLang();
+  const { i18n } = useTranslation();
 
   return (
     <Helmet>
-      <html lang={lang} />
+      <html lang={lang || i18n.language} />
       <title>Novel | {title}</title>
       <meta name="description" content={description} />
 
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
-      <meta property="og:image" content={hostname + imageUrl} />
+      {imageUrl && <meta property="og:image" content={hostname + imageUrl} />}
       <meta
         property="og:url"
         content={hostname + window.location.pathname + window.location.search}

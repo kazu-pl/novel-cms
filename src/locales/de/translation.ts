@@ -8,6 +8,7 @@ const de: Translation = {
     passwordInputLabel: "Geben Sie Ihr Passwort ein",
     nameInputLabel: "Name",
     surnameInputLabel: "Nachname",
+    forgotPassword: "Ich habe mein Passwort vergessen",
   },
   buttons: {
     submit: "einreichen",
@@ -36,8 +37,39 @@ const de: Translation = {
       imageAlt: "Bild Dashboard",
     },
   },
+  forgotPassword: {
+    title: "Ich habe mein Passwort vergessen",
+    description:
+      "Hast du dein Passwort vergessen? Hinterlassen Sie Ihre E-Mail. Wir senden Ihnen den Link zum Zurücksetzen des Passworts.",
+    links: {
+      login: "Anmeldung",
+      dashboard: "Dashboard",
+    },
+    metaData: {
+      descrption:
+        "Hast du dein Passwort vergessen? Hinterlassen Sie Ihre E-Mail. Wir senden Ihnen den Link zum Zurücksetzen des Passworts.",
+      imageAlt: "Erinnerung password",
+      title: "Passwort vergessen",
+    },
+  },
+  resetPasswordPage: {
+    title: "Neues Passwort setzen",
+    metaData: {
+      descrption: "Neues Passwort setzen",
+      imageAlt: "Neues Passwort setzen",
+      title: "Neues Passwort setzen",
+    },
+  },
   accountPage: {
     title: "Konto",
+    forms: {
+      password: {
+        title: "Kontodaten ändern",
+      },
+      account: {
+        title: "Passwort ändern",
+      },
+    },
     metaData: {
       title: "Account",
       descrption: "mein Account",

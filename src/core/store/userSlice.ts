@@ -3,6 +3,8 @@ import { axiosInstance, axiosSecureInstance } from "common/axios";
 import { removeTokens, saveTokens, getTokens } from "common/auth/tokens";
 import {
   RequestLoginCredentials,
+  RequestRemindPasswordCredentials,
+  RequestRenewPassword,
   RequestUpdateUser,
   Tokens,
   UserProfile,
@@ -55,6 +57,57 @@ export const updateUserData = createAsyncThunk(
   async (values: RequestUpdateUser) => {
     const response = await axiosSecureInstance.put("/users/me", values);
     return response.data;
+  }
+);
+
+export const sendEmailToRemindPassword = createAsyncThunk(
+  "user/sendEmailToRemindPassword",
+  async (values: RequestRemindPasswordCredentials, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.post(
+        "/users/remind-password",
+        values
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const resetUserPassword = createAsyncThunk(
+  "user/resetUserPassword",
+  async (
+    values: RequestRenewPassword & { userId: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await axiosInstance.post(
+        `/users/renew-password/${values.userId}`,
+        {
+          password: values.password,
+          repeatedPassword: values.repeatedPassword,
+        } as RequestRenewPassword
+      );
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const updateUserPassword = createAsyncThunk(
+  "user/updateUserPassword",
+  async (values: RequestRenewPassword, { rejectWithValue }) => {
+    try {
+      const response = await axiosSecureInstance.put(
+        `/users/me/update-password`,
+        values
+      );
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
   }
 );
 
