@@ -8,7 +8,7 @@ import Logout from "core/views/Logout";
 import NotFound from "core/views/NotFound";
 
 import Dashboard from "features/Dashboard/views/Dashboard";
-import DashboardNew from "features/Dashboard/views/DashboardNew/DashboardNew";
+
 import Account from "core/views/Account/Account";
 import ForgotPassword from "core/views/ForgotPassword/ForgotPassword";
 import ResetPassword from "core/views/ResetPassword/ResetPassword";
@@ -50,11 +50,6 @@ const Router = () => {
           <PrivateRoute
             path={`${path(PATHS_DASHBOARD.DASHBOARD, lang)}`}
             component={Dashboard}
-            exact
-          />,
-          <PrivateRoute
-            path={`${path(PATHS_DASHBOARD.DASHBOARD_NEW, lang)}`}
-            component={DashboardNew}
             exact
           />,
         ];

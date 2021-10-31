@@ -11,6 +11,9 @@ export interface Translation {
   buttons: {
     submit: string;
     cancel: string;
+    update: string;
+    delete: string;
+    selectFile: string;
   };
   loginPage: {
     title: string;
@@ -40,6 +43,7 @@ export interface Translation {
     forms: {
       account: { title: string };
       password: { title: string };
+      avatar: { title: string };
     };
     metaData: {
       descrption: string;

@@ -13,6 +13,9 @@ const pl: Translation = {
   buttons: {
     submit: "potwierdź",
     cancel: "anuluj",
+    update: "aktualizuj",
+    delete: "usuń",
+    selectFile: "wybierz plik",
   },
   loginPage: {
     title: "Zaloguj się",
@@ -41,10 +44,13 @@ const pl: Translation = {
     title: "Konto",
     forms: {
       password: {
-        title: "Zmień dane konta",
+        title: "Zmień hasło",
       },
       account: {
-        title: "Zmień hasło",
+        title: "Zmień dane konta",
+      },
+      avatar: {
+        title: "Zmień Avatar",
       },
     },
     metaData: {

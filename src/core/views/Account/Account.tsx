@@ -1,7 +1,7 @@
 import DashboardLayoutWrapper from "common/wrappers/DashboardLayoutWrapper";
 import { useTranslation } from "react-i18next";
 import HelmetDecorator from "components/HelmetDecorator";
-import { Formik, Form } from "formik";
+import { Formik, Form, FormikHelpers } from "formik";
 import { useLocalizedYup } from "common/yup";
 import {
   RequestRenewPassword,
@@ -12,18 +12,35 @@ import {
   selectUserProfile,
   updateUserData,
   updateUserPassword,
+  updateUserAvatar,
+  deleteUserAvatar,
 } from "core/store/userSlice";
 import { useAppSelector, useAppDispatch } from "common/store/hooks";
 import Box from "@mui/material/Box";
 import TextFieldFormik from "novel-ui/lib/formik/TextFieldFormik";
 import Button from "novel-ui/lib/buttons/Button";
 import Typography from "@mui/material/Typography";
+import Avatar from "@mui/material/Avatar";
+import { API_URL } from "common/constants/env";
+import { useState } from "react";
+
+import { useRef } from "react";
+
+import FileInputFormik, {
+  ExtendedFile,
+} from "novel-ui/lib/formik/FileInputFormik";
+
+interface FileFormValues {
+  file: ExtendedFile | null;
+}
 
 const Account = () => {
   const { t, i18n } = useTranslation();
   const yup = useLocalizedYup();
   const userData = useAppSelector(selectUserProfile);
   const dispatch = useAppDispatch();
+  const [isDeleteAvatarBtnLoading, setIsDeleteAvatarBtnLoading] =
+    useState(false);
 
   const initialValues: RequestUpdateUser = {
     email: userData?.email || "",
@@ -36,6 +53,10 @@ const Account = () => {
     repeatedPassword: "",
   };
 
+  const initialFileValues: FileFormValues = {
+    file: null,
+  };
+
   const validationSchema = yup.object({
     email: yup.string().email().required(),
     name: yup.string().required(),
@@ -46,6 +67,12 @@ const Account = () => {
     password: yup.string().required(),
     repeatedPassword: yup.string().required(),
   });
+
+  const validationFileSchema = yup.object({
+    file: yup.object().required().nullable(),
+  });
+
+  const inputFileRef = useRef<HTMLInputElement | null>(null);
 
   const onSubmit = async (values: typeof initialValues) => {
     try {
@@ -66,6 +93,34 @@ const Account = () => {
     }
   };
 
+  const onFileSubmit = async (
+    values: typeof initialFileValues,
+    helpers: FormikHelpers<FileFormValues>
+  ) => {
+    if (!inputFileRef.current || !inputFileRef.current.files) return;
+
+    const fileFromInputRef = inputFileRef.current.files[0];
+
+    const formData = new FormData();
+    formData.append("file", fileFromInputRef);
+
+    await dispatch(updateUserAvatar(formData));
+    helpers.resetForm();
+    dispatch(fetchUserData());
+  };
+
+  const handleDeleteAvatar = async () => {
+    setIsDeleteAvatarBtnLoading(true);
+    try {
+      await dispatch(deleteUserAvatar());
+      dispatch(fetchUserData());
+      setIsDeleteAvatarBtnLoading(false);
+    } catch (err) {
+      console.log({ err });
+      setIsDeleteAvatarBtnLoading(false);
+    }
+  };
+
   return (
     <>
       <HelmetDecorator
@@ -75,10 +130,67 @@ const Account = () => {
         lang={i18n.language}
         title={t("accountPage.metaData.title")}
       />
+
       <DashboardLayoutWrapper title={t("accountPage.title")}>
         <Typography variant="overline">
-          {t("accountPage.forms.account.title")}
+          {t("accountPage.forms.avatar.title")}
         </Typography>
+
+        <Box pt={2} pb={2} maxWidth={700}>
+          <Box mb={2}>
+            <Avatar
+              sx={{ width: 100, height: 100 }}
+              src={
+                userData?.avatar ? `${API_URL}${userData?.avatar}` : undefined
+              }
+              children={userData?.avatar ? undefined : userData?.name[0]}
+            />
+          </Box>
+          <Formik
+            initialValues={initialFileValues}
+            onSubmit={onFileSubmit}
+            validationSchema={validationFileSchema}
+            enableReinitialize
+          >
+            {({ isSubmitting }) => (
+              <Form>
+                <FileInputFormik
+                  name="file"
+                  id="avatar-image"
+                  accept="images"
+                  inputRef={inputFileRef}
+                  text={t("buttons.selectFile")}
+                />
+                <Box
+                  pt={1}
+                  alignSelf="flex-end"
+                  maxWidth="100%"
+                  width="100%"
+                  display="flex"
+                  justifyContent="flex-end"
+                >
+                  <Button
+                    variant="contained"
+                    type="submit"
+                    isLoading={isSubmitting}
+                  >
+                    {t("buttons.update")}
+                  </Button>
+
+                  <Button
+                    onClick={handleDeleteAvatar}
+                    variant="contained"
+                    style={{ marginLeft: 25 }}
+                    isLoading={isDeleteAvatarBtnLoading}
+                  >
+                    {t("buttons.delete")}
+                  </Button>
+                </Box>
+              </Form>
+            )}
+          </Formik>
+        </Box>
+
         <Formik
           initialValues={initialValues}
           onSubmit={onSubmit}
@@ -88,6 +200,9 @@ const Account = () => {
           {({ isSubmitting }) => (
             <Box maxWidth={700}>
               <Form>
+                <Typography variant="overline">
+                  {t("accountPage.forms.account.title")}
+                </Typography>
                 <Box pt={2}>
                   <TextFieldFormik
                     name="email"
@@ -128,10 +243,8 @@ const Account = () => {
             </Box>
           )}
         </Formik>
-
         <Box pt={2}>
           <Typography variant="overline">
-            {" "}
             {t("accountPage.forms.password.title")}
           </Typography>
           <Formik

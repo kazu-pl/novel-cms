@@ -32,6 +32,7 @@
     "react-snap": "^1.23.0",
     "styled-components": "^5.3.1",
     "typescript": "~4.1.5",
+    "uuid": "^8.3.2",
     "yup": "^0.32.11"
   },
   "resolutions": {
@@ -64,6 +65,7 @@
     "@types/react-helmet": "^6.1.4",
     "@types/react-router-dom": "^5.3.1",
     "@types/styled-components": "^5.1.15",
+    "@types/uuid": "^8.3.1",
     "swagger-typescript-api": "^9.2.0"
   }
 }

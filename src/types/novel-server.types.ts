@@ -68,7 +68,7 @@ export interface RequestRefreshTokenCredentials {
 }
 
 /**
- * @example {"name":"John","surname":"Doe","email":"admin@asd.pl"}
+ * @example {"name":"John","surname":"Doe","email":"admin@asd.pl","avatar":"/files/some_avatar.png"}
  */
 export interface UserProfile {
   /** user name */
@@ -79,6 +79,9 @@ export interface UserProfile {
 
   /** email */
   email: string;
+
+  /** relative link to avatar img (empty string if no avatar avaliable) */
+  avatar?: string;
 }
 
 /**
@@ -110,4 +113,12 @@ export interface RequestRenewPassword {
   /** new password */
   password: string;
   repeatedPassword: string;
+}
+
+/**
+ * @example {"avatarUrl":"/files/some_avatar.png"}
+ */
+export interface Avatar {
+  /** new avatar string or empty string if no avatar avaliable */
+  avatarUrl: string;
 }

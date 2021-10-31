@@ -13,6 +13,9 @@ const de: Translation = {
   buttons: {
     submit: "einreichen",
     cancel: "Abbrechen",
+    update: "Aktualisieren",
+    delete: "löschen",
+    selectFile: "Datei aussuchen",
   },
   loginPage: {
     title: "Anmeldung",
@@ -68,6 +71,9 @@ const de: Translation = {
       },
       account: {
         title: "Passwort ändern",
+      },
+      avatar: {
+        title: "Avatar ändern",
       },
     },
     metaData: {

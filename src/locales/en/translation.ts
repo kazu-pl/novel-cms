@@ -13,6 +13,9 @@ const en: Translation = {
   buttons: {
     submit: "Submit",
     cancel: "Cancel",
+    update: "Update",
+    delete: "Delete",
+    selectFile: "Select file",
   },
   loginPage: {
     title: "Login",
@@ -45,6 +48,9 @@ const en: Translation = {
       },
       account: {
         title: "Change password",
+      },
+      avatar: {
+        title: "Change Avatar",
       },
     },
     metaData: {
