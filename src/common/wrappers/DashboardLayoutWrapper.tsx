@@ -18,6 +18,8 @@ import getLocalizedPath from "common/router/useLocalizedPath";
 
 import { useTranslation } from "react-i18next";
 
+import { API_URL } from "common/constants/env";
+
 export interface DashboardLayoutWrapperProps {
   children: React.ReactNode;
   title?: string;
@@ -44,6 +46,9 @@ const DashboardLayoutWrapper = ({
           title: userProfileData
             ? `${userProfileData.name} ${userProfileData.surname}`
             : " ",
+          avatarLink: userProfileData?.avatar
+            ? `${API_URL + userProfileData?.avatar}`
+            : undefined,
         },
         userDropdown: [
           {

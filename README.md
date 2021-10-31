@@ -45,6 +45,95 @@ export const login = createAsyncThunk(
 
 This was found [here](https://github.com/reduxjs/redux-toolkit/issues/910#issuecomment-801211740)
 
+# How to create input type file with formik or other form library:
+
+Basucally, `<input type="file" />` is uncontrolled component and you can't set its value. To get value from uncontrolled component you can create ref and pass it to that `<input />` so you can read that ref value.
+What you have to do is create an object or array ob objects in formik that will contain selected files, pass that value to component that returns `<input />` and loop over the array to show selected items.
+On every `onChange` of input, you receive selected items, update formik state, pass that state to the component and in that component show items for every item from array.
+When you submit, you will get that array from formik but you don't need that. In submit function you will check the `inputRef` files, create `formData` and append to it all files you can find in the input ref.
+
+HOW TO CUSTOMIZE INPUT FILE:
+You can hide original input file but you should add `id` to it, so you can use `label` for the same id and wrap it around your custom styled button or div. IMPORTANT: you can't use `<button/>` component inside `label` because when you will click on that, you will trigger that button click action, not the input triger action. The easiest way is to just use `span` that looks like a button:
+
+- `1` - create `ref` and `<input type="file" />` tag and pass that ref to the input:
+
+```
+const Component = () => {
+
+const inputFileRef = useRef<HTMLInputElement | null>(null);
+
+return (
+  <>
+    <input id={id} type="file" hidden ref={inputRef} {...rest} />
+    <label htmlFor={id}>
+      <Button component="span" {...buttonProps}>
+        {text}
+      </Button>
+    </label>
+  </>
+)
+}
+```
+
+- `2` - create `form-data` and append onto it images that you will find in `ref.current`:
+
+```
+const onSubmit = () => {
+
+  const fileFromInputRef = inputFileRef.current.files[0];
+
+  const formData = new FormData();
+  formData.append("file", fileFromInputRef); // "file" name is the same name that you use in multer `.single("file")` or `.array('file')`
+
+}
+```
+
+Or, if you want to send multiple files (and use .array('files') option to receive multiple files):
+
+- `2-a` - turn files from ref into array and by using forEach, append it with the same name:
+
+```
+const filesFromInputRef = Array.from(inputFilesRef.current.files);
+
+const formData = new FormData();
+
+filesFromInputRef.forEach((file) => {
+  formData.append("files", file); // "files" is the name under which you send array of images so put 'files' in .array('files')
+});
+
+```
+
+- `2-b` - add prop `encType="multipart/form-data"` to form that contains `<input type="file" />`:
+
+```
+<Formik
+  initialValues={initialMultipleFileValues}
+  onSubmit={handleAsyncMultipleSubmit}
+  validationSchema={validationMultipleFilesSchema}
+>
+  {({ isSubmitting, values }) => (
+    <Form encType="multipart/form-data"> // add encType="multipart/form-data" to correctly send muliple files
+      <FileInputFormik // formik component that renders invisible <input /> and label with button/span
+        name="files"
+        id="contained-button-file"
+        accept="images"
+        inputRef={inputFilesRef}
+        multiple
+        text="select files"
+      />
+    </Form>
+  )}
+</Formik>
+
+```
+
+`3` - send that data via axios:
+
+```
+const response = await axiosSecureInstance.put(`/users/me/files`, formData);
+
+```
+
 # How to reset globally whole store on logout:
 
 Redux-toolkit is some kind of a wrap over standard redux and it re-exports some of original redux functions.

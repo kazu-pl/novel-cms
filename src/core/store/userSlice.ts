@@ -111,6 +111,33 @@ export const updateUserPassword = createAsyncThunk(
   }
 );
 
+export const updateUserAvatar = createAsyncThunk(
+  "user/updateUserAvatar",
+  async (values: FormData, { rejectWithValue }) => {
+    try {
+      const response = await axiosSecureInstance.put(
+        `/users/me/avatar`,
+        values
+      );
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const deleteUserAvatar = createAsyncThunk(
+  "user/updateUserAvatar",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axiosSecureInstance.delete(`/users/me/avatar`);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 const counterSlice = createSlice({
   name: "user",
   initialState,
