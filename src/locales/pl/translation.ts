@@ -9,13 +9,27 @@ const pl: Translation = {
     nameInputLabel: "Imię",
     surnameInputLabel: "Nazwisko",
     forgotPassword: "Zapomniałem hasła",
+    enterTitle: "Wprowadź tytuł",
+    enterDescription: "Wprowadź opis",
   },
   buttons: {
+    add: "dodaj",
     submit: "potwierdź",
     cancel: "anuluj",
     update: "aktualizuj",
     delete: "usuń",
     selectFile: "wybierz plik",
+  },
+  dashboardSidebarItems: {
+    dashboard: "Dashboard",
+    account: "konto",
+    scenery: {
+      title: "tła",
+      items: {
+        list: "tła - lista",
+        add: "dodaj nowe tło",
+      },
+    },
   },
   loginPage: {
     title: "Zaloguj się",
@@ -80,6 +94,46 @@ const pl: Translation = {
       descrption: "ustaw nowe hasło",
       imageAlt: "ustaw nowe hasło",
       title: "ustaw nowe hasło",
+    },
+  },
+  SceneryPages: {
+    list: {
+      title: "Tła",
+      table: {
+        title: " tła - lista",
+        columns: {
+          title: "tytuł",
+          description: "opis",
+          total: "liczba zdjęć",
+          actions: "akcje",
+          createdAt: "data utworzenia",
+        },
+      },
+      metaData: {
+        description: "Strona z tłami do gry",
+        imageAlt: "image alt",
+        title: "Tła",
+      },
+    },
+    add: {
+      title: "Dodaj nowe tło",
+      metaData: {
+        description: "Strona dodawania nowego tła",
+        imageAlt: "image alt",
+        title: "Dodaj tło",
+      },
+    },
+    edit: {
+      title: "Edytuj tło",
+      basicDataFormTitle: "Edytuj podstawowe dane",
+      newImagesTitle: "Dodaj nowe zdjęcia",
+      imagesGalleryTitle: "Galeria zdjęć",
+      noImagesInGallery: "brak zdjęć",
+      metaData: {
+        description: "To jest strona do edycji tła",
+        imageAlt: "image alt",
+        title: "Edytuj Scenerię",
+      },
     },
   },
   notFoundPage: {

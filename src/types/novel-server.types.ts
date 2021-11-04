@@ -122,3 +122,100 @@ export interface Avatar {
   /** new avatar string or empty string if no avatar avaliable */
   avatarUrl: string;
 }
+
+/**
+ * this type is the type of response you can try in then() in components try/catch block
+ * @example {"message":"resource was created successfuly"}
+ */
+export interface SuccessfulReqMsg {
+  /** message you can dispaly on front application */
+  message: string;
+}
+
+/**
+ * this type is the type of error you can catch in catch() in redux-toolkit createAsyncThunk
+ * @example {"message":"An error occured when trying to register new resource","error":"error object."}
+ */
+export interface FailedReqMsg {
+  /** response message */
+  message: string;
+
+  /** response error */
+  error?: any;
+}
+
+/**
+ * type of request data passed in request when creating new scenery or update basic scenery data
+ * @example {"title":"mansion","description":"main character mansion"}
+ */
+export interface RequestScenery {
+  /** scenery title */
+  title: string;
+
+  /** scenery description */
+  description: string;
+}
+
+/**
+ * single scenery image
+ * @example {"originalName":"in-flames_owl_boy.png","url":"/files/1635858781056-in-flames_owl_boy.png","filename":"1635858781056-in-flames_owl_boy.png","_id":"6181395d67568b70180ce91b"}
+ */
+export interface SceneryImage {
+  /** the original name before being sent to server */
+  originalName: string;
+
+  /** url to get scenery image */
+  url: string;
+
+  /** name of the resource under which you can find it on server */
+  filename: string;
+
+  /** resource id */
+  _id: string;
+}
+
+/**
+ * single scenery
+ * @example {"_id":"6181395d67568b70180ce93b","title":"mansion","description":"main character mansion","imagesList":[],"__v":0,"createdAt":"2021-11-04T11:01:42.143+00:00","updatedAt":"2021-11-04T11:01:42.143+00:00"}
+ */
+export interface Scenery {
+  /** mongodb id */
+  _id: string;
+
+  /** scenery title */
+  title: string;
+
+  /** scenery description */
+  description: string;
+
+  /** array of scenery images */
+  imagesList: SceneryImage[];
+
+  /** mongodb __v */
+  __v: number;
+
+  /** create timestamp */
+  createdAt: string;
+
+  /** update timestamp */
+  updatedAt: string;
+}
+
+/**
+ * response with scenery data in `data` key
+ */
+export interface SingleSceneryResponse {
+  /** scenery */
+  data: Scenery;
+}
+
+/**
+ * returns list of sceneries (if no filters specified, returns first 5 sceneries)
+ */
+export interface SceneriesResponse {
+  /** list of sceneries */
+  data: Scenery[];
+
+  /** number of total sceneries */
+  totalItems: number;
+}

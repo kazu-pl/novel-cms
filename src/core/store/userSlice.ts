@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { axiosInstance, axiosSecureInstance } from "common/axios";
 import { removeTokens, saveTokens, getTokens } from "common/auth/tokens";
 import {
+  FailedReqMsg,
   RequestLoginCredentials,
   RequestRemindPasswordCredentials,
   RequestRenewPassword,
@@ -26,8 +27,8 @@ export const login = createAsyncThunk(
       const response = await axiosInstance.post<Tokens>("/cms/login", values);
       saveTokens(response.data);
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response.data);
+    } catch (error) {
+      return rejectWithValue((error as FailedReqMsg).message);
     }
   }
 );
@@ -40,9 +41,9 @@ export const logout = createAsyncThunk(
       removeTokens(); // you have to remove tokens before request, removing after awaiting for response will run iunto infinite loop of redirecting between dashboard and login
       const response = await axiosInstance.post("/cms/logout", tokens);
       return response.data;
-    } catch (error: any) {
+    } catch (error) {
       removeTokens();
-      return rejectWithValue(error.response.data);
+      return rejectWithValue((error as FailedReqMsg).message);
     }
   }
 );
@@ -70,7 +71,7 @@ export const sendEmailToRemindPassword = createAsyncThunk(
       );
       return response.data;
     } catch (error) {
-      return rejectWithValue(error);
+      return rejectWithValue((error as FailedReqMsg).message);
     }
   }
 );
@@ -90,8 +91,8 @@ export const resetUserPassword = createAsyncThunk(
         } as RequestRenewPassword
       );
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response.data);
+    } catch (error) {
+      return rejectWithValue((error as FailedReqMsg).message);
     }
   }
 );
@@ -105,8 +106,8 @@ export const updateUserPassword = createAsyncThunk(
         values
       );
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.message);
+    } catch (error) {
+      return rejectWithValue((error as FailedReqMsg).message);
     }
   }
 );
@@ -120,8 +121,8 @@ export const updateUserAvatar = createAsyncThunk(
         values
       );
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.message);
+    } catch (error) {
+      return rejectWithValue((error as FailedReqMsg).message);
     }
   }
 );
@@ -132,8 +133,8 @@ export const deleteUserAvatar = createAsyncThunk(
     try {
       const response = await axiosSecureInstance.delete(`/users/me/avatar`);
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.message);
+    } catch (error) {
+      return rejectWithValue((error as FailedReqMsg).message);
     }
   }
 );

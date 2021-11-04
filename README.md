@@ -1,3 +1,37 @@
+# Axios interceptor that returns error send by server so it's possible to dispaly server response message on front application:
+
+```
+import axios from "axios";
+import { API_URL } from "common/constants/env";
+
+const axiosInstance = axios.create({
+  baseURL: API_URL,
+});
+
+axiosInstance.interceptors.response.use(
+  (response) => response,
+
+  async (error) => {
+    // error here is of type AxiosError
+
+    if (error.response) {
+      if (error.response.data) {
+        return Promise.reject(error.response.data); // returns data object which is the data send my server so i can dispaly msg that server send to front
+      } else {
+        return Promise.reject(
+          `An error occurred but server didn't send any error data`
+        );
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
+export default axiosInstance;
+
+
+```
+
 # How to use `Try/Catch` block in component where you dispatch redux-toolkit action and do something in catch if error occured:
 
 normally, Redux Toolkit will always return resolved promise even i `catch` block of `createThunkAction`. That is because by default you're supposed to handle error in `catch` block of `createThunkAction` by add error message to store in slice rejected method. So in your component you can't go to `catch` block because Redux will always return resolved promise. To correct this and be able to enter `catch` block in your component you need to add middleware like so:
@@ -35,8 +69,13 @@ export const login = createAsyncThunk(
     try {
       const response = await axiosInstance.post("/login", values);
       return response.data;
-    } catch (error: any) { // has to be `any` because by default it's unknown which won't allow to use .response (in really its type is AxiosResponse from axios package)
-      return rejectWithValue(error.response.data);
+    } catch (error) {
+     // const { message } = error as { message: string }; // error would be AxiosResponse or AxiosError here, but thanks to axios interceptor that returns error.response.data (check `Axios interceptor that returns error send by server` header) error here is object send by server so I can pick any field from it and return (assuming that server send an object with `message` key)
+
+
+      // return rejectWithValue(error.response.data); // <--- without axios interceptor returning error.response.data
+      // return rejectWithValue(message); // <---  with axios interceptor
+      return rejectWithValue((error as FailedReqMsg).message); // <---  with axios interceptor with better version without making message const
     }
   }
 );

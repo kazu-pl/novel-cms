@@ -6,7 +6,11 @@ import AccountIcon from "@mui/icons-material/Person";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 
 import ColoredIconWrapper from "novel-ui/lib/ColoredIconWrapper";
-import { PATHS_CORE, PATHS_DASHBOARD } from "common/constants/paths";
+import {
+  PATHS_CORE,
+  PATHS_DASHBOARD,
+  PATHS_SCENERY,
+} from "common/constants/paths";
 
 import { useAppSelector } from "common/store/hooks";
 
@@ -19,6 +23,7 @@ import getLocalizedPath from "common/router/useLocalizedPath";
 import { useTranslation } from "react-i18next";
 
 import { API_URL } from "common/constants/env";
+import ImageIcon from "@mui/icons-material/Image";
 
 export interface DashboardLayoutWrapperProps {
   children: React.ReactNode;
@@ -74,7 +79,7 @@ const DashboardLayoutWrapper = ({
                 <DashboardIcon />
               </ColoredIconWrapper>
             ),
-            label: t("dashboardPage.sidebar.dashboard"),
+            label: t("dashboardSidebarItems.dashboard"),
             to: path(PATHS_DASHBOARD.DASHBOARD),
           },
           {
@@ -84,9 +89,28 @@ const DashboardLayoutWrapper = ({
                 <AccountIcon />
               </ColoredIconWrapper>
             ),
-            label: t("dashboardPage.sidebar.account"),
+            label: t("dashboardSidebarItems.account"),
             to: path(PATHS_CORE.ACCOUNT),
             renderBottomLine: true,
+          },
+          {
+            variant: "with-dropdown",
+            icon: (
+              <ColoredIconWrapper color="grey">
+                <ImageIcon />
+              </ColoredIconWrapper>
+            ),
+            label: t("dashboardSidebarItems.scenery.title"),
+            dropdownItems: [
+              {
+                label: t("dashboardSidebarItems.scenery.items.list"),
+                to: path(PATHS_SCENERY.LIST),
+              },
+              {
+                label: t("dashboardSidebarItems.scenery.items.add"),
+                to: path(PATHS_SCENERY.ADD),
+              },
+            ],
           },
         ],
       }}

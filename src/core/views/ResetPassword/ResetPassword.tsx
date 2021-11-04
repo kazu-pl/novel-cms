@@ -1,7 +1,10 @@
 import CoreViewsLayoutWrapper from "common/wrappers/CoreViewsLayoutWrapper";
 import { Formik, Form } from "formik";
 import { useLocalizedYup } from "common/yup";
-import { RequestRenewPassword } from "types/novel-server.types";
+import {
+  RequestRenewPassword,
+  SuccessfulReqMsg,
+} from "types/novel-server.types";
 import TextFieldFormik from "novel-ui/lib/formik/TextFieldFormik";
 import Button from "novel-ui/lib/buttons/Button";
 import { useTranslation } from "react-i18next";
@@ -34,7 +37,7 @@ const ResetPassword = () => {
   const handleSubmit = async (values: typeof initialValues) => {
     try {
       const response = await dispatch(resetUserPassword({ ...values, userId }));
-      const payload = response.payload as { message: string };
+      const payload = response.payload as SuccessfulReqMsg;
       alert(payload.message);
       history.push(path(PATHS_CORE.LOGIN));
     } catch (error: any) {

@@ -45,8 +45,8 @@ const LoginView = () => {
     try {
       await dispatch(login(values));
       history.push(path(PATHS_DASHBOARD.DASHBOARD));
-    } catch (err: any) {
-      alert(err.message);
+    } catch (err) {
+      alert(err);
     }
   };
 

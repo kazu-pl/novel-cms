@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { getTokens, saveTokens } from "common/auth/tokens";
 import { API_URL } from "common/constants/env";
 import axiosInstance from "./axiosInstance";
@@ -44,15 +44,17 @@ axiosSecureInstance.interceptors.response.use(
           const { accessToken } = resWithNewAccessToken.data;
           saveTokens({ ...tokens, accessToken });
           return axiosSecureInstance(originalConfig);
-        } catch (err: any) {
+        } catch (error) {
+          const axiosError = error as AxiosError;
+
           history.push(PATHS_CORE.LOGOUT);
           alert("you were logged out due to ended session");
           // TODO: show snackbar and inform about timed out session as a reason for logging out
-          if (err.response && err.response.data) {
-            return Promise.reject(err.response.data);
+          if (axiosError.response && axiosError.response.data) {
+            return Promise.reject(axiosError.response.data);
           }
 
-          return Promise.reject(err);
+          return Promise.reject(axiosError);
         }
       } else {
         return Promise.reject(error.response.data);

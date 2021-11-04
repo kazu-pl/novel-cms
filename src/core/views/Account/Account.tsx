@@ -6,6 +6,7 @@ import { useLocalizedYup } from "common/yup";
 import {
   RequestRenewPassword,
   RequestUpdateUser,
+  FailedReqMsg,
 } from "types/novel-server.types";
 import {
   fetchUserData,
@@ -79,8 +80,9 @@ const Account = () => {
       await dispatch(updateUserData(values));
       dispatch(fetchUserData());
       alert("updated Successfully");
-    } catch (err: any) {
-      alert(err.message);
+    } catch (error) {
+      const { message } = error as FailedReqMsg;
+      alert(message);
     }
   };
 
@@ -88,7 +90,7 @@ const Account = () => {
     try {
       await dispatch(updateUserPassword(values));
       alert("password updated Successfully");
-    } catch (err: any) {
+    } catch (err) {
       alert(err);
     }
   };
@@ -116,7 +118,7 @@ const Account = () => {
       dispatch(fetchUserData());
       setIsDeleteAvatarBtnLoading(false);
     } catch (err) {
-      console.log({ err });
+      alert(err);
       setIsDeleteAvatarBtnLoading(false);
     }
   };
