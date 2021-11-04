@@ -106,6 +106,7 @@ const pl: Translation = {
           description: "opis",
           total: "liczba zdjęć",
           actions: "akcje",
+          createdAt: "data utworzenia",
         },
       },
       metaData: {

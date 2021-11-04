@@ -145,7 +145,7 @@ export interface FailedReqMsg {
 }
 
 /**
- * type of request data passed in request when creating new sceneryk
+ * type of request data passed in request when creating new scenery or update basic scenery data
  * @example {"title":"mansion","description":"main character mansion"}
  */
 export interface RequestScenery {
@@ -153,7 +153,7 @@ export interface RequestScenery {
   title: string;
 
   /** scenery description */
-  description: any;
+  description: string;
 }
 
 /**
@@ -176,7 +176,7 @@ export interface SceneryImage {
 
 /**
  * single scenery
- * @example {"_id":"6181395d67568b70180ce93b","title":"mansion","description":"main character mansion","imagesList":[],"__v":0}
+ * @example {"_id":"6181395d67568b70180ce93b","title":"mansion","description":"main character mansion","imagesList":[],"__v":0,"createdAt":"2021-11-04T11:01:42.143+00:00","updatedAt":"2021-11-04T11:01:42.143+00:00"}
  */
 export interface Scenery {
   /** mongodb id */
@@ -193,6 +193,12 @@ export interface Scenery {
 
   /** mongodb __v */
   __v: number;
+
+  /** create timestamp */
+  createdAt: string;
+
+  /** update timestamp */
+  updatedAt: string;
 }
 
 /**

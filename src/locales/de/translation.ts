@@ -106,6 +106,7 @@ const de: Translation = {
           description: "Bezeichnung",
           total: "Gesamtbilder",
           actions: "Aktionen",
+          createdAt: "hergestellt in",
         },
       },
       metaData: {

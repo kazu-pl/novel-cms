@@ -77,6 +77,11 @@ const SceneryList = () => {
               render: (row) => row.imagesList.length,
             },
             {
+              title: t("SceneryPages.list.table.columns.createdAt"),
+              key: "createdAt",
+              render: (row) => new Date(row.createdAt).toLocaleString(),
+            },
+            {
               title: t("SceneryPages.list.table.columns.actions"),
               key: "actions",
               noWrap: true,

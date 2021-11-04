@@ -96,6 +96,7 @@ export interface Translation {
           description: string;
           total: string;
           actions: string;
+          createdAt: string;
         };
       };
       metaData: {
