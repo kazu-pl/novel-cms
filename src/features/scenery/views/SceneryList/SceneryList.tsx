@@ -31,12 +31,17 @@ const SceneryList = () => {
   const history = useHistory();
 
   const [searchParams, setSearchParams] =
-    usePaginationSearchParams<SortDirection>({
-      currentPage: 1,
-      pageSize: 5,
-      sortDirection: "asc",
-      sortBy: "createdAt",
-    });
+    usePaginationSearchParams<SortDirection>(
+      {
+        currentPage: 1,
+        pageSize: 5,
+        sortDirection: "asc",
+        sortBy: "title",
+      }
+      // {
+      // pushToInitialParamsOnFirstPageEnter: false
+      // }
+    );
 
   const handleOnChangePage = (page: number) => {
     setSearchParams({ currentPage: page });
