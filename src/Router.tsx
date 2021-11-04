@@ -1,7 +1,11 @@
 import { Switch } from "react-router-dom";
 import Route from "common/router/Route";
 import PrivateRoute from "common/router/PrivateRoute";
-import { PATHS_CORE, PATHS_DASHBOARD } from "common/constants/paths";
+import {
+  PATHS_CORE,
+  PATHS_DASHBOARD,
+  PATHS_SCENERY,
+} from "common/constants/paths";
 
 import Login from "core/views/Login";
 import Logout from "core/views/Logout";
@@ -17,6 +21,10 @@ import useTokenListener from "common/auth/useTokenListener";
 
 import { avaliableLanguages } from "locales";
 import useLocalizedPath from "common/router/useLocalizedPath";
+
+import SceneryList from "features/scenery/views/SceneryList";
+import SceneryAdd from "features/scenery/views/SceneryAdd";
+import SceneryEdit from "features/scenery/views/SceneryEdit";
 
 const Router = () => {
   useTokenListener();
@@ -50,6 +58,21 @@ const Router = () => {
           <PrivateRoute
             path={`${path(PATHS_DASHBOARD.DASHBOARD, lang)}`}
             component={Dashboard}
+            exact
+          />,
+          <PrivateRoute
+            path={`${path(PATHS_SCENERY.LIST, lang)}`}
+            component={SceneryList}
+            exact
+          />,
+          <PrivateRoute
+            path={`${path(PATHS_SCENERY.ADD, lang)}`}
+            component={SceneryAdd}
+            exact
+          />,
+          <PrivateRoute
+            path={`${path(PATHS_SCENERY.EDIT(":id"), lang)}`}
+            component={SceneryEdit}
             exact
           />,
         ];

@@ -13,3 +13,9 @@ export const PATHS_CORE = {
 export const PATHS_DASHBOARD = {
   DASHBOARD: "/dashboard",
 };
+
+export const PATHS_SCENERY = {
+  LIST: "/scenery/list",
+  ADD: "/scenery/add",
+  EDIT: (path: string) => `/scenery/${path}/edit`,
+};

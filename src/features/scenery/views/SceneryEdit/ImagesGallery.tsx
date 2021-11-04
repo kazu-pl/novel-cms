@@ -1,0 +1,82 @@
+import Card from "@mui/material/Card";
+import CardHeader from "@mui/material/CardHeader";
+import CardMedia from "@mui/material/CardMedia";
+import DeleteIcon from "@mui/icons-material/Delete";
+import IconButton from "@mui/material/IconButton";
+import { useAppDispatch, useAppSelector } from "common/store/hooks";
+import {
+  selectSingleScenery,
+  deleteSceneryImage,
+  fetchSingleScenery,
+} from "features/scenery/store/scenerySlice";
+import { API_URL } from "common/constants/env";
+import Box from "@mui/system/Box";
+import { useParams } from "react-router";
+import { SuccessfulReqMsg } from "types/novel-server.types";
+import { Typography } from "@mui/material";
+import { useTranslation } from "react-i18next";
+
+const ImagesGallery = () => {
+  const dispatch = useAppDispatch();
+  const { id } = useParams<{ id: string }>();
+  const scenery = useAppSelector(selectSingleScenery);
+  const { t } = useTranslation();
+
+  const handleDelete = async (filename: string) => {
+    try {
+      const response = await dispatch(
+        deleteSceneryImage({ imageFilename: filename, sceneryId: id })
+      );
+      const payload = response.payload as SuccessfulReqMsg;
+      alert(payload.message);
+      dispatch(fetchSingleScenery(id));
+    } catch (error) {
+      alert(error);
+    }
+  };
+
+  return (
+    <Box display="flex" flexWrap="wrap">
+      {scenery?.imagesList?.length === 0 && (
+        <Typography variant="overline">
+          {t("SceneryPages.edit.noImagesInGallery")}
+        </Typography>
+      )}
+      {scenery?.imagesList.map((item) => (
+        <Card sx={{ flexGrow: 1, m: 1 }} key={item.filename}>
+          <CardHeader
+            action={
+              <IconButton
+                aria-label="delete"
+                onClick={() => handleDelete(item.filename)}
+              >
+                <DeleteIcon />
+              </IconButton>
+            }
+            title={
+              item.filename.length > 30
+                ? `${item.filename.slice(0, 30)}...`
+                : item.filename
+            }
+            titleTypographyProps={{
+              variant: "body2",
+            }}
+            subheader={
+              item.originalName.length > 30
+                ? `${item.originalName.slice(0, 30)}...`
+                : item.originalName
+            }
+          />
+          <CardMedia
+            component="img"
+            height="194"
+            image={`${API_URL + item.url}`}
+            alt={item.filename}
+          />
+        </Card>
+      ))}
+    </Box>
+  );
+};
+
+export default ImagesGallery;

@@ -3,7 +3,10 @@ import CoreViewsLayoutWrapper, {
 } from "common/wrappers/CoreViewsLayoutWrapper";
 import { Formik, Form } from "formik";
 import { useLocalizedYup } from "common/yup";
-import { RequestRemindPasswordCredentials } from "types/novel-server.types";
+import {
+  RequestRemindPasswordCredentials,
+  SuccessfulReqMsg,
+} from "types/novel-server.types";
 import TextFieldFormik from "novel-ui/lib/formik/TextFieldFormik";
 import Button from "novel-ui/lib/buttons/Button";
 import { useTranslation } from "react-i18next";
@@ -31,11 +34,10 @@ const ForgotPassword = () => {
   const handleSubmit = async (values: typeof initialValues) => {
     try {
       const response = await dispatch(sendEmailToRemindPassword(values));
-      const payload = response.payload as { message: string };
-
+      const payload = response.payload as SuccessfulReqMsg;
       alert(payload.message);
-    } catch (err: any) {
-      alert(err.message);
+    } catch (err) {
+      alert(err);
     }
   };
 
