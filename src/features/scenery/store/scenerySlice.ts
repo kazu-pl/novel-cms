@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 // import { createAction } from "@reduxjs/toolkit";
 import { axiosSecureInstance } from "common/axios";
 import { RootState } from "common/store/store";
+import { SortDirection } from "novel-ui/lib/Table";
 import {
   RequestScenery,
   FailedReqMsg,
@@ -37,9 +38,27 @@ const initialState: SceneryState = {
 
 export const fetchSceneries = createAsyncThunk(
   "scenery/fetchSceneries",
-  async () => {
+  async ({
+    sortBy,
+    sortDirection,
+    pageSize,
+    currentPage,
+  }: {
+    sortBy: string;
+    sortDirection: SortDirection;
+    pageSize: number;
+    currentPage: number;
+  }) => {
     const response = await axiosSecureInstance.get<SceneriesResponse>(
-      `/scenery`
+      `/scenery`,
+      {
+        params: {
+          sortBy,
+          sortDirection,
+          pageSize,
+          currentPage,
+        },
+      }
     );
     return response.data;
   }
@@ -181,8 +200,7 @@ const scenerySlice = createSlice({
   },
 });
 
-export const selectSceneries = (state: RootState) =>
-  state.scenery.sceneries.data;
+export const selectSceneries = (state: RootState) => state.scenery.sceneries;
 export const selectSingleScenery = (state: RootState) =>
   state.scenery.singleScenery.data;
 

@@ -19,6 +19,9 @@ import Box from "@mui/material/Box";
 import useLocalizedPath from "common/router/useLocalizedPath";
 import { useHistory } from "react-router-dom";
 import { SuccessfulReqMsg } from "types/novel-server.types";
+import usePaginationSearchParams from "common/router/usePaginationSearchParams";
+
+type SortDirection = "asc" | "desc";
 
 const SceneryList = () => {
   const { t, i18n } = useTranslation();
@@ -27,11 +30,44 @@ const SceneryList = () => {
   const { path } = useLocalizedPath();
   const history = useHistory();
 
+  const [searchParams, setSearchParams] =
+    usePaginationSearchParams<SortDirection>({
+      currentPage: 1,
+      pageSize: 5,
+      sortDirection: "asc",
+      sortBy: "createdAt",
+    });
+
+  const handleOnChangePage = (page: number) => {
+    setSearchParams({ currentPage: page });
+  };
+
+  const onChangeRowsPerPage = (rowsPerPage: number) => {
+    setSearchParams({ pageSize: rowsPerPage });
+  };
+
+  const onChangeSort = (sortingProperty: string, direction: SortDirection) => {
+    setSearchParams({ sortBy: sortingProperty, sortDirection: direction });
+  };
+
   const fetchData = useCallback(async () => {
     try {
-      await dispatch(fetchSceneries());
+      await dispatch(
+        fetchSceneries({
+          currentPage: searchParams.currentPage,
+          pageSize: searchParams.pageSize,
+          sortBy: searchParams.sortBy,
+          sortDirection: searchParams.sortDirection,
+        })
+      );
     } catch (error) {}
-  }, [dispatch]);
+  }, [
+    dispatch,
+    searchParams.sortBy,
+    searchParams.sortDirection,
+    searchParams.pageSize,
+    searchParams.currentPage,
+  ]);
 
   useEffect(() => {
     fetchData();
@@ -50,7 +86,7 @@ const SceneryList = () => {
   return (
     <>
       <HelmetDecorator
-        description={t("SceneryPages.list.metaData.descrption")}
+        description={t("SceneryPages.list.metaData.description")}
         imageAlt={t("SceneryPages.list.metaData.imageAlt")}
         imageUrl="https://media.istockphoto.com/photos/books-picture-id949118068?s=612x612"
         lang={i18n.language}
@@ -58,28 +94,44 @@ const SceneryList = () => {
       />
       <DashboardLayoutWrapper title={t("SceneryPages.list.title")}>
         <Table
-          data={sceneries}
+          data={sceneries.data}
           tableName={t("SceneryPages.list.table.title")}
+          pagination={{
+            currentPage: searchParams.currentPage,
+            pageSize: searchParams.pageSize,
+            totalItems: sceneries.totalItems, // i can't put it in `pagination` object because useState won't change its value because useState is called only once when component is mounting. To update it I would need to use useEffect
+          }}
+          sort={{
+            sortBy: searchParams.sortBy,
+            sortDirection: searchParams.sortDirection,
+          }}
+          onChangePage={handleOnChangePage}
+          onChangeRowsPerPage={onChangeRowsPerPage}
+          onChangeSort={onChangeSort}
           columns={[
             {
               title: t("SceneryPages.list.table.columns.title"),
               key: "title",
               render: (row) => row.title,
+              isSortable: true,
             },
             {
               title: t("SceneryPages.list.table.columns.description"),
               key: "description",
               render: (row) => row.description,
+              isSortable: true,
             },
             {
               title: t("SceneryPages.list.table.columns.total"),
-              key: "totalImages",
+              key: "imagesList",
               render: (row) => row.imagesList.length,
+              isSortable: true,
             },
             {
               title: t("SceneryPages.list.table.columns.createdAt"),
               key: "createdAt",
               render: (row) => new Date(row.createdAt).toLocaleString(),
+              isSortable: true,
             },
             {
               title: t("SceneryPages.list.table.columns.actions"),

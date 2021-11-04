@@ -219,3 +219,11 @@ export interface SceneriesResponse {
   /** number of total sceneries */
   totalItems: number;
 }
+
+/**
+ * enum for sort direction
+ */
+export enum SortDirection {
+  Asc = "asc",
+  Desc = "desc",
+}
