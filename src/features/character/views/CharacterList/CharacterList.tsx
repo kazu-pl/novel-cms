@@ -2,14 +2,14 @@ import DashboardLayoutWrapper from "common/wrappers/DashboardLayoutWrapper";
 import { useTranslation } from "react-i18next";
 import HelmetDecorator from "components/HelmetDecorator";
 import Button from "novel-ui/lib/buttons/Button";
-import { PATHS_SCENERY } from "common/constants/paths";
+import { PATHS_CHARACTER } from "common/constants/paths";
 import { useAppDispatch, useAppSelector } from "common/store/hooks";
 import { useEffect } from "react";
 import {
-  fetchSceneries,
-  selectSceneries,
-  removeScenery,
-} from "features/scenery/store/scenerySlice";
+  fetchCharacters,
+  selectCharacters,
+  removeCharacter,
+} from "features/character/store/characterSlice";
 import { useCallback } from "react";
 import Table from "novel-ui/lib/Table";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -26,22 +26,17 @@ type SortDirection = "asc" | "desc";
 const SceneryList = () => {
   const { t, i18n } = useTranslation();
   const dispatch = useAppDispatch();
-  const sceneries = useAppSelector(selectSceneries);
+  const characters = useAppSelector(selectCharacters);
   const { path } = useLocalizedPath();
   const history = useHistory();
 
   const [searchParams, setSearchParams] =
-    usePaginationSearchParams<SortDirection>(
-      {
-        currentPage: 1,
-        pageSize: 5,
-        sortDirection: "asc",
-        sortBy: "createdAt",
-      }
-      // {
-      // pushToInitialParamsOnFirstPageEnter: false
-      // }
-    );
+    usePaginationSearchParams<SortDirection>({
+      currentPage: 1,
+      pageSize: 5,
+      sortDirection: "asc",
+      sortBy: "createdAt",
+    });
 
   const handleOnChangePage = (page: number) => {
     setSearchParams({ currentPage: page });
@@ -58,7 +53,7 @@ const SceneryList = () => {
   const fetchData = useCallback(async () => {
     try {
       await dispatch(
-        fetchSceneries({
+        fetchCharacters({
           currentPage: searchParams.currentPage,
           pageSize: searchParams.pageSize,
           sortBy: searchParams.sortBy,
@@ -80,7 +75,7 @@ const SceneryList = () => {
 
   const handleDeleteScenery = async (id: string) => {
     try {
-      const response = await dispatch(removeScenery(id));
+      const response = await dispatch(removeCharacter(id));
       const payload = response.payload as SuccessfulReqMsg;
       alert(payload.message);
       fetchData();
@@ -91,20 +86,20 @@ const SceneryList = () => {
   return (
     <>
       <HelmetDecorator
-        description={t("SceneryPages.list.metaData.description")}
-        imageAlt={t("SceneryPages.list.metaData.imageAlt")}
+        description={t("CharacterPages.list.metaData.description")}
+        imageAlt={t("CharacterPages.list.metaData.imageAlt")}
         imageUrl="https://media.istockphoto.com/photos/books-picture-id949118068?s=612x612"
         lang={i18n.language}
-        title={t("SceneryPages.list.metaData.title")}
+        title={t("CharacterPages.list.metaData.title")}
       />
-      <DashboardLayoutWrapper title={t("SceneryPages.list.title")}>
+      <DashboardLayoutWrapper title={t("CharacterPages.list.title")}>
         <Table
-          data={sceneries.data}
-          tableName={t("SceneryPages.list.table.title")}
+          data={characters.data}
+          tableName={t("CharacterPages.list.table.title")}
           pagination={{
             currentPage: searchParams.currentPage,
             pageSize: searchParams.pageSize,
-            totalItems: sceneries.totalItems, // i can't put it in `pagination` object because useState won't change its value because useState is called only once when component is mounting. To update it I would need to use useEffect
+            totalItems: characters.totalItems,
           }}
           sort={{
             sortBy: searchParams.sortBy,
@@ -115,38 +110,38 @@ const SceneryList = () => {
           onChangeSort={onChangeSort}
           columns={[
             {
-              title: t("SceneryPages.list.table.columns.title"),
+              title: t("CharacterPages.list.table.columns.title"),
               key: "title",
               render: (row) => row.title,
               isSortable: true,
             },
             {
-              title: t("SceneryPages.list.table.columns.description"),
+              title: t("CharacterPages.list.table.columns.description"),
               key: "description",
               render: (row) => row.description,
               isSortable: true,
             },
             {
-              title: t("SceneryPages.list.table.columns.total"),
+              title: t("CharacterPages.list.table.columns.total"),
               key: "imagesList",
               render: (row) => row.imagesList.length,
               isSortable: true,
             },
             {
-              title: t("SceneryPages.list.table.columns.createdAt"),
+              title: t("CharacterPages.list.table.columns.createdAt"),
               key: "createdAt",
               render: (row) => new Date(row.createdAt).toLocaleString(),
               isSortable: true,
             },
             {
-              title: t("SceneryPages.list.table.columns.actions"),
+              title: t("CharacterPages.list.table.columns.actions"),
               key: "actions",
               noWrap: true,
               render: (row) => (
                 <Box display="flex">
                   <IconButton
                     onClick={() =>
-                      history.push(path(PATHS_SCENERY.EDIT(row._id)))
+                      history.push(path(PATHS_CHARACTER.EDIT(row._id)))
                     }
                   >
                     <EditIcon />
@@ -160,7 +155,7 @@ const SceneryList = () => {
           ]}
         />
         <Box display="flex" justifyContent="flex-end">
-          <Button to={path(PATHS_SCENERY.ADD)} variant="contained">
+          <Button to={path(PATHS_CHARACTER.ADD)} variant="contained">
             {t("buttons.add")}
           </Button>
         </Box>

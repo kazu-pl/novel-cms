@@ -28,6 +28,13 @@ export interface Translation {
         add: string;
       };
     };
+    character: {
+      title: string;
+      items: {
+        list: string;
+        add: string;
+      };
+    };
   };
   loginPage: {
     title: string;
@@ -87,6 +94,46 @@ export interface Translation {
     };
   };
   SceneryPages: {
+    list: {
+      title: string;
+      table: {
+        title: string;
+        columns: {
+          title: string;
+          description: string;
+          total: string;
+          actions: string;
+          createdAt: string;
+        };
+      };
+      metaData: {
+        description: string;
+        imageAlt: string;
+        title: string;
+      };
+    };
+    add: {
+      title: string;
+      metaData: {
+        description: string;
+        imageAlt: string;
+        title: string;
+      };
+    };
+    edit: {
+      title: string;
+      basicDataFormTitle: string;
+      newImagesTitle: string;
+      imagesGalleryTitle: string;
+      noImagesInGallery: string;
+      metaData: {
+        description: string;
+        imageAlt: string;
+        title: string;
+      };
+    };
+  };
+  CharacterPages: {
     list: {
       title: string;
       table: {

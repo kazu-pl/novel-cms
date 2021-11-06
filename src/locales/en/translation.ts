@@ -30,6 +30,13 @@ const en: Translation = {
         add: "add new scenery",
       },
     },
+    character: {
+      title: "Characters",
+      items: {
+        list: "List of characters",
+        add: "Add new character",
+      },
+    },
   },
   loginPage: {
     title: "Login",
@@ -133,6 +140,46 @@ const en: Translation = {
         description: "This is a page to manage sceneries",
         imageAlt: "image alt",
         title: "Edit scenery",
+      },
+    },
+  },
+  CharacterPages: {
+    list: {
+      title: "character list",
+      table: {
+        title: "list of characters",
+        columns: {
+          title: "title",
+          description: "description",
+          total: "total images",
+          actions: "actions",
+          createdAt: "created at",
+        },
+      },
+      metaData: {
+        description: "Page with character list",
+        imageAlt: "image alt",
+        title: "character List",
+      },
+    },
+    add: {
+      title: "Add new character",
+      metaData: {
+        description: "Add new character page",
+        imageAlt: "image alt",
+        title: "Add character",
+      },
+    },
+    edit: {
+      title: "Edit character",
+      basicDataFormTitle: "Edit basic data",
+      newImagesTitle: "Add new images",
+      imagesGalleryTitle: "Gallery",
+      noImagesInGallery: "No images",
+      metaData: {
+        description: "This is a page to manage characters",
+        imageAlt: "image alt",
+        title: "Edit character",
       },
     },
   },

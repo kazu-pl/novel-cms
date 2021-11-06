@@ -30,6 +30,13 @@ const pl: Translation = {
         add: "dodaj nowe tło",
       },
     },
+    character: {
+      title: "Postacie",
+      items: {
+        list: "Lista postaci",
+        add: "Dodaj nową postać",
+      },
+    },
   },
   loginPage: {
     title: "Zaloguj się",
@@ -133,6 +140,46 @@ const pl: Translation = {
         description: "To jest strona do edycji tła",
         imageAlt: "image alt",
         title: "Edytuj Scenerię",
+      },
+    },
+  },
+  CharacterPages: {
+    list: {
+      title: "Postacie",
+      table: {
+        title: " Lista Postaci",
+        columns: {
+          title: "tytuł",
+          description: "opis",
+          total: "liczba zdjęć",
+          actions: "akcje",
+          createdAt: "data utworzenia",
+        },
+      },
+      metaData: {
+        description: "Strona z postaciami",
+        imageAlt: "image alt",
+        title: "Postacie",
+      },
+    },
+    add: {
+      title: "Dodaj nową postać",
+      metaData: {
+        description: "Strona dodawania nowej postaci",
+        imageAlt: "image alt",
+        title: "Dodaj postać",
+      },
+    },
+    edit: {
+      title: "Edytuj postać",
+      basicDataFormTitle: "Edytuj podstawowe dane",
+      newImagesTitle: "Dodaj nowe zdjęcia",
+      imagesGalleryTitle: "Galeria zdjęć",
+      noImagesInGallery: "brak zdjęć",
+      metaData: {
+        description: "To jest strona do edycji postaci",
+        imageAlt: "image alt",
+        title: "Edytuj postać",
       },
     },
   },
