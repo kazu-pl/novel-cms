@@ -9,6 +9,7 @@ import {
 } from "features/scenery/store/scenerySlice";
 import { useParams } from "react-router-dom";
 import { useEffect, useCallback } from "react";
+import { useSnackbar } from "notistack";
 
 import NewSceneryImagesForm from "./NewSceneryImagesForm";
 import Typography from "@mui/material/Typography";
@@ -19,12 +20,17 @@ const SceneryEdit = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { id } = useParams<{ id: string }>();
+  const { enqueueSnackbar } = useSnackbar();
 
   const fetchScenery = useCallback(async () => {
     try {
       await dispatch(fetchSingleScenery(id));
-    } catch (error) {}
-  }, [dispatch, id]);
+    } catch (error) {
+      enqueueSnackbar(error as string, {
+        variant: "error",
+      });
+    }
+  }, [dispatch, id, enqueueSnackbar]);
 
   useEffect(() => {
     fetchScenery();

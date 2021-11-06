@@ -23,9 +23,8 @@ import Button from "novel-ui/lib/buttons/Button";
 import Typography from "@mui/material/Typography";
 import Avatar from "@mui/material/Avatar";
 import { API_URL } from "common/constants/env";
-import { useState } from "react";
-
-import { useRef } from "react";
+import { useState, useRef } from "react";
+import { useSnackbar } from "notistack";
 
 import FileInputFormik, {
   ExtendedFile,
@@ -42,6 +41,7 @@ const Account = () => {
   const dispatch = useAppDispatch();
   const [isDeleteAvatarBtnLoading, setIsDeleteAvatarBtnLoading] =
     useState(false);
+  const { enqueueSnackbar } = useSnackbar();
 
   const initialValues: RequestUpdateUser = {
     email: userData?.email || "",
@@ -78,20 +78,28 @@ const Account = () => {
   const onSubmit = async (values: typeof initialValues) => {
     try {
       await dispatch(updateUserData(values));
+      enqueueSnackbar("updated Successfully", {
+        variant: "success",
+      });
       dispatch(fetchUserData());
-      alert("updated Successfully");
     } catch (error) {
       const { message } = error as FailedReqMsg;
-      alert(message);
+      enqueueSnackbar(message, {
+        variant: "error",
+      });
     }
   };
 
   const onSubmitPasswords = async (values: typeof initialPasswordValues) => {
     try {
       await dispatch(updateUserPassword(values));
-      alert("password updated Successfully");
+      enqueueSnackbar("password updated Successfully", {
+        variant: "success",
+      });
     } catch (err) {
-      alert(err);
+      enqueueSnackbar(err as string, {
+        variant: "error",
+      });
     }
   };
 
@@ -118,7 +126,9 @@ const Account = () => {
       dispatch(fetchUserData());
       setIsDeleteAvatarBtnLoading(false);
     } catch (err) {
-      alert(err);
+      enqueueSnackbar(err as string, {
+        variant: "error",
+      });
       setIsDeleteAvatarBtnLoading(false);
     }
   };

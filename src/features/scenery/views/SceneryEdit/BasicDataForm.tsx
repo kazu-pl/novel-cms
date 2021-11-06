@@ -12,6 +12,7 @@ import Box from "@mui/material/Box";
 import Button from "novel-ui/lib/buttons/Button";
 import { useTranslation } from "react-i18next";
 import { useLocalizedYup } from "common/yup";
+import { useSnackbar } from "notistack";
 
 const BasicDataForm = () => {
   const scenery = useAppSelector(selectSingleScenery);
@@ -19,6 +20,7 @@ const BasicDataForm = () => {
   const { id } = useParams<{ id: string }>();
   const { t } = useTranslation();
   const yup = useLocalizedYup();
+  const { enqueueSnackbar } = useSnackbar();
 
   const initialBasicDataValues: RequestScenery = {
     title: scenery?.title || "",
@@ -39,10 +41,14 @@ const BasicDataForm = () => {
         updateSceneryBasicData({ values, id: scenery!._id })
       );
       const payload = response.payload as SuccessfulReqMsg;
-      alert(payload.message);
+      enqueueSnackbar(payload.message, {
+        variant: "success",
+      });
       dispatch(fetchSingleScenery(id));
     } catch (error) {
-      alert(error);
+      enqueueSnackbar(error as string, {
+        variant: "error",
+      });
     }
   };
 

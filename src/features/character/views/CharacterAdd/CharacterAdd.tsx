@@ -12,6 +12,7 @@ import { useHistory } from "react-router-dom";
 import useLocalizedPath from "common/router/useLocalizedPath";
 import { PATHS_CHARACTER } from "common/constants/paths";
 import { SuccessfulReqMsg, RequestCharacter } from "types/novel-server.types";
+import { useSnackbar } from "notistack";
 
 const initialValues: RequestCharacter = {
   title: "",
@@ -24,6 +25,7 @@ const CharacterAdd = () => {
   const dispatch = useAppDispatch();
   const history = useHistory();
   const { path } = useLocalizedPath();
+  const { enqueueSnackbar } = useSnackbar();
 
   const validationSchema = yup.object({
     title: yup.string().required(),
@@ -38,10 +40,15 @@ const CharacterAdd = () => {
       const response = await dispatch(addNewCharacter(values));
 
       const payload = response.payload as SuccessfulReqMsg;
-      alert(payload.message);
+
       history.push(path(PATHS_CHARACTER.LIST));
+      enqueueSnackbar(payload.message, {
+        variant: "success",
+      });
     } catch (err) {
-      alert(err);
+      enqueueSnackbar(err as string, {
+        variant: "error",
+      });
     }
   };
 
