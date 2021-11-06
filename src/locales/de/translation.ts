@@ -30,6 +30,13 @@ const de: Translation = {
         add: "neue hinzufügen",
       },
     },
+    character: {
+      title: "Personen",
+      items: {
+        list: "Liste der Charaktere",
+        add: "neue hinzufügen",
+      },
+    },
   },
   loginPage: {
     title: "Anmeldung",
@@ -116,9 +123,9 @@ const de: Translation = {
       },
     },
     add: {
-      title: "neue Szenerie hinzufügen",
+      title: "neuen Charakter hinzufügen",
       metaData: {
-        description: "neue Szenerie hinzufügen",
+        description: "neuen Charakter hinzufügen",
         imageAlt: "image alt",
         title: "neue Szenerie",
       },
@@ -133,6 +140,46 @@ const de: Translation = {
         description: "Dies ist eine Hintergrundbearbeitungsseite",
         imageAlt: "image alt",
         title: "Bearbeiten Landschaft",
+      },
+    },
+  },
+  CharacterPages: {
+    list: {
+      title: "Liste der Charaktere",
+      table: {
+        title: "Liste der Charaktere",
+        columns: {
+          title: "Titel",
+          description: "Bezeichnung",
+          total: "Gesamtbilder",
+          actions: "Aktionen",
+          createdAt: "hergestellt in",
+        },
+      },
+      metaData: {
+        description: "Charakter",
+        imageAlt: "image alt",
+        title: "Charakter",
+      },
+    },
+    add: {
+      title: "neuen Charakter hinzufügen",
+      metaData: {
+        description: "neuen Charakter hinzufügen",
+        imageAlt: "image alt",
+        title: "neue Charakter",
+      },
+    },
+    edit: {
+      title: "Charakter bearbeiten",
+      basicDataFormTitle: "Grunddaten bearbeiten",
+      newImagesTitle: "Dodaj nowe zdjęcia",
+      imagesGalleryTitle: "Neue Fotos hinzufügen",
+      noImagesInGallery: "keine Bilder",
+      metaData: {
+        description: "Dies ist eine Charakterbearbeitungsseite",
+        imageAlt: "image alt",
+        title: "Charakter bearbeiten",
       },
     },
   },

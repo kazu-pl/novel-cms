@@ -1,0 +1,111 @@
+import DashboardLayoutWrapper from "common/wrappers/DashboardLayoutWrapper";
+import { useTranslation } from "react-i18next";
+import HelmetDecorator from "components/HelmetDecorator";
+import { Formik, Form, FormikHelpers } from "formik";
+import { useLocalizedYup } from "common/yup";
+import TextFieldFormik from "novel-ui/lib/formik/TextFieldFormik";
+import Box from "@mui/material/Box";
+import Button from "novel-ui/lib/buttons/Button";
+import { useAppDispatch } from "common/store/hooks";
+import { addNewCharacter } from "features/character/store/characterSlice";
+import { useHistory } from "react-router-dom";
+import useLocalizedPath from "common/router/useLocalizedPath";
+import { PATHS_CHARACTER } from "common/constants/paths";
+import { SuccessfulReqMsg, RequestCharacter } from "types/novel-server.types";
+
+const initialValues: RequestCharacter = {
+  title: "",
+  description: "",
+};
+
+const CharacterAdd = () => {
+  const { t, i18n } = useTranslation();
+  const yup = useLocalizedYup();
+  const dispatch = useAppDispatch();
+  const history = useHistory();
+  const { path } = useLocalizedPath();
+
+  const validationSchema = yup.object({
+    title: yup.string().required(),
+    description: yup.string().required(),
+  });
+
+  const handleSubmit = async (
+    values: RequestCharacter,
+    actions: FormikHelpers<RequestCharacter>
+  ) => {
+    try {
+      const response = await dispatch(addNewCharacter(values));
+
+      const payload = response.payload as SuccessfulReqMsg;
+      alert(payload.message);
+      history.push(path(PATHS_CHARACTER.LIST));
+    } catch (err) {
+      alert(err);
+    }
+  };
+
+  return (
+    <>
+      <HelmetDecorator
+        description={t("CharacterPages.add.metaData.descrption")}
+        imageAlt={t("CharacterPages.add.metaData.imageAlt")}
+        imageUrl="https://media.istockphoto.com/photos/books-picture-id949118068?s=612x612"
+        lang={i18n.language}
+        title={t("CharacterPages.add.metaData.title")}
+      />
+      <DashboardLayoutWrapper title={t("CharacterPages.add.title")}>
+        <Formik
+          initialValues={initialValues}
+          onSubmit={handleSubmit}
+          validationSchema={validationSchema}
+        >
+          {({ isSubmitting }) => (
+            <Form>
+              <Box maxWidth={700} width="100%">
+                <Box mb={2}>
+                  <TextFieldFormik
+                    name="title"
+                    type="text"
+                    id="title"
+                    label={t("form.enterTitle")}
+                    fullWidth
+                  />
+                </Box>
+                <Box mb={2}>
+                  <TextFieldFormik
+                    name="description"
+                    type="text"
+                    id="description"
+                    label={t("form.enterDescription")}
+                    multiline
+                    rows={4}
+                    fullWidth
+                  />
+                </Box>
+                <Box
+                  pt={1}
+                  alignSelf="flex-end"
+                  maxWidth="100%"
+                  width="100%"
+                  display="flex"
+                  justifyContent="flex-end"
+                >
+                  <Button
+                    variant="contained"
+                    type="submit"
+                    isLoading={isSubmitting}
+                  >
+                    {t("buttons.submit")}
+                  </Button>
+                </Box>
+              </Box>
+            </Form>
+          )}
+        </Formik>
+      </DashboardLayoutWrapper>
+    </>
+  );
+};
+
+export default CharacterAdd;

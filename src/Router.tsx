@@ -5,6 +5,7 @@ import {
   PATHS_CORE,
   PATHS_DASHBOARD,
   PATHS_SCENERY,
+  PATHS_CHARACTER,
 } from "common/constants/paths";
 
 import Login from "core/views/Login";
@@ -25,6 +26,10 @@ import useLocalizedPath from "common/router/useLocalizedPath";
 import SceneryList from "features/scenery/views/SceneryList";
 import SceneryAdd from "features/scenery/views/SceneryAdd";
 import SceneryEdit from "features/scenery/views/SceneryEdit";
+
+import CharacterList from "features/character/views/CharacterList";
+import CharacterAdd from "features/character/views/CharacterAdd";
+import CharacterEdit from "features/character/views/CharacterEdit";
 
 const Router = () => {
   useTokenListener();
@@ -73,6 +78,21 @@ const Router = () => {
           <PrivateRoute
             path={`${path(PATHS_SCENERY.EDIT(":id"), lang)}`}
             component={SceneryEdit}
+            exact
+          />,
+          <PrivateRoute
+            path={`${path(PATHS_CHARACTER.LIST, lang)}`}
+            component={CharacterList}
+            exact
+          />,
+          <PrivateRoute
+            path={`${path(PATHS_CHARACTER.ADD, lang)}`}
+            component={CharacterAdd}
+            exact
+          />,
+          <PrivateRoute
+            path={`${path(PATHS_CHARACTER.EDIT(":id"), lang)}`}
+            component={CharacterEdit}
             exact
           />,
         ];

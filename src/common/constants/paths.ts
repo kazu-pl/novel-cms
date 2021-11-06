@@ -19,3 +19,9 @@ export const PATHS_SCENERY = {
   ADD: "/scenery/add",
   EDIT: (path: string) => `/scenery/${path}/edit`,
 };
+
+export const PATHS_CHARACTER = {
+  LIST: "/character/list",
+  ADD: "/character/add",
+  EDIT: (path: string) => `/character/${path}/edit`,
+};

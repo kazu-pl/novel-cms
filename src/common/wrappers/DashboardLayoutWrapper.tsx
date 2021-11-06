@@ -2,7 +2,8 @@ import Dashboard from "novel-ui/lib/layouts/Dashboard";
 import AcUnitIcon from "@mui/icons-material/AcUnit";
 import LogoutIcon from "@mui/icons-material/Logout";
 import AccountIcon from "@mui/icons-material/Person";
-
+import ImageIcon from "@mui/icons-material/Image";
+import EmojiPeopleIcon from "@mui/icons-material/EmojiPeople";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 
 import ColoredIconWrapper from "novel-ui/lib/ColoredIconWrapper";
@@ -10,6 +11,7 @@ import {
   PATHS_CORE,
   PATHS_DASHBOARD,
   PATHS_SCENERY,
+  PATHS_CHARACTER,
 } from "common/constants/paths";
 
 import { useAppSelector } from "common/store/hooks";
@@ -23,7 +25,6 @@ import getLocalizedPath from "common/router/useLocalizedPath";
 import { useTranslation } from "react-i18next";
 
 import { API_URL } from "common/constants/env";
-import ImageIcon from "@mui/icons-material/Image";
 
 export interface DashboardLayoutWrapperProps {
   children: React.ReactNode;
@@ -109,6 +110,25 @@ const DashboardLayoutWrapper = ({
               {
                 label: t("dashboardSidebarItems.scenery.items.add"),
                 to: path(PATHS_SCENERY.ADD),
+              },
+            ],
+          },
+          {
+            variant: "with-dropdown",
+            icon: (
+              <ColoredIconWrapper color="grey">
+                <EmojiPeopleIcon />
+              </ColoredIconWrapper>
+            ),
+            label: t("dashboardSidebarItems.character.title"),
+            dropdownItems: [
+              {
+                label: t("dashboardSidebarItems.character.items.list"),
+                to: path(PATHS_CHARACTER.LIST),
+              },
+              {
+                label: t("dashboardSidebarItems.character.items.add"),
+                to: path(PATHS_CHARACTER.ADD),
               },
             ],
           },
