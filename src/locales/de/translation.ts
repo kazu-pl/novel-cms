@@ -166,6 +166,11 @@ const de: Translation = {
           createdAt: "hergestellt in",
         },
       },
+      modal: {
+        headlineText: "Person löschen",
+        sceneryPretitle: "zu entfernende Person:",
+        text: "Möchten Sie diese Person wirklich löschen? Dies kann später nicht mehr rückgängig gemacht werden",
+      },
       metaData: {
         description: "Charakter",
         imageAlt: "image alt",
@@ -186,6 +191,11 @@ const de: Translation = {
       newImagesTitle: "Dodaj nowe zdjęcia",
       imagesGalleryTitle: "Neue Fotos hinzufügen",
       noImagesInGallery: "keine Bilder",
+      modal: {
+        headlineText: "Charakter löschen",
+        sceneryPretitle: "Zu löschende Szenerie:",
+        text: "Möchten Sie diesen Charakter wirklich löschen? Dies kann später nicht mehr rückgängig gemacht werden.",
+      },
       metaData: {
         description: "Dies ist eine Charakterbearbeitungsseite",
         imageAlt: "image alt",

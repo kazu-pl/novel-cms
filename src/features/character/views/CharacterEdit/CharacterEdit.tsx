@@ -6,20 +6,28 @@ import { useAppDispatch } from "common/store/hooks";
 import {
   fetchSingleCharacter,
   resetSingleCharacterData,
+  deleteCharacterImage,
 } from "features/character/store/characterSlice";
 import { useParams } from "react-router-dom";
-import { useEffect, useCallback } from "react";
-
+import { useEffect, useCallback, useState } from "react";
+import ActionModal from "components/ActionModal";
 import NewCharacterImagesForm from "./NewCharacterImagesForm";
 import Typography from "@mui/material/Typography";
 import ImagesGallery from "./ImagesGallery";
 import BasicDataForm from "./BasicDataForm";
+import { SuccessfulReqMsg } from "types/novel-server.types";
+import { useSnackbar } from "notistack";
 
 const CharacterEdit = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { id } = useParams<{ id: string }>();
+  const { enqueueSnackbar } = useSnackbar();
 
+  const [imageToRemoveModalData, setImageToRemoveModalData] = useState({
+    isOpen: false,
+    filename: "",
+  });
   const fetchCharacter = useCallback(async () => {
     try {
       await dispatch(fetchSingleCharacter(id));
@@ -35,6 +43,35 @@ const CharacterEdit = () => {
       dispatch(resetSingleCharacterData());
     };
   }, [dispatch]);
+
+  const handleImageDelete = async (filename: string) => {
+    try {
+      const response = await dispatch(
+        deleteCharacterImage({ imageFilename: filename, characterId: id })
+      );
+      const payload = response.payload as SuccessfulReqMsg;
+      setImageToRemoveModalData({
+        isOpen: false,
+        filename: "",
+      });
+      enqueueSnackbar(payload.message, {
+        variant: "info",
+      });
+
+      dispatch(fetchSingleCharacter(id));
+    } catch (error) {
+      enqueueSnackbar(error as string, {
+        variant: "error",
+      });
+    }
+  };
+
+  const onDeleteIconClick = (filename: string) => {
+    setImageToRemoveModalData({
+      filename,
+      isOpen: true,
+    });
+  };
 
   return (
     <>
@@ -60,9 +97,25 @@ const CharacterEdit = () => {
               {t("CharacterPages.edit.imagesGalleryTitle")}
             </Typography>
           </Box>
-          <ImagesGallery />
+          <ImagesGallery onDeleteIconClick={onDeleteIconClick} />
         </Box>
       </DashboardLayoutWrapper>
+      <ActionModal
+        headlineText={t("CharacterPages.edit.modal.headlineText")}
+        open={imageToRemoveModalData.isOpen}
+        onClose={() =>
+          setImageToRemoveModalData({ isOpen: false, filename: "" })
+        }
+        onActionBtnClickPromise={() =>
+          handleImageDelete(imageToRemoveModalData.filename)
+        }
+        preChildrenTitle={{
+          preTitle: t("CharacterPages.edit.modal.sceneryPretitle"),
+          title: imageToRemoveModalData.filename,
+        }}
+      >
+        {t("CharacterPages.edit.modal.text")}
+      </ActionModal>
     </>
   );
 };

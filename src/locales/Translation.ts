@@ -156,6 +156,11 @@ export interface Translation {
           createdAt: string;
         };
       };
+      modal: {
+        headlineText: string;
+        sceneryPretitle: string;
+        text: string;
+      };
       metaData: {
         description: string;
         imageAlt: string;
@@ -176,6 +181,11 @@ export interface Translation {
       newImagesTitle: string;
       imagesGalleryTitle: string;
       noImagesInGallery: string;
+      modal: {
+        headlineText: string;
+        sceneryPretitle: string;
+        text: string;
+      };
       metaData: {
         description: string;
         imageAlt: string;

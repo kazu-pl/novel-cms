@@ -166,6 +166,11 @@ const en: Translation = {
           createdAt: "created at",
         },
       },
+      modal: {
+        headlineText: "Delete character",
+        sceneryPretitle: "character to delete: ",
+        text: "Are you sure you want to delete this character? This can't be undone later.",
+      },
       metaData: {
         description: "Page with character list",
         imageAlt: "image alt",
@@ -186,6 +191,11 @@ const en: Translation = {
       newImagesTitle: "Add new images",
       imagesGalleryTitle: "Gallery",
       noImagesInGallery: "No images",
+      modal: {
+        headlineText: "Deleting character image",
+        sceneryPretitle: "Image to delete: ",
+        text: "Are you sure you want to delete this image? This can't be undone later.",
+      },
       metaData: {
         description: "This is a page to manage characters",
         imageAlt: "image alt",

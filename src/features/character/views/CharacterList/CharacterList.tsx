@@ -4,7 +4,7 @@ import HelmetDecorator from "components/HelmetDecorator";
 import Button from "novel-ui/lib/buttons/Button";
 import { PATHS_CHARACTER } from "common/constants/paths";
 import { useAppDispatch, useAppSelector } from "common/store/hooks";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   fetchCharacters,
   selectCharacters,
@@ -21,6 +21,7 @@ import { useHistory } from "react-router-dom";
 import { SuccessfulReqMsg } from "types/novel-server.types";
 import usePaginationSearchParams from "common/router/usePaginationSearchParams";
 import { useSnackbar } from "notistack";
+import ActionModal from "components/ActionModal";
 
 type SortDirection = "asc" | "desc";
 
@@ -31,6 +32,11 @@ const SceneryList = () => {
   const { path } = useLocalizedPath();
   const history = useHistory();
   const { enqueueSnackbar } = useSnackbar();
+  const [characterToRemoveModalData, setCharacterToRemoveModalData] = useState({
+    isOpen: false,
+    id: "",
+    name: "",
+  });
 
   const [searchParams, setSearchParams] =
     usePaginationSearchParams<SortDirection>({
@@ -86,6 +92,11 @@ const SceneryList = () => {
       const payload = response.payload as SuccessfulReqMsg;
       enqueueSnackbar(payload.message, {
         variant: "info",
+      });
+      setCharacterToRemoveModalData({
+        id: "",
+        isOpen: false,
+        name: "",
       });
       fetchData();
     } catch (error) {
@@ -157,7 +168,16 @@ const SceneryList = () => {
                   >
                     <EditIcon />
                   </IconButton>
-                  <IconButton onClick={() => handleDeleteScenery(row._id)}>
+                  <IconButton
+                    onClick={() =>
+                      setCharacterToRemoveModalData((prev) => ({
+                        ...prev,
+                        id: row._id,
+                        isOpen: true,
+                        name: row.title,
+                      }))
+                    }
+                  >
                     <DeleteIcon />
                   </IconButton>
                 </Box>
@@ -171,6 +191,22 @@ const SceneryList = () => {
           </Button>
         </Box>
       </DashboardLayoutWrapper>
+      <ActionModal
+        headlineText={t("CharacterPages.list.modal.headlineText")}
+        open={characterToRemoveModalData.isOpen}
+        onClose={() =>
+          setCharacterToRemoveModalData({ isOpen: false, name: "", id: "" })
+        }
+        onActionBtnClickPromise={() =>
+          handleDeleteScenery(characterToRemoveModalData.id)
+        }
+        preChildrenTitle={{
+          preTitle: t("CharacterPages.list.modal.sceneryPretitle"),
+          title: characterToRemoveModalData.name,
+        }}
+      >
+        {t("CharacterPages.list.modal.text")}
+      </ActionModal>
     </>
   );
 };

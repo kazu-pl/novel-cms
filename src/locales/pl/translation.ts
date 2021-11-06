@@ -166,6 +166,11 @@ const pl: Translation = {
           createdAt: "data utworzenia",
         },
       },
+      modal: {
+        headlineText: "Usuwanie postaci",
+        sceneryPretitle: "Postać do usunięcia: ",
+        text: "Czy jesteś pewien, że chcesz usunąć tę Postać? Tej operacji nie można cofnąć.",
+      },
       metaData: {
         description: "Strona z postaciami",
         imageAlt: "image alt",
@@ -186,6 +191,11 @@ const pl: Translation = {
       newImagesTitle: "Dodaj nowe zdjęcia",
       imagesGalleryTitle: "Galeria zdjęć",
       noImagesInGallery: "brak zdjęć",
+      modal: {
+        headlineText: "Usuwanie zdjęcia postaci",
+        sceneryPretitle: "Zdjęcie do usunięcia: ",
+        text: "Czy jesteś pewien, że chcesz usunąć to zdjęcie? Tej operacji nie można cofnąć.",
+      },
       metaData: {
         description: "To jest strona do edycji postaci",
         imageAlt: "image alt",
