@@ -116,6 +116,11 @@ const de: Translation = {
           createdAt: "hergestellt in",
         },
       },
+      modal: {
+        headlineText: "Landschaft löschen",
+        sceneryPretitle: "Zu löschende Szenerie:",
+        text: "Möchten Sie die Szenerie wirklich löschen? Dies kann später nicht mehr rückgängig gemacht werden.",
+      },
       metaData: {
         description: "Landschaftsliste",
         imageAlt: "image alt",
@@ -136,6 +141,11 @@ const de: Translation = {
       newImagesTitle: "Dodaj nowe zdjęcia",
       imagesGalleryTitle: "Neue Fotos hinzufügen",
       noImagesInGallery: "keine Bilder",
+      modal: {
+        headlineText: "Landschaftsbild löschen",
+        sceneryPretitle: "Zu löschende Szenerie:",
+        text: "Möchten Sie die Szenerie wirklich löschen? Dies kann später nicht mehr rückgängig gemacht werden.",
+      },
       metaData: {
         description: "Dies ist eine Hintergrundbearbeitungsseite",
         imageAlt: "image alt",
@@ -155,6 +165,11 @@ const de: Translation = {
           actions: "Aktionen",
           createdAt: "hergestellt in",
         },
+      },
+      modal: {
+        headlineText: "Person löschen",
+        sceneryPretitle: "zu entfernende Person:",
+        text: "Möchten Sie diese Person wirklich löschen? Dies kann später nicht mehr rückgängig gemacht werden",
       },
       metaData: {
         description: "Charakter",
@@ -176,6 +191,11 @@ const de: Translation = {
       newImagesTitle: "Dodaj nowe zdjęcia",
       imagesGalleryTitle: "Neue Fotos hinzufügen",
       noImagesInGallery: "keine Bilder",
+      modal: {
+        headlineText: "Charakter löschen",
+        sceneryPretitle: "Zu löschende Szenerie:",
+        text: "Möchten Sie diesen Charakter wirklich löschen? Dies kann später nicht mehr rückgängig gemacht werden.",
+      },
       metaData: {
         description: "Dies ist eine Charakterbearbeitungsseite",
         imageAlt: "image alt",

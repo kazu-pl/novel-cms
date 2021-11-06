@@ -116,6 +116,11 @@ const en: Translation = {
           createdAt: "created at",
         },
       },
+      modal: {
+        headlineText: "Deleting scenery",
+        sceneryPretitle: "Scenery to delete: ",
+        text: "Are you sure you want to delete the scenery? This can't be undone later.",
+      },
       metaData: {
         description: "Page with scenery list",
         imageAlt: "image alt",
@@ -136,6 +141,11 @@ const en: Translation = {
       newImagesTitle: "Add new images",
       imagesGalleryTitle: "Gallery",
       noImagesInGallery: "No images",
+      modal: {
+        headlineText: "Deleting scenery image",
+        sceneryPretitle: "Bild zum Löschen: ",
+        text: "Möchten Sie dieses Bild wirklich löschen? Dies kann später nicht mehr rückgängig gemacht werden.",
+      },
       metaData: {
         description: "This is a page to manage sceneries",
         imageAlt: "image alt",
@@ -155,6 +165,11 @@ const en: Translation = {
           actions: "actions",
           createdAt: "created at",
         },
+      },
+      modal: {
+        headlineText: "Delete character",
+        sceneryPretitle: "character to delete: ",
+        text: "Are you sure you want to delete this character? This can't be undone later.",
       },
       metaData: {
         description: "Page with character list",
@@ -176,6 +191,11 @@ const en: Translation = {
       newImagesTitle: "Add new images",
       imagesGalleryTitle: "Gallery",
       noImagesInGallery: "No images",
+      modal: {
+        headlineText: "Deleting character image",
+        sceneryPretitle: "Image to delete: ",
+        text: "Are you sure you want to delete this image? This can't be undone later.",
+      },
       metaData: {
         description: "This is a page to manage characters",
         imageAlt: "image alt",

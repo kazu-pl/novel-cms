@@ -4,7 +4,7 @@ import HelmetDecorator from "components/HelmetDecorator";
 import Button from "novel-ui/lib/buttons/Button";
 import { PATHS_SCENERY } from "common/constants/paths";
 import { useAppDispatch, useAppSelector } from "common/store/hooks";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   fetchSceneries,
   selectSceneries,
@@ -21,6 +21,7 @@ import { useHistory } from "react-router-dom";
 import { SuccessfulReqMsg } from "types/novel-server.types";
 import usePaginationSearchParams from "common/router/usePaginationSearchParams";
 import { useSnackbar } from "notistack";
+import ActionModal from "components/ActionModal";
 
 type SortDirection = "asc" | "desc";
 
@@ -31,6 +32,11 @@ const SceneryList = () => {
   const { path } = useLocalizedPath();
   const history = useHistory();
   const { enqueueSnackbar } = useSnackbar();
+  const [sceneryToRemoveModalData, setSceneryToRemoveModalData] = useState({
+    isOpen: false,
+    id: "",
+    name: "",
+  });
   const [searchParams, setSearchParams] =
     usePaginationSearchParams<SortDirection>(
       {
@@ -88,9 +94,15 @@ const SceneryList = () => {
     try {
       const response = await dispatch(removeScenery(id));
       const payload = response.payload as SuccessfulReqMsg;
+      setSceneryToRemoveModalData({
+        id: "",
+        isOpen: false,
+        name: "",
+      });
       enqueueSnackbar(payload.message, {
         variant: "info",
       });
+
       fetchData();
     } catch (error) {
       enqueueSnackbar(error as string, {
@@ -161,7 +173,17 @@ const SceneryList = () => {
                   >
                     <EditIcon />
                   </IconButton>
-                  <IconButton onClick={() => handleDeleteScenery(row._id)}>
+
+                  <IconButton
+                    onClick={() =>
+                      setSceneryToRemoveModalData((prev) => ({
+                        ...prev,
+                        id: row._id,
+                        isOpen: true,
+                        name: row.title,
+                      }))
+                    }
+                  >
                     <DeleteIcon />
                   </IconButton>
                 </Box>
@@ -175,6 +197,23 @@ const SceneryList = () => {
           </Button>
         </Box>
       </DashboardLayoutWrapper>
+
+      <ActionModal
+        headlineText={t("SceneryPages.list.modal.headlineText")}
+        open={sceneryToRemoveModalData.isOpen}
+        onClose={() =>
+          setSceneryToRemoveModalData({ isOpen: false, name: "", id: "" })
+        }
+        onActionBtnClickPromise={() =>
+          handleDeleteScenery(sceneryToRemoveModalData.id)
+        }
+        preChildrenTitle={{
+          preTitle: t("SceneryPages.list.modal.sceneryPretitle"),
+          title: sceneryToRemoveModalData.name,
+        }}
+      >
+        {t("SceneryPages.list.modal.text")}
+      </ActionModal>
     </>
   );
 };

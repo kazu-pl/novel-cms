@@ -6,20 +6,28 @@ import { useAppDispatch } from "common/store/hooks";
 import {
   fetchSingleScenery,
   resetSingleSceneryData,
+  deleteSceneryImage,
 } from "features/scenery/store/scenerySlice";
 import { useParams } from "react-router-dom";
 import { useEffect, useCallback } from "react";
 import { useSnackbar } from "notistack";
-
+import { useState } from "react";
 import NewSceneryImagesForm from "./NewSceneryImagesForm";
 import Typography from "@mui/material/Typography";
 import ImagesGallery from "./ImagesGallery";
 import BasicDataForm from "./BasicDataForm";
+import ActionModal from "components/ActionModal";
+import { SuccessfulReqMsg } from "types/novel-server.types";
 
 const SceneryEdit = () => {
+  const { id } = useParams<{ id: string }>();
+
+  const [imageToRemoveModalData, setImageToRemoveModalData] = useState({
+    isOpen: false,
+    filename: "",
+  });
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const { id } = useParams<{ id: string }>();
   const { enqueueSnackbar } = useSnackbar();
 
   const fetchScenery = useCallback(async () => {
@@ -41,6 +49,35 @@ const SceneryEdit = () => {
       dispatch(resetSingleSceneryData());
     };
   }, [dispatch]);
+
+  const handleImageDelete = async (filename: string) => {
+    try {
+      const response = await dispatch(
+        deleteSceneryImage({ imageFilename: filename, sceneryId: id })
+      );
+      const payload = response.payload as SuccessfulReqMsg;
+      setImageToRemoveModalData({
+        isOpen: false,
+        filename: "",
+      });
+      enqueueSnackbar(payload.message, {
+        variant: "info",
+      });
+
+      dispatch(fetchSingleScenery(id));
+    } catch (error) {
+      enqueueSnackbar(error as string, {
+        variant: "error",
+      });
+    }
+  };
+
+  const onDeleteIconClick = (filename: string) => {
+    setImageToRemoveModalData({
+      filename,
+      isOpen: true,
+    });
+  };
 
   return (
     <>
@@ -64,8 +101,24 @@ const SceneryEdit = () => {
           <Box mb={2}>
             <Typography>{t("SceneryPages.edit.imagesGalleryTitle")}</Typography>
           </Box>
-          <ImagesGallery />
+          <ImagesGallery onDeleteIconClick={onDeleteIconClick} />
         </Box>
+        <ActionModal
+          headlineText={t("SceneryPages.edit.modal.headlineText")}
+          open={imageToRemoveModalData.isOpen}
+          onClose={() =>
+            setImageToRemoveModalData({ isOpen: false, filename: "" })
+          }
+          onActionBtnClickPromise={() =>
+            handleImageDelete(imageToRemoveModalData.filename)
+          }
+          preChildrenTitle={{
+            preTitle: t("SceneryPages.edit.modal.sceneryPretitle"),
+            title: imageToRemoveModalData.filename,
+          }}
+        >
+          {t("SceneryPages.edit.modal.text")}
+        </ActionModal>
       </DashboardLayoutWrapper>
     </>
   );
