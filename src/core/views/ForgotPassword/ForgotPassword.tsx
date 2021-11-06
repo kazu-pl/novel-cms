@@ -16,6 +16,7 @@ import HelmetDecorator from "components/HelmetDecorator";
 import useLocalizedPath from "common/router/useLocalizedPath";
 import { sendEmailToRemindPassword } from "core/store/userSlice";
 import { useAppDispatch } from "common/store/hooks";
+import { useSnackbar } from "notistack";
 
 const initialValues: RequestRemindPasswordCredentials = {
   email: "",
@@ -26,6 +27,7 @@ const ForgotPassword = () => {
   const { t } = useTranslation();
   const { path } = useLocalizedPath();
   const dispatch = useAppDispatch();
+  const { enqueueSnackbar } = useSnackbar();
 
   const validationSchema = yup.object({
     email: yup.string().email().required(),
@@ -35,9 +37,13 @@ const ForgotPassword = () => {
     try {
       const response = await dispatch(sendEmailToRemindPassword(values));
       const payload = response.payload as SuccessfulReqMsg;
-      alert(payload.message);
+      enqueueSnackbar(payload.message, {
+        variant: "success",
+      });
     } catch (err) {
-      alert(err);
+      enqueueSnackbar(err as string, {
+        variant: "error",
+      });
     }
   };
 

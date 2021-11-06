@@ -13,7 +13,9 @@ const Dashboard = () => {
         lang={i18n.language}
         title={t("dashboardPage.metaData.title")}
       />
-      <DashboardLayoutWrapper>this is Dashboard</DashboardLayoutWrapper>
+      <DashboardLayoutWrapper>
+        this is Dashboard. There will be some graphs here in the futere.
+      </DashboardLayoutWrapper>
     </>
   );
 };

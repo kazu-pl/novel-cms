@@ -15,12 +15,14 @@ import { useParams } from "react-router";
 import { SuccessfulReqMsg } from "types/novel-server.types";
 import { Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
+import { useSnackbar } from "notistack";
 
 const ImagesGallery = () => {
   const dispatch = useAppDispatch();
   const { id } = useParams<{ id: string }>();
   const scenery = useAppSelector(selectSingleScenery);
   const { t } = useTranslation();
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleDelete = async (filename: string) => {
     try {
@@ -28,10 +30,14 @@ const ImagesGallery = () => {
         deleteSceneryImage({ imageFilename: filename, sceneryId: id })
       );
       const payload = response.payload as SuccessfulReqMsg;
-      alert(payload.message);
+      enqueueSnackbar(payload.message, {
+        variant: "info",
+      });
       dispatch(fetchSingleScenery(id));
     } catch (error) {
-      alert(error);
+      enqueueSnackbar(error as string, {
+        variant: "error",
+      });
     }
   };
 

@@ -15,7 +15,7 @@ import { useAppDispatch } from "common/store/hooks";
 import { useParams, useHistory } from "react-router-dom";
 import useLocalizedPath from "common/router/useLocalizedPath";
 import { PATHS_CORE } from "common/constants/paths";
-
+import { useSnackbar } from "notistack";
 const initialValues: RequestRenewPassword = {
   password: "",
   repeatedPassword: "",
@@ -28,6 +28,7 @@ const ResetPassword = () => {
   let { userId } = useParams<{ userId: string }>();
   const dispatch = useAppDispatch();
   const history = useHistory();
+  const { enqueueSnackbar } = useSnackbar();
 
   const validationSchema = yup.object({
     password: yup.string().required(),
@@ -38,10 +39,14 @@ const ResetPassword = () => {
     try {
       const response = await dispatch(resetUserPassword({ ...values, userId }));
       const payload = response.payload as SuccessfulReqMsg;
-      alert(payload.message);
+      enqueueSnackbar(payload.message, {
+        variant: "success",
+      });
       history.push(path(PATHS_CORE.LOGIN));
-    } catch (error: any) {
-      alert(error.message);
+    } catch (error) {
+      enqueueSnackbar(error as string, {
+        variant: "error",
+      });
     }
   };
 

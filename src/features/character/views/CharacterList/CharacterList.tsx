@@ -20,6 +20,7 @@ import useLocalizedPath from "common/router/useLocalizedPath";
 import { useHistory } from "react-router-dom";
 import { SuccessfulReqMsg } from "types/novel-server.types";
 import usePaginationSearchParams from "common/router/usePaginationSearchParams";
+import { useSnackbar } from "notistack";
 
 type SortDirection = "asc" | "desc";
 
@@ -29,6 +30,7 @@ const SceneryList = () => {
   const characters = useAppSelector(selectCharacters);
   const { path } = useLocalizedPath();
   const history = useHistory();
+  const { enqueueSnackbar } = useSnackbar();
 
   const [searchParams, setSearchParams] =
     usePaginationSearchParams<SortDirection>({
@@ -60,13 +62,18 @@ const SceneryList = () => {
           sortDirection: searchParams.sortDirection,
         })
       );
-    } catch (error) {}
+    } catch (error) {
+      enqueueSnackbar(error as string, {
+        variant: "error",
+      });
+    }
   }, [
     dispatch,
     searchParams.sortBy,
     searchParams.sortDirection,
     searchParams.pageSize,
     searchParams.currentPage,
+    enqueueSnackbar,
   ]);
 
   useEffect(() => {
@@ -77,10 +84,14 @@ const SceneryList = () => {
     try {
       const response = await dispatch(removeCharacter(id));
       const payload = response.payload as SuccessfulReqMsg;
-      alert(payload.message);
+      enqueueSnackbar(payload.message, {
+        variant: "info",
+      });
       fetchData();
     } catch (error) {
-      alert(error);
+      enqueueSnackbar(error as string, {
+        variant: "error",
+      });
     }
   };
   return (

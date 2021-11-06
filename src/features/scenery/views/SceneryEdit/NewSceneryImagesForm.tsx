@@ -14,6 +14,7 @@ import {
 } from "features/scenery/store/scenerySlice";
 import { useAppDispatch } from "common/store/hooks";
 import { SuccessfulReqMsg } from "types/novel-server.types";
+import { useSnackbar } from "notistack";
 
 interface FormValues {
   files: ExtendedFile[] | null;
@@ -29,6 +30,7 @@ const NewSceneryImagesForm = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
   const yup = useLocalizedYup();
+  const { enqueueSnackbar } = useSnackbar();
 
   const validationSchema = yup.object({
     files: yup.array().of(yup.object()).min(1).required().nullable(),
@@ -51,11 +53,15 @@ const NewSceneryImagesForm = () => {
         addSceneryImages({ id, values: formData })
       );
       const payload = response.payload as SuccessfulReqMsg;
-      alert(payload.message);
+      enqueueSnackbar(payload.message, {
+        variant: "success",
+      });
       helpers.resetForm();
       dispatch(fetchSingleScenery(id));
     } catch (err) {
-      alert(err);
+      enqueueSnackbar(err as string, {
+        variant: "error",
+      });
     }
   };
 

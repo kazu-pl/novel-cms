@@ -10,7 +10,7 @@ import { useHistory } from "react-router-dom";
 import { PATHS_CORE, PATHS_DASHBOARD } from "common/constants/paths";
 import { useLayoutEffect } from "react";
 import { getTokens, isAccessTokenExpired } from "common/auth/tokens";
-
+import { useSnackbar } from "notistack";
 import useLocalizedPath from "common/router/useLocalizedPath";
 import { useTranslation } from "react-i18next";
 import HelmetDecorator from "components/HelmetDecorator";
@@ -29,7 +29,7 @@ const LoginView = () => {
   const { path } = useLocalizedPath();
   const { t, i18n } = useTranslation();
   const yup = useLocalizedYup();
-
+  const { enqueueSnackbar } = useSnackbar();
   const validationSchema = yup.object({
     email: yup.string().email().required(),
     password: yup.string().required(),
@@ -46,7 +46,9 @@ const LoginView = () => {
       await dispatch(login(values));
       history.push(path(PATHS_DASHBOARD.DASHBOARD));
     } catch (err) {
-      alert(err);
+      enqueueSnackbar(err as string, {
+        variant: "error",
+      });
     }
   };
 
