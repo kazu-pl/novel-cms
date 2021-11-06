@@ -141,6 +141,11 @@ const en: Translation = {
       newImagesTitle: "Add new images",
       imagesGalleryTitle: "Gallery",
       noImagesInGallery: "No images",
+      modal: {
+        headlineText: "Deleting scenery image",
+        sceneryPretitle: "Bild zum Löschen: ",
+        text: "Möchten Sie dieses Bild wirklich löschen? Dies kann später nicht mehr rückgängig gemacht werden.",
+      },
       metaData: {
         description: "This is a page to manage sceneries",
         imageAlt: "image alt",

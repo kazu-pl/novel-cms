@@ -141,6 +141,11 @@ const pl: Translation = {
       newImagesTitle: "Dodaj nowe zdjęcia",
       imagesGalleryTitle: "Galeria zdjęć",
       noImagesInGallery: "brak zdjęć",
+      modal: {
+        headlineText: "Usuwanie zdjęcia scenerii",
+        sceneryPretitle: "Zdjęcie do usunięcia: ",
+        text: "Czy jesteś pewien, że chcesz usunąć to zdjęcie? Tej operacji nie można cofnąć.",
+      },
       metaData: {
         description: "To jest strona do edycji tła",
         imageAlt: "image alt",

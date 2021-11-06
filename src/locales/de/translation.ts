@@ -141,6 +141,11 @@ const de: Translation = {
       newImagesTitle: "Dodaj nowe zdjęcia",
       imagesGalleryTitle: "Neue Fotos hinzufügen",
       noImagesInGallery: "keine Bilder",
+      modal: {
+        headlineText: "Landschaftsbild löschen",
+        sceneryPretitle: "Zu löschende Szenerie:",
+        text: "Möchten Sie die Szenerie wirklich löschen? Dies kann später nicht mehr rückgängig gemacht werden.",
+      },
       metaData: {
         description: "Dies ist eine Hintergrundbearbeitungsseite",
         imageAlt: "image alt",
