@@ -116,6 +116,11 @@ const de: Translation = {
           createdAt: "hergestellt in",
         },
       },
+      modal: {
+        headlineText: "Landschaft löschen",
+        sceneryPretitle: "Zu löschende Szenerie:",
+        text: "Möchten Sie die Szenerie wirklich löschen? Dies kann später nicht mehr rückgängig gemacht werden.",
+      },
       metaData: {
         description: "Landschaftsliste",
         imageAlt: "image alt",

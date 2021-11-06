@@ -116,6 +116,11 @@ const en: Translation = {
           createdAt: "created at",
         },
       },
+      modal: {
+        headlineText: "Deleting scenery",
+        sceneryPretitle: "Scenery to delete: ",
+        text: "Are you sure you want to delete the scenery? This can't be undone later.",
+      },
       metaData: {
         description: "Page with scenery list",
         imageAlt: "image alt",

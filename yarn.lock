@@ -2184,10 +2184,19 @@
     "@types/scheduler" "*"
     csstype "^3.0.2"
 
-"@types/react@^16", "@types/react@^16.9.0":
+"@types/react@^16":
   version "16.14.17"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-16.14.17.tgz#c57fcfb05efa6423f5b65fcd4a75f63f05b162bf"
   integrity sha512-pMLc/7+7SEdQa9A+hN9ujI8blkjFqYAZVqh3iNXqdZ0cQ8TIR502HMkNJniaOGv9SAgc47jxVKoiBJ7c0AakvQ==
+  dependencies:
+    "@types/prop-types" "*"
+    "@types/scheduler" "*"
+    csstype "^3.0.2"
+
+"@types/react@^17.0.34":
+  version "17.0.34"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.34.tgz#797b66d359b692e3f19991b6b07e4b0c706c0102"
+  integrity sha512-46FEGrMjc2+8XhHXILr+3+/sTe3OfzSPU9YGKILLrUYbQ1CLQC9Daqo1KzENGXAWwrFwiY0l4ZbF20gRvgpWTg==
   dependencies:
     "@types/prop-types" "*"
     "@types/scheduler" "*"
@@ -8541,8 +8550,8 @@ notistack@^2.0.3:
     hoist-non-react-statics "^3.3.0"
 
 "novel-ui@https://github.com/kazu-pl/novel-ui.git":
-  version "1.1.2"
-  resolved "https://github.com/kazu-pl/novel-ui.git#491af18336c67bff7ecb4f2827d9ffb048740071"
+  version "1.1.4"
+  resolved "https://github.com/kazu-pl/novel-ui.git#6cfec2c49c0936c665b8c6367fca480dbe4cd1ad"
   dependencies:
     "@mui/styled-engine" "npm:@mui/styled-engine-sc@latest"
 

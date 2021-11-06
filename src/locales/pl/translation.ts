@@ -116,6 +116,11 @@ const pl: Translation = {
           createdAt: "data utworzenia",
         },
       },
+      modal: {
+        headlineText: "Usuwanie tła",
+        sceneryPretitle: "Tło do usunięcia: ",
+        text: "Czy jesteś pewien, że chcesz usunąć to tło? Tej operacji nie można cofnąć.",
+      },
       metaData: {
         description: "Strona z tłami do gry",
         imageAlt: "image alt",
