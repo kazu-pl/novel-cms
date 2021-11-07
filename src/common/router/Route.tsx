@@ -1,16 +1,14 @@
 import { useCallback, useLayoutEffect } from "react";
-import {
-  Route as ReactRouterRoute,
-  RouteProps as ReactRouterRouteProps,
-} from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 import { avaliableLanguages, fallbackLng, Lang } from "locales";
 import { NOT_FOUND_LINK_WITHOUT_SLASH } from "common/constants/paths";
 
-export interface RouteProps extends ReactRouterRouteProps {}
+export interface RouteProps {
+  children?: React.ReactNode;
+}
 
-const Route = (props: RouteProps) => {
+const Route = ({ children }: RouteProps) => {
   const location = useLocation();
   const { i18n } = useTranslation();
 
@@ -51,7 +49,7 @@ const Route = (props: RouteProps) => {
     checkLang();
   }, [checkLang]);
 
-  return <ReactRouterRoute {...props} />;
+  return <> {children} </>;
 };
 
 export default Route;

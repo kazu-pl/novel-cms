@@ -20,8 +20,8 @@ import ActionModal from "components/ActionModal";
 import { SuccessfulReqMsg } from "types/novel-server.types";
 
 const SceneryEdit = () => {
-  const { id } = useParams<{ id: string }>();
-
+  const params = useParams();
+  const id = params.id as string;
   const [imageToRemoveModalData, setImageToRemoveModalData] = useState({
     isOpen: false,
     filename: "",

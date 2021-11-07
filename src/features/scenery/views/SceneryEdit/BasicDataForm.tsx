@@ -17,7 +17,7 @@ import { useSnackbar } from "notistack";
 const BasicDataForm = () => {
   const scenery = useAppSelector(selectSingleScenery);
   const dispatch = useAppDispatch();
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams();
   const { t } = useTranslation();
   const yup = useLocalizedYup();
   const { enqueueSnackbar } = useSnackbar();
@@ -44,7 +44,7 @@ const BasicDataForm = () => {
       enqueueSnackbar(payload.message, {
         variant: "success",
       });
-      dispatch(fetchSingleScenery(id));
+      dispatch(fetchSingleScenery(id!));
     } catch (error) {
       enqueueSnackbar(error as string, {
         variant: "error",

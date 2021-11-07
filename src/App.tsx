@@ -8,10 +8,10 @@ import {
 import { ThemeProvider as StyledThemeProvider } from "styled-components";
 import CssBaseline from "@mui/material/CssBaseline";
 import CreateGlobalStyle from "common/styles/globalStyles.styled";
-import { Router as ReactRouter } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 import { SnackbarProvider } from "notistack";
 import Router from "./Router";
-import history from "common/router/history";
+
 import muiTheme from "common/theme/muiTheme";
 
 function App() {
@@ -23,9 +23,9 @@ function App() {
             <CssBaseline />
             <CreateGlobalStyle />
             <SnackbarProvider>
-              <ReactRouter history={history}>
+              <BrowserRouter>
                 <Router />
-              </ReactRouter>
+              </BrowserRouter>
             </SnackbarProvider>
           </StyledThemeProvider>
         </MuiThemeProvider>

@@ -12,7 +12,7 @@ import Box from "@mui/material/Box";
 import HelmetDecorator from "components/HelmetDecorator";
 import { resetUserPassword } from "core/store/userSlice";
 import { useAppDispatch } from "common/store/hooks";
-import { useParams, useHistory } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import useLocalizedPath from "common/router/useLocalizedPath";
 import { PATHS_CORE } from "common/constants/paths";
 import { useSnackbar } from "notistack";
@@ -25,9 +25,9 @@ const ResetPassword = () => {
   const yup = useLocalizedYup();
   const { path } = useLocalizedPath();
   const { t } = useTranslation();
-  let { userId } = useParams<{ userId: string }>();
+  const { userId } = useParams();
   const dispatch = useAppDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
 
   const validationSchema = yup.object({
@@ -37,12 +37,14 @@ const ResetPassword = () => {
 
   const handleSubmit = async (values: typeof initialValues) => {
     try {
-      const response = await dispatch(resetUserPassword({ ...values, userId }));
+      const response = await dispatch(
+        resetUserPassword({ ...values, userId: userId! })
+      );
       const payload = response.payload as SuccessfulReqMsg;
       enqueueSnackbar(payload.message, {
         variant: "success",
       });
-      history.push(path(PATHS_CORE.LOGIN));
+      navigate(path(PATHS_CORE.LOGIN));
     } catch (error) {
       enqueueSnackbar(error as string, {
         variant: "error",

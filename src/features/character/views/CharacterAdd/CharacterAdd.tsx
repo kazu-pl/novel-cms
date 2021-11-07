@@ -8,7 +8,7 @@ import Box from "@mui/material/Box";
 import Button from "novel-ui/lib/buttons/Button";
 import { useAppDispatch } from "common/store/hooks";
 import { addNewCharacter } from "features/character/store/characterSlice";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import useLocalizedPath from "common/router/useLocalizedPath";
 import { PATHS_CHARACTER } from "common/constants/paths";
 import { SuccessfulReqMsg, RequestCharacter } from "types/novel-server.types";
@@ -23,7 +23,7 @@ const CharacterAdd = () => {
   const { t, i18n } = useTranslation();
   const yup = useLocalizedYup();
   const dispatch = useAppDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const { path } = useLocalizedPath();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -41,7 +41,7 @@ const CharacterAdd = () => {
 
       const payload = response.payload as SuccessfulReqMsg;
 
-      history.push(path(PATHS_CHARACTER.LIST));
+      navigate(path(PATHS_CHARACTER.LIST));
       enqueueSnackbar(payload.message, {
         variant: "success",
       });

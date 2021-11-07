@@ -1,6 +1,6 @@
-import { Switch } from "react-router-dom";
-import Route from "common/router/Route";
-import PrivateRoute from "common/router/PrivateRoute";
+import { Routes, Route } from "react-router-dom";
+import LocalizedRoute from "common/router/Route";
+import LocalizedPrivateRoute from "common/router/PrivateRoute";
 import {
   PATHS_CORE,
   PATHS_DASHBOARD,
@@ -36,70 +36,110 @@ const Router = () => {
   const { path } = useLocalizedPath();
 
   return (
-    <Switch>
+    <Routes>
       {avaliableLanguages.map((lang) => {
         return [
-          <Route path={path(PATHS_CORE.LOGIN, lang)} component={Login} exact />,
+          <Route
+            path={path(PATHS_CORE.LOGIN, lang)}
+            element={
+              <LocalizedRoute>
+                <Login />
+              </LocalizedRoute>
+            }
+            // exact - this no longer is needed (rr6 looks for exact matches by default)
+          />,
           <Route
             path={path(PATHS_CORE.LOGOUT, lang)}
-            component={Logout}
-            exact
+            element={
+              <LocalizedRoute>
+                <Logout />
+              </LocalizedRoute>
+            }
           />,
           <Route
             path={path(PATHS_CORE.PASSWORD_FORGOT, lang)}
-            component={ForgotPassword}
-            exact
+            element={
+              <LocalizedRoute>
+                <ForgotPassword />
+              </LocalizedRoute>
+            }
           />,
           <Route
             path={path(PATHS_CORE.PASSWORD_RESET, lang)}
-            component={ResetPassword}
-            exact
+            element={
+              <LocalizedRoute>
+                <ResetPassword />
+              </LocalizedRoute>
+            }
           />,
-          <PrivateRoute
+          <Route
             path={`${path(PATHS_CORE.ACCOUNT, lang)}`}
-            component={Account}
-            exact
+            element={
+              <LocalizedPrivateRoute>
+                <Account />
+              </LocalizedPrivateRoute>
+            }
           />,
-          <PrivateRoute
+          <Route
             path={`${path(PATHS_DASHBOARD.DASHBOARD, lang)}`}
-            component={Dashboard}
-            exact
+            element={
+              <LocalizedPrivateRoute>
+                <Dashboard />
+              </LocalizedPrivateRoute>
+            }
           />,
-          <PrivateRoute
+          <Route
             path={`${path(PATHS_SCENERY.LIST, lang)}`}
-            component={SceneryList}
-            exact
+            element={
+              <LocalizedPrivateRoute>
+                <SceneryList />
+              </LocalizedPrivateRoute>
+            }
           />,
-          <PrivateRoute
+          <Route
             path={`${path(PATHS_SCENERY.ADD, lang)}`}
-            component={SceneryAdd}
-            exact
+            element={
+              <LocalizedPrivateRoute>
+                <SceneryAdd />
+              </LocalizedPrivateRoute>
+            }
           />,
-          <PrivateRoute
+          <Route
             path={`${path(PATHS_SCENERY.EDIT(":id"), lang)}`}
-            component={SceneryEdit}
-            exact
+            element={
+              <LocalizedPrivateRoute>
+                <SceneryEdit />
+              </LocalizedPrivateRoute>
+            }
           />,
-          <PrivateRoute
+          <Route
             path={`${path(PATHS_CHARACTER.LIST, lang)}`}
-            component={CharacterList}
-            exact
+            element={
+              <LocalizedPrivateRoute>
+                <CharacterList />
+              </LocalizedPrivateRoute>
+            }
           />,
-          <PrivateRoute
+          <Route
             path={`${path(PATHS_CHARACTER.ADD, lang)}`}
-            component={CharacterAdd}
-            exact
+            element={
+              <LocalizedPrivateRoute>
+                <CharacterAdd />
+              </LocalizedPrivateRoute>
+            }
           />,
-          <PrivateRoute
+          <Route
             path={`${path(PATHS_CHARACTER.EDIT(":id"), lang)}`}
-            component={CharacterEdit}
-            exact
+            element={
+              <LocalizedPrivateRoute>
+                <CharacterEdit />
+              </LocalizedPrivateRoute>
+            }
           />,
         ];
       })}
-
-      <Route path="*" component={NotFound} />
-    </Switch>
+      <Route path="*" element={<NotFound />} />
+    </Routes>
   );
 };
 

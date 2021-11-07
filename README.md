@@ -1,4 +1,4 @@
-# Axios interceptor that returns error send by server so it's possible to dispaly server response message on front application:
+# Axios interceptor that returns error sent by server so it's possible to display server response message on front application:
 
 ```
 import axios from "axios";

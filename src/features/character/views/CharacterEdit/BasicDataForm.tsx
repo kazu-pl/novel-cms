@@ -17,7 +17,8 @@ import { useSnackbar } from "notistack";
 const BasicDataForm = () => {
   const character = useAppSelector(selectSingleCharacter);
   const dispatch = useAppDispatch();
-  const { id } = useParams<{ id: string }>();
+  const params = useParams();
+  const id = params.id as string;
   const { t } = useTranslation();
   const yup = useLocalizedYup();
   const { enqueueSnackbar } = useSnackbar();

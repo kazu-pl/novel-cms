@@ -6,7 +6,7 @@ import Button from "novel-ui/lib/buttons/Button";
 import { login } from "core/store/userSlice";
 import { useAppDispatch } from "common/store/hooks";
 import { RequestLoginCredentials } from "types/novel-server.types";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { PATHS_CORE, PATHS_DASHBOARD } from "common/constants/paths";
 import { useLayoutEffect } from "react";
 import { getTokens, isAccessTokenExpired } from "common/auth/tokens";
@@ -25,7 +25,7 @@ const initialValues: RequestLoginCredentials = {
 
 const LoginView = () => {
   const dispatch = useAppDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const { path } = useLocalizedPath();
   const { t, i18n } = useTranslation();
   const yup = useLocalizedYup();
@@ -38,13 +38,13 @@ const LoginView = () => {
   useLayoutEffect(() => {
     const tokens = getTokens();
     if (tokens && !isAccessTokenExpired(tokens.accessToken))
-      history.push(path(PATHS_DASHBOARD.DASHBOARD));
+      navigate(path(PATHS_DASHBOARD.DASHBOARD));
   });
 
   const handleSubmit = async (values: RequestLoginCredentials) => {
     try {
       await dispatch(login(values));
-      history.push(path(PATHS_DASHBOARD.DASHBOARD));
+      navigate(path(PATHS_DASHBOARD.DASHBOARD));
     } catch (err) {
       enqueueSnackbar(err as string, {
         variant: "error",
@@ -98,7 +98,7 @@ const LoginView = () => {
               </Box>
               <Box pt={2} display="flex" justifyContent="flex-end">
                 <LowerFormLink
-                  to={PATHS_CORE.PASSWORD_FORGOT}
+                  to={path(PATHS_CORE.PASSWORD_FORGOT)}
                   label={t("form.forgotPassword")}
                 />
               </Box>

@@ -26,7 +26,7 @@ const initialMultipleFileValues: FormValues = {
 
 const NewCharacterImagesForm = () => {
   const inputFilesRef = useRef<HTMLInputElement | null>(null);
-  const { id } = useParams<{ id: string }>();
+  let { id } = useParams();
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
   const yup = useLocalizedYup();
@@ -50,14 +50,14 @@ const NewCharacterImagesForm = () => {
     });
     try {
       const response = await dispatch(
-        addCharacterImages({ id, values: formData })
+        addCharacterImages({ id: id!, values: formData })
       );
       const payload = response.payload as SuccessfulReqMsg;
       enqueueSnackbar(payload.message, {
         variant: "success",
       });
       helpers.resetForm();
-      dispatch(fetchSingleCharacter(id));
+      dispatch(fetchSingleCharacter(id!));
     } catch (err) {
       enqueueSnackbar(err as string, {
         variant: "error",

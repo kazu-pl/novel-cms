@@ -1,5 +1,5 @@
 import { useRef, useLayoutEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export interface InitialPaginationSearchParamsProps<SortDirection> {
   sortBy: string;
@@ -35,7 +35,8 @@ const usePaginationSearchParams = <SortDirection,>(
   }: InitialPaginationSearchParamsProps<SortDirection>,
   options?: Options
 ) => {
-  const history = useHistory();
+  const navigate = useNavigate();
+  const location = useLocation();
   const isFirstWebsiteEnter = useRef(true);
 
   const searchParams = useRef({
@@ -46,7 +47,7 @@ const usePaginationSearchParams = <SortDirection,>(
   });
 
   // below params are params when you refresh page or write your own search params and hit enter
-  const paramsFromUrlOnRefresh = new URLSearchParams(history.location.search);
+  const paramsFromUrlOnRefresh = new URLSearchParams(location.search);
   const paramsFromUrlOnRefreshAsObject = Array.from(
     paramsFromUrlOnRefresh
   ).reduce((prev, current) => {
@@ -59,16 +60,17 @@ const usePaginationSearchParams = <SortDirection,>(
   useLayoutEffect(() => {
     //  options?.pushToInitialParamsOnFirstPageEnter specifies whether the hook will imiedietly push queries in url on first route enter or not
     options?.pushToInitialParamsOnFirstPageEnter &&
-      history.push({
+      navigate({
         search:
           // push to params from url if they exists but only on first website enter (if someone wrote them by hand and hit enter)
-          (isFirstWebsiteEnter && history.location.search) ||
+          (isFirstWebsiteEnter && location.search) ||
           `sortBy=${sortBy}&sortDirection=${sortDirection}&currentPage=${currentPage}&pageSize=${pageSize}`,
       });
 
     isFirstWebsiteEnter.current = false;
   }, [
-    history,
+    navigate,
+    location,
     currentPage,
     pageSize,
     sortBy,
@@ -102,7 +104,7 @@ const usePaginationSearchParams = <SortDirection,>(
       ...(sortDirection && { sortDirection }),
     };
 
-    history.push({
+    navigate({
       search: `sortBy=${currentSortBy}&sortDirection=${currentSortDirection}&currentPage=${currentCurrentPage}&pageSize=${currentPageSize}`,
     });
   };
