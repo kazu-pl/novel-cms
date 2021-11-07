@@ -1,4 +1,4 @@
-import { Redirect } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { PATHS_CORE } from "common/constants/paths";
 import { useAppDispatch } from "common/store/hooks";
 import { useLayoutEffect, useCallback } from "react";
@@ -18,7 +18,7 @@ const Logout = () => {
     logoutUser();
   }, [logoutUser]);
 
-  return <Redirect to={path(PATHS_CORE.LOGIN)} />;
+  return <Navigate to={path(PATHS_CORE.LOGIN)} replace />;
 };
 
 export default Logout;

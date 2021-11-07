@@ -21,7 +21,8 @@ import { useSnackbar } from "notistack";
 const CharacterEdit = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const { id } = useParams<{ id: string }>();
+  const params = useParams();
+  const id = params.id as string;
   const { enqueueSnackbar } = useSnackbar();
 
   const [imageToRemoveModalData, setImageToRemoveModalData] = useState({

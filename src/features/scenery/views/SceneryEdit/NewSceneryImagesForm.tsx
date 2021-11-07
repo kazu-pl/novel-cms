@@ -26,7 +26,8 @@ const initialMultipleFileValues: FormValues = {
 
 const NewSceneryImagesForm = () => {
   const inputFilesRef = useRef<HTMLInputElement | null>(null);
-  const { id } = useParams<{ id: string }>();
+  const params = useParams();
+  const id = params.id as string;
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
   const yup = useLocalizedYup();

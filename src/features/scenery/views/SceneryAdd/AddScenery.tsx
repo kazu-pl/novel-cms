@@ -8,7 +8,7 @@ import Box from "@mui/material/Box";
 import Button from "novel-ui/lib/buttons/Button";
 import { useAppDispatch } from "common/store/hooks";
 import { addNewScenery } from "features/scenery/store/scenerySlice";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import useLocalizedPath from "common/router/useLocalizedPath";
 import { PATHS_SCENERY } from "common/constants/paths";
 import { SuccessfulReqMsg, RequestScenery } from "types/novel-server.types";
@@ -23,7 +23,7 @@ const SceneryAdd = () => {
   const { t, i18n } = useTranslation();
   const yup = useLocalizedYup();
   const dispatch = useAppDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const { path } = useLocalizedPath();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -40,7 +40,7 @@ const SceneryAdd = () => {
       const response = await dispatch(addNewScenery(values));
 
       const payload = response.payload as SuccessfulReqMsg;
-      history.push(path(PATHS_SCENERY.LIST));
+      navigate(path(PATHS_SCENERY.LIST));
       enqueueSnackbar(payload.message, {
         variant: "success",
       });

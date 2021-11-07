@@ -17,7 +17,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import IconButton from "@mui/material/IconButton";
 import Box from "@mui/material/Box";
 import useLocalizedPath from "common/router/useLocalizedPath";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { SuccessfulReqMsg } from "types/novel-server.types";
 import usePaginationSearchParams from "common/router/usePaginationSearchParams";
 import { useSnackbar } from "notistack";
@@ -30,7 +30,7 @@ const SceneryList = () => {
   const dispatch = useAppDispatch();
   const sceneries = useAppSelector(selectSceneries);
   const { path } = useLocalizedPath();
-  const history = useHistory();
+  const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const [sceneryToRemoveModalData, setSceneryToRemoveModalData] = useState({
     isOpen: false,
@@ -167,9 +167,7 @@ const SceneryList = () => {
               render: (row) => (
                 <Box display="flex">
                   <IconButton
-                    onClick={() =>
-                      history.push(path(PATHS_SCENERY.EDIT(row._id)))
-                    }
+                    onClick={() => navigate(path(PATHS_SCENERY.EDIT(row._id)))}
                   >
                     <EditIcon />
                   </IconButton>

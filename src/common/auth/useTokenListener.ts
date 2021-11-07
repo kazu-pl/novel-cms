@@ -1,18 +1,18 @@
 import { PATHS_CORE } from "common/constants/paths";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useCallback, useEffect } from "react";
 import { LOCALSTORAGE_AUTH_TOKENS } from "common/constants/auth";
 
 const useTokenListener = () => {
-  const history = useHistory();
+  const navigate = useNavigate(); // instead of history = useHistory()
 
   const handleStorageChange = useCallback(
     (e: StorageEvent) => {
       if (e.key === LOCALSTORAGE_AUTH_TOKENS && e.newValue === null) {
-        history.push(PATHS_CORE.LOGOUT);
+        navigate(PATHS_CORE.LOGOUT);
       }
     },
-    [history]
+    [navigate]
   );
 
   useEffect(() => {
