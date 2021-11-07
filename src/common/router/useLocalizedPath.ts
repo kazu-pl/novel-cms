@@ -1,4 +1,3 @@
-import { PATHS_CORE } from "common/constants/paths";
 import { fallbackLng, Lang } from "locales";
 import { useTranslation } from "react-i18next";
 
@@ -12,10 +11,10 @@ const useLocalizedPath = () => {
   const getLocalizedPath = (path: string, lang?: Lang) => {
     const correctLang = lang || i18n.language;
 
-    const correctPath = path === PATHS_CORE.HOMEPAGE ? "" : path;
+    const correctPath = path === "/" ? "" : path;
 
     return correctLang === fallbackLng
-      ? path
+      ? (path === "" && "/") || path
       : `/${correctLang}${validateSlashBeforePath(correctPath)}`;
   };
 
