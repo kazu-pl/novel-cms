@@ -32,30 +32,51 @@ export default axiosInstance;
 
 ```
 
+# Axios after refreshing AccessToken does not send body:
+
+In AxiosSecureInstance you have to pass `originalConfig` but also `JSON.parse()` data from that `originalConfig` which is `originalConfig.data`. If you just pass `originalConfig` then axios won't send it correctly. You will be able to see in browser in requests tab that it sends body data but on server you won't see anything.
+
+BAD:
+
+```
+  return axiosSecureInstance(originalConfig);
+```
+
+CORRECTED:
+
+```
+  return axiosSecureInstance({
+  ...originalConfig,
+  data: JSON.parse(originalConfig.data), // originalConfig.data is string but you have to pass object type for axios to stringify it and send to server. If you jsut originalConfig without JSON.parse() then axios won't send any body (you will be able to see in browser in requests tab that it sends body, but on serverwon't see any body)
+});
+```
+
+For more details, check: `src/common/axios/axiosSecureInstance.ts`
+
 # How to use `Try/Catch` block in component where you dispatch redux-toolkit action and do something in catch if error occured:
 
 normally, Redux Toolkit will always return resolved promise even i `catch` block of `createThunkAction`. That is because by default you're supposed to handle error in `catch` block of `createThunkAction` by add error message to store in slice rejected method. So in your component you can't go to `catch` block because Redux will always return resolved promise. To correct this and be able to enter `catch` block in your component you need to add middleware like so:
 
 ```
+
 // store.ts
 
 import { Middleware } from "@reduxjs/toolkit";
 
 export const throwMiddleware: Middleware = () => (next) => (action) => {
-  next(action);
-  if (action?.error) {
-    throw action.payload; // originally here was `throw action.error` but I consoled it and payload contains message returned from rejectedWithValue
-  }
+next(action);
+if (action?.error) {
+throw action.payload; // originally here was `throw action.error` but I consoled it and payload contains message returned from rejectedWithValue
+}
 };
 
-
 export const store = configureStore({
-  reducer: {
-    counter: counterReducer,
-    user: userSlice,
-  },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(throwMiddleware),
+reducer: {
+counter: counterReducer,
+user: userSlice,
+},
+middleware: (getDefaultMiddleware) =>
+getDefaultMiddleware().concat(throwMiddleware),
 });
 
 ```
@@ -63,21 +84,22 @@ export const store = configureStore({
 Now, in every async thunk action you can return original error like this:
 
 ```
-export const login = createAsyncThunk(
-  "login",
-  async (values: RequestLoginCredentials, { rejectWithValue }) => {
-    try {
-      const response = await axiosInstance.post("/login", values);
-      return response.data;
-    } catch (error) {
-     // const { message } = error as { message: string }; // error would be AxiosResponse or AxiosError here, but thanks to axios interceptor that returns error.response.data (check `Axios interceptor that returns error send by server` header) error here is object send by server so I can pick any field from it and return (assuming that server send an object with `message` key)
 
+export const login = createAsyncThunk(
+"login",
+async (values: RequestLoginCredentials, { rejectWithValue }) => {
+try {
+const response = await axiosInstance.post("/login", values);
+return response.data;
+} catch (error) {
+// const { message } = error as { message: string }; // error would be AxiosResponse or AxiosError here, but thanks to axios interceptor that returns error.response.data (check `Axios interceptor that returns error send by server` header) error here is object send by server so I can pick any field from it and return (assuming that server send an object with `message` key)
 
       // return rejectWithValue(error.response.data); // <--- without axios interceptor returning error.response.data
       // return rejectWithValue(message); // <---  with axios interceptor
       return rejectWithValue((error as FailedReqMsg).message); // <---  with axios interceptor with better version without making message const
     }
-  }
+
+}
 );
 
 ```
@@ -97,34 +119,38 @@ You can hide original input file but you should add `id` to it, so you can use `
 - `1` - create `ref` and `<input type="file" />` tag and pass that ref to the input:
 
 ```
+
 const Component = () => {
 
 const inputFileRef = useRef<HTMLInputElement | null>(null);
 
 return (
-  <>
-    <input id={id} type="file" hidden ref={inputRef} {...rest} />
-    <label htmlFor={id}>
-      <Button component="span" {...buttonProps}>
-        {text}
-      </Button>
-    </label>
-  </>
+<>
+<input id={id} type="file" hidden ref={inputRef} {...rest} />
+<label htmlFor={id}>
+<Button component="span" {...buttonProps}>
+{text}
+</Button>
+</label>
+</>
 )
 }
+
 ```
 
 - `2` - create `form-data` and append onto it images that you will find in `ref.current`:
 
 ```
+
 const onSubmit = () => {
 
-  const fileFromInputRef = inputFileRef.current.files[0];
+const fileFromInputRef = inputFileRef.current.files[0];
 
-  const formData = new FormData();
-  formData.append("file", fileFromInputRef); // "file" name is the same name that you use in multer `.single("file")` or `.array('file')`
+const formData = new FormData();
+formData.append("file", fileFromInputRef); // "file" name is the same name that you use in multer `.single("file")` or `.array('file')`
 
 }
+
 ```
 
 Or, if you want to send multiple files (and use .array('files') option to receive multiple files):
@@ -132,12 +158,13 @@ Or, if you want to send multiple files (and use .array('files') option to receiv
 - `2-a` - turn files from ref into array and by using forEach, append it with the same name:
 
 ```
+
 const filesFromInputRef = Array.from(inputFilesRef.current.files);
 
 const formData = new FormData();
 
 filesFromInputRef.forEach((file) => {
-  formData.append("files", file); // "files" is the name under which you send array of images so put 'files' in .array('files')
+formData.append("files", file); // "files" is the name under which you send array of images so put 'files' in .array('files')
 });
 
 ```
@@ -145,12 +172,14 @@ filesFromInputRef.forEach((file) => {
 - `2-b` - add prop `encType="multipart/form-data"` to form that contains `<input type="file" />`:
 
 ```
+
 <Formik
-  initialValues={initialMultipleFileValues}
-  onSubmit={handleAsyncMultipleSubmit}
-  validationSchema={validationMultipleFilesSchema}
->
-  {({ isSubmitting, values }) => (
+initialValues={initialMultipleFileValues}
+onSubmit={handleAsyncMultipleSubmit}
+validationSchema={validationMultipleFilesSchema}
+
+> {({ isSubmitting, values }) => (
+
     <Form encType="multipart/form-data"> // add encType="multipart/form-data" to correctly send muliple files
       <FileInputFormik // formik component that renders invisible <input /> and label with button/span
         name="files"
@@ -161,7 +190,8 @@ filesFromInputRef.forEach((file) => {
         text="select files"
       />
     </Form>
-  )}
+
+)}
 </Formik>
 
 ```
@@ -169,6 +199,7 @@ filesFromInputRef.forEach((file) => {
 `3` - send that data via axios:
 
 ```
+
 const response = await axiosSecureInstance.put(`/users/me/files`, formData);
 
 ```
@@ -180,81 +211,77 @@ Redux-toolkit is some kind of a wrap over standard redux and it re-exports some 
 you can create `rootReducer` which can get every action type and just return empty state if `logout` action occured. You can do it like so:
 
 ```
+
 // store.ts
 
 import { logout } from "core/store/userSlice"; // this is logout redux action
 
-
 // first, create app reducer
 const combinedReducer = combineReducers({
-  counter: counterReducer,
-  user: userSlice,
+counter: counterReducer,
+user: userSlice,
 });
-
 
 // below type is RootState equivalent (type of whole store state)
 export type AppReducerType = ReturnType<typeof combinedReducer>;
 
-
 const rootReducer = (
-  rootState: AppReducerType | undefined,
-  action: AnyAction
+rootState: AppReducerType | undefined,
+action: AnyAction
 ) => {
-  if (action.type === logout.fulfilled.type) { // instead of logout.fulfilled.type you can pass stirng like "/logout/fulfilled"
-    if (rootState) {
-      rootState = undefined; // reset whole store
+if (action.type === logout.fulfilled.type) { // instead of logout.fulfilled.type you can pass stirng like "/logout/fulfilled"
+if (rootState) {
+rootState = undefined; // reset whole store
 
      // rootState = {
      //   auth: undefined,
      //   books: rootState.books, // in case you would like to keep some data
      // }
     }
-  }
-  return combinedReducer(rootState, action);
+
+}
+return combinedReducer(rootState, action);
 };
 
 // then, just use your rootReducer instead of manually assign every reducer
 export const store = configureStore({
-  reducer: rootReducer,
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(throwMiddleware),
+reducer: rootReducer,
+middleware: (getDefaultMiddleware) =>
+getDefaultMiddleware().concat(throwMiddleware),
 });
-
 
 ```
 
 Not it will reset whole store every time `logout` action occurs. But it turns out that types `AppReducerType` and type `RootState` created automatically by redux-toolkit tempalte are the same thing. You can rename `AppReducerType` to `RootState` and delete the original `RootState` like so:
 
 ```
-// store.ts
 
+// store.ts
 
 // export type AppReducerType = ReturnType<typeof combinedReducer>; // CHANGE NAME TO `RootState`
 export type RootState = ReturnType<typeof combinedReducer>;
 
-
 const rootReducer = (
-  rootState: RootState | undefined, // notice that rootState arg type changed from AppReducerType to RootState
-  action: AnyAction
+rootState: RootState | undefined, // notice that rootState arg type changed from AppReducerType to RootState
+action: AnyAction
 ) => {
-  if (action.type === logout.fulfilled.type) {
-    if (rootState) {
-      rootState = undefined;
-    }
-  }
-  return combinedReducer(rootState, action);
+if (action.type === logout.fulfilled.type) {
+if (rootState) {
+rootState = undefined;
+}
+}
+return combinedReducer(rootState, action);
 };
-
 
 export type AppDispatch = typeof store.dispatch;
 // export type RootState = ReturnType<typeof store.getState>; // REMOVE THAT
 export type AppThunk<ReturnType = void> = ThunkAction<
-  ReturnType,
-  RootState,
-  unknown,
-  Action<string>
->;
+ReturnType,
+RootState,
+unknown,
+Action<string>
 
+> ;
 
 ```
 
@@ -265,22 +292,23 @@ Solution was found [here](https://ittone.ma/ittone/reactjs-redux-toolkit-reset-a
 You have to create function that checks whether user is logged or not (whether you can find tokens in LocalStorage) and if user's token is still valid (not expired yet). You can do it like that:
 
 ```
+
 // tokens.ts
 
 export const getTokens = (): Tokens | null => {
-  const tokens = localStorage.getItem(LOCALSTORAGE_AUTH_TOKENS);
+const tokens = localStorage.getItem(LOCALSTORAGE_AUTH_TOKENS);
 
-  if (!tokens) return null;
+if (!tokens) return null;
 
-  return JSON.parse(tokens);
+return JSON.parse(tokens);
 };
 
 export const isAccessTokenExpired = (accessToken: string) => {
-  const decodedAccessToken = jwtDecode<JwtPayload>(accessToken);
+const decodedAccessToken = jwtDecode<JwtPayload>(accessToken);
 
-  return decodedAccessToken.exp
-    ? decodedAccessToken.exp < Date.now() / 1000
-    : true;
+return decodedAccessToken.exp
+? decodedAccessToken.exp < Date.now() / 1000
+: true;
 };
 
 ```
@@ -288,16 +316,16 @@ export const isAccessTokenExpired = (accessToken: string) => {
 Then, in Login view component you can check before mount html markup whether access token exists and is valid:
 
 ```
+
 // LoginView.tsx
 
 import { getTokens, isAccessTokenExpired } from "common/auth/tokens";
 
-
-  useLayoutEffect(() => {
-    const tokens = getTokens();
-    if (tokens && !isAccessTokenExpired(tokens.accessToken))
-      history.push(PATHS_DASHBOARD.DASHBOARD);
-  });
+useLayoutEffect(() => {
+const tokens = getTokens();
+if (tokens && !isAccessTokenExpired(tokens.accessToken))
+history.push(PATHS_DASHBOARD.DASHBOARD);
+});
 
 ```
 
@@ -306,30 +334,32 @@ import { getTokens, isAccessTokenExpired } from "common/auth/tokens";
 - `1` - create listener that listends to LocalStorage and pushes to `.logout` route if tokens were removed:
 
 ```
+
 import { PATHS_CORE } from "common/constants/paths";
 import { useHistory } from "react-router-dom";
 import { useCallback, useEffect } from "react";
 import { LOCALSTORAGE_AUTH_TOKENS } from "common/constants/auth";
 
 const useTokenListener = () => {
-  const history = useHistory();
+const history = useHistory();
 
-  const handleStorageChange = useCallback(
-    (e: StorageEvent) => {
-      if (e.key === LOCALSTORAGE_AUTH_TOKENS && e.newValue === null) {
-        history.push(PATHS_CORE.LOGOUT);
-      }
-    },
-    [history]
-  );
+const handleStorageChange = useCallback(
+(e: StorageEvent) => {
+if (e.key === LOCALSTORAGE_AUTH_TOKENS && e.newValue === null) {
+history.push(PATHS_CORE.LOGOUT);
+}
+},
+[history]
+);
 
-  useEffect(() => {
-    window.addEventListener("storage", handleStorageChange);
+useEffect(() => {
+window.addEventListener("storage", handleStorageChange);
 
     return () => {
       window.removeEventListener("storage", handleStorageChange);
     };
-  }, [handleStorageChange]);
+
+}, [handleStorageChange]);
 };
 
 export default useTokenListener;
@@ -339,24 +369,25 @@ export default useTokenListener;
 - `2` - import that listener in `Router.tsx`:
 
 ```
+
 // Router.tsx
 
 import useTokenListener from "common/auth/useTokenListener";
 
 const Router = () => {
-  useTokenListener();
-  return (
-    <Switch>
-      <Route path={PATHS_CORE.LOGIN} exact component={Login} />
-      <Route path={PATHS_CORE.LOGOUT} exact component={Logout} />
-      <PrivateRoute
+useTokenListener();
+return (
+<Switch>
+<Route path={PATHS_CORE.LOGIN} exact component={Login} />
+<Route path={PATHS_CORE.LOGOUT} exact component={Logout} />
+<PrivateRoute
         path={PATHS_DASHBOARD.DASHBOARD}
         exact
         component={Dashboard}
       />
-      <Route component={NotFound} />
-    </Switch>
-  );
+<Route component={NotFound} />
+</Switch>
+);
 };
 
 export default Router;
@@ -366,19 +397,20 @@ export default Router;
 - `3` - you can send your tokens to server to blacklist them which won't allow to get protected data if user logged out but tokens have not expired yet:
 
 ```
+
 export const logout = createAsyncThunk(
-  "logout",
-  async (_, { rejectWithValue }) => {
-    const tokens = getTokens();
-    try {
-      removeTokens();
-      const response = await axiosInstance.post("/cms/logout", tokens);
-      return response.data;
-    } catch (error: any) {
-      removeTokens();
-      return rejectWithValue(error.response.data);
-    }
-  }
+"logout",
+async (\_, { rejectWithValue }) => {
+const tokens = getTokens();
+try {
+removeTokens();
+const response = await axiosInstance.post("/cms/logout", tokens);
+return response.data;
+} catch (error: any) {
+removeTokens();
+return rejectWithValue(error.response.data);
+}
+}
 );
 
 ```
@@ -386,6 +418,7 @@ export const logout = createAsyncThunk(
 - `4` - if on logout you send your tokens to server to blacklist them, then make sure you won't send that kind of request if tokens are already removed (they will be removed if you logout on another tab):
 
 ```
+
 import { Redirect } from "react-router-dom";
 import { PATHS_CORE } from "common/constants/paths";
 import { useAppDispatch } from "common/store/hooks";
@@ -394,17 +427,17 @@ import { logout } from "core/store/userSlice";
 import { getTokens } from "common/auth/tokens";
 
 const Logout = () => {
-  const dispatch = useAppDispatch();
+const dispatch = useAppDispatch();
 
-  const logoutUser = useCallback(async () => {
-    getTokens() && (await dispatch(logout())); // if tokens have been removed already then do not send them to blacklist them
-  }, [dispatch]);
+const logoutUser = useCallback(async () => {
+getTokens() && (await dispatch(logout())); // if tokens have been removed already then do not send them to blacklist them
+}, [dispatch]);
 
-  useLayoutEffect(() => {
-    logoutUser();
-  }, [logoutUser]);
+useLayoutEffect(() => {
+logoutUser();
+}, [logoutUser]);
 
-  return <Redirect to={PATHS_CORE.LOGIN} />;
+return <Redirect to={PATHS_CORE.LOGIN} />;
 };
 
 export default Logout;
@@ -461,3 +494,7 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
+
+```
+
+```
