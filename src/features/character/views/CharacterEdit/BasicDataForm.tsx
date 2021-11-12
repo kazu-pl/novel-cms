@@ -3,7 +3,7 @@ import { useAppSelector, useAppDispatch } from "common/store/hooks";
 import { Formik, Form, FormikHelpers } from "formik";
 import {
   fetchSingleCharacter,
-  selectSingleCharacter,
+  selectSingleCharacterData,
   updateCharacterBasicData,
 } from "features/character/store/characterSlice";
 import { useParams } from "react-router-dom";
@@ -15,7 +15,7 @@ import { useLocalizedYup } from "common/yup";
 import { useSnackbar } from "notistack";
 
 const BasicDataForm = () => {
-  const character = useAppSelector(selectSingleCharacter);
+  const character = useAppSelector(selectSingleCharacterData);
   const dispatch = useAppDispatch();
   const params = useParams();
   const id = params.id as string;

@@ -205,6 +205,8 @@ const characterSlice = createSlice({
 export const selectCharacters = (state: RootState) =>
   state.character.characters;
 export const selectSingleCharacter = (state: RootState) =>
+  state.character.singleCharacter;
+export const selectSingleCharacterData = (state: RootState) =>
   state.character.singleCharacter.data;
 
 export default characterSlice.reducer;

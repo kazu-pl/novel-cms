@@ -2,11 +2,12 @@ import DashboardLayoutWrapper from "common/wrappers/DashboardLayoutWrapper";
 import { useTranslation } from "react-i18next";
 import HelmetDecorator from "components/HelmetDecorator";
 import Box from "@mui/material/Box";
-import { useAppDispatch } from "common/store/hooks";
+import { useAppDispatch, useAppSelector } from "common/store/hooks";
 import {
   fetchSingleCharacter,
   resetSingleCharacterData,
   deleteCharacterImage,
+  selectSingleCharacter,
 } from "features/character/store/characterSlice";
 import { useParams } from "react-router-dom";
 import { useEffect, useCallback, useState } from "react";
@@ -17,6 +18,7 @@ import ImagesGallery from "./ImagesGallery";
 import BasicDataForm from "./BasicDataForm";
 import { SuccessfulReqMsg } from "types/novel-server.types";
 import { useSnackbar } from "notistack";
+import NotFoundWrapper from "common/wrappers/NotFoundWrapper";
 
 const CharacterEdit = () => {
   const { t } = useTranslation();
@@ -24,6 +26,7 @@ const CharacterEdit = () => {
   const params = useParams();
   const id = params.id as string;
   const { enqueueSnackbar } = useSnackbar();
+  const character = useAppSelector(selectSingleCharacter);
 
   const [imageToRemoveModalData, setImageToRemoveModalData] = useState({
     isOpen: false,
@@ -82,41 +85,48 @@ const CharacterEdit = () => {
         imageAlt={t("CharacterPages.edit.metaData.imageAlt")}
       />
       <DashboardLayoutWrapper title={t("CharacterPages.edit.title")}>
-        <Box mb={2}>
-          <Typography>{t("CharacterPages.edit.basicDataFormTitle")}</Typography>
-        </Box>
-        <BasicDataForm />
-        <Box maxWidth={700} width="100%">
-          <Box mb={2}>
-            <Typography>{t("CharacterPages.edit.newImagesTitle")}</Typography>
-          </Box>
-          <NewCharacterImagesForm />
-        </Box>
-        <Box maxWidth={700} width="100%">
+        <NotFoundWrapper
+          isLoadingData={character.isFetching}
+          isNotFound={!character.data}
+        >
           <Box mb={2}>
             <Typography>
-              {t("CharacterPages.edit.imagesGalleryTitle")}
+              {t("CharacterPages.edit.basicDataFormTitle")}
             </Typography>
           </Box>
-          <ImagesGallery onDeleteIconClick={onDeleteIconClick} />
-        </Box>
+          <BasicDataForm />
+          <Box maxWidth={700} width="100%">
+            <Box mb={2}>
+              <Typography>{t("CharacterPages.edit.newImagesTitle")}</Typography>
+            </Box>
+            <NewCharacterImagesForm />
+          </Box>
+          <Box maxWidth={700} width="100%">
+            <Box mb={2}>
+              <Typography>
+                {t("CharacterPages.edit.imagesGalleryTitle")}
+              </Typography>
+            </Box>
+            <ImagesGallery onDeleteIconClick={onDeleteIconClick} />
+          </Box>
+          <ActionModal
+            headlineText={t("CharacterPages.edit.modal.headlineText")}
+            open={imageToRemoveModalData.isOpen}
+            onClose={() =>
+              setImageToRemoveModalData({ isOpen: false, filename: "" })
+            }
+            onActionBtnClickPromise={() =>
+              handleImageDelete(imageToRemoveModalData.filename)
+            }
+            preChildrenTitle={{
+              preTitle: t("CharacterPages.edit.modal.sceneryPretitle"),
+              title: imageToRemoveModalData.filename,
+            }}
+          >
+            {t("CharacterPages.edit.modal.text")}
+          </ActionModal>
+        </NotFoundWrapper>
       </DashboardLayoutWrapper>
-      <ActionModal
-        headlineText={t("CharacterPages.edit.modal.headlineText")}
-        open={imageToRemoveModalData.isOpen}
-        onClose={() =>
-          setImageToRemoveModalData({ isOpen: false, filename: "" })
-        }
-        onActionBtnClickPromise={() =>
-          handleImageDelete(imageToRemoveModalData.filename)
-        }
-        preChildrenTitle={{
-          preTitle: t("CharacterPages.edit.modal.sceneryPretitle"),
-          title: imageToRemoveModalData.filename,
-        }}
-      >
-        {t("CharacterPages.edit.modal.text")}
-      </ActionModal>
     </>
   );
 };
