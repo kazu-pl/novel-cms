@@ -4,7 +4,7 @@ import CardMedia from "@mui/material/CardMedia";
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
 import { useAppSelector } from "common/store/hooks";
-import { selectSingleCharacter } from "features/character/store/characterSlice";
+import { selectSingleCharacterData } from "features/character/store/characterSlice";
 import { API_URL } from "common/constants/env";
 import Box from "@mui/system/Box";
 import { Typography } from "@mui/material";
@@ -15,7 +15,7 @@ export interface ImagesGalleryProps {
 }
 
 const ImagesGallery = ({ onDeleteIconClick }: ImagesGalleryProps) => {
-  const character = useAppSelector(selectSingleCharacter);
+  const character = useAppSelector(selectSingleCharacterData);
   const { t } = useTranslation();
 
   return (

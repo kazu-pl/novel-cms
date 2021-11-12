@@ -121,6 +121,7 @@ const SceneryList = () => {
       />
       <DashboardLayoutWrapper title={t("SceneryPages.list.title")}>
         <Table
+          isLoading={sceneries.isFetching}
           data={sceneries.data}
           tableName={t("SceneryPages.list.table.title")}
           pagination={{

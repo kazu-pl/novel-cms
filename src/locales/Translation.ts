@@ -195,6 +195,7 @@ export interface Translation {
   };
   notFoundPage: {
     title: string;
+    goToMainPageBtn: string;
     metaData: {
       description: string;
       imageAlt: string;

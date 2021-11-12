@@ -3,7 +3,7 @@ import { useAppSelector, useAppDispatch } from "common/store/hooks";
 import { Formik, Form, FormikHelpers } from "formik";
 import {
   fetchSingleScenery,
-  selectSingleScenery,
+  selectSingleSceneryData,
   updateSceneryBasicData,
 } from "features/scenery/store/scenerySlice";
 import { useParams } from "react-router-dom";
@@ -15,7 +15,7 @@ import { useLocalizedYup } from "common/yup";
 import { useSnackbar } from "notistack";
 
 const BasicDataForm = () => {
-  const scenery = useAppSelector(selectSingleScenery);
+  const scenery = useAppSelector(selectSingleSceneryData);
   const dispatch = useAppDispatch();
   const { id } = useParams();
   const { t } = useTranslation();

@@ -205,6 +205,7 @@ const en: Translation = {
   },
   notFoundPage: {
     title: "Not found",
+    goToMainPageBtn: "Go to dashbaord",
     metaData: {
       description: "Not found",
       imageAlt: "Not found",

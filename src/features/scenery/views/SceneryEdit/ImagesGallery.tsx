@@ -4,7 +4,7 @@ import CardMedia from "@mui/material/CardMedia";
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
 import { useAppSelector } from "common/store/hooks";
-import { selectSingleScenery } from "features/scenery/store/scenerySlice";
+import { selectSingleSceneryData } from "features/scenery/store/scenerySlice";
 import { API_URL } from "common/constants/env";
 import Box from "@mui/system/Box";
 import { Typography } from "@mui/material";
@@ -15,7 +15,7 @@ export interface ImagesGalleryProps {
 }
 
 const ImagesGallery = ({ onDeleteIconClick }: ImagesGalleryProps) => {
-  const scenery = useAppSelector(selectSingleScenery);
+  const scenery = useAppSelector(selectSingleSceneryData);
   const { t } = useTranslation();
 
   return (
