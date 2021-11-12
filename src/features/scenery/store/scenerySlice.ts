@@ -202,6 +202,8 @@ const scenerySlice = createSlice({
 
 export const selectSceneries = (state: RootState) => state.scenery.sceneries;
 export const selectSingleScenery = (state: RootState) =>
+  state.scenery.singleScenery;
+export const selectSingleSceneryData = (state: RootState) =>
   state.scenery.singleScenery.data;
 
 export const { resetSingleSceneryData } = scenerySlice.actions;
