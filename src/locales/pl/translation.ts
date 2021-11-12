@@ -205,6 +205,7 @@ const pl: Translation = {
   },
   notFoundPage: {
     title: "nie znaleziono",
+    goToMainPageBtn: "wróć do dashbaordu",
     metaData: {
       description: "nie znaleziono strony",
       imageAlt: "brak strony",

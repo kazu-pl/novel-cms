@@ -1,10 +1,15 @@
-import { StyledTitle } from "./NotFound.styled";
 import { useTranslation } from "react-i18next";
 import HelmetDecorator from "components/HelmetDecorator";
+import Typography from "@mui/material/Typography";
+import Button from "novel-ui/lib/buttons/Button";
+import { PATHS_DASHBOARD } from "common/constants/paths";
+import useLocalizedPath from "common/router/useLocalizedPath";
+import Box from "@mui/material/Box";
 
 const NotFound = () => {
   const { i18n, t } = useTranslation();
   const currentLang = i18n.language;
+  const { path } = useLocalizedPath();
   return (
     <>
       <HelmetDecorator
@@ -14,7 +19,19 @@ const NotFound = () => {
         lang={currentLang}
         title="404"
       />
-      <StyledTitle>{t("notFoundPage.title")}</StyledTitle>
+      <Typography variant="h1">404</Typography>
+      <Typography variant="h4">{t("notFoundPage.title")}</Typography>
+      <Box
+        maxWidth="600px"
+        width="100%"
+        mt={2}
+        display="flex"
+        justifyContent="flex-end"
+      >
+        <Button to={path(PATHS_DASHBOARD.DASHBOARD)} variant="contained">
+          {t("notFoundPage.goToMainPageBtn")}
+        </Button>
+      </Box>
     </>
   );
 };
