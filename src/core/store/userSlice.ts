@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { axiosInstance, axiosSecureInstance } from "common/axios";
 import { removeTokens, saveTokens, getTokens } from "common/auth/tokens";
 import {
+  AccessToken,
   FailedReqMsg,
   RequestLoginCredentials,
   RequestRemindPasswordCredentials,
@@ -32,6 +33,19 @@ export const login = createAsyncThunk(
     }
   }
 );
+
+export const refreshAccessToken = async (): Promise<AccessToken> => {
+  const tokens = getTokens();
+
+  const response = await axiosInstance.post<AccessToken>("/cms/refresh-token", {
+    refreshToken: tokens!.refreshToken,
+  });
+  saveTokens({
+    accessToken: response.data.accessToken,
+    refreshToken: tokens!.refreshToken,
+  });
+  return response.data;
+};
 
 export const logout = createAsyncThunk(
   "logout",

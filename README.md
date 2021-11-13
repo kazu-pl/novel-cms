@@ -1,3 +1,18 @@
+# How to redirect users after successful login to the page from which they were logged out due to expired session:
+
+- `1` - in axios interceptor and in PrivateRoute when user sessio ended redirect user to `/logout` url but pass query param: `?from=/my/url/from/user/was/logged/out`
+
+- `2` - in `/logout` redirect to `/login` but pass in state `from` member with the same value as you got in url query (you can also pass it in url and not in state - for `/login` page)
+
+- `3` - then in `/login` component check `location.state` (or url query it `/logout` passed `from` in query) and if there is a `from` query (or however you want to name it) redirect to that `from` path instead of default path after login form was successfuly submited
+
+For more, check:
+
+- `src/common/axios/axiosSecureInstance.ts`
+- `src/common/router/PrivateRoute.tsx`
+- `src/core/views/Login/Logout.tsx`
+- `src/core/views/Login/Login.tsx`
+
 # Axios interceptor that returns error sent by server so it's possible to display server response message on front application:
 
 ```

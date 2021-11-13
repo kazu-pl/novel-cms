@@ -6,10 +6,10 @@ import Button from "novel-ui/lib/buttons/Button";
 import { login } from "core/store/userSlice";
 import { useAppDispatch } from "common/store/hooks";
 import { RequestLoginCredentials } from "types/novel-server.types";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { PATHS_CORE, PATHS_DASHBOARD } from "common/constants/paths";
-import { useLayoutEffect } from "react";
-import { getTokens, isAccessTokenExpired } from "common/auth/tokens";
+import { useLayoutEffect, useEffect } from "react";
+import { getTokens, isTokenExpired } from "common/auth/tokens";
 import { useSnackbar } from "notistack";
 import useLocalizedPath from "common/router/useLocalizedPath";
 import { useTranslation } from "react-i18next";
@@ -17,6 +17,12 @@ import HelmetDecorator from "components/HelmetDecorator";
 import CoreViewsLayoutWrapper, {
   LowerFormLink,
 } from "common/wrappers/CoreViewsLayoutWrapper";
+
+export const urlLogoutReasonQuery = {
+  key: "reason",
+  value: "refreshtokenexpired",
+};
+export const urlFromQuery = "from";
 
 const initialValues: RequestLoginCredentials = {
   email: "",
@@ -30,6 +36,8 @@ const LoginView = () => {
   const { t, i18n } = useTranslation();
   const yup = useLocalizedYup();
   const { enqueueSnackbar } = useSnackbar();
+  const location = useLocation();
+
   const validationSchema = yup.object({
     email: yup.string().email().required(),
     password: yup.string().required(),
@@ -37,14 +45,37 @@ const LoginView = () => {
 
   useLayoutEffect(() => {
     const tokens = getTokens();
-    if (tokens && !isAccessTokenExpired(tokens.accessToken))
+    if (
+      tokens &&
+      !isTokenExpired(tokens.accessToken) &&
+      !isTokenExpired(tokens.refreshToken)
+    )
       navigate(path(PATHS_DASHBOARD.DASHBOARD));
   });
+
+  useEffect(() => {
+    if (
+      location.state &&
+      location.state[urlLogoutReasonQuery.key] &&
+      location.state[urlLogoutReasonQuery.key] === urlLogoutReasonQuery.value
+    ) {
+      enqueueSnackbar(
+        "Session ended. login again to go to the previous page.",
+        {
+          variant: "info",
+        }
+      );
+    }
+  }, [location, enqueueSnackbar]);
 
   const handleSubmit = async (values: RequestLoginCredentials) => {
     try {
       await dispatch(login(values));
-      navigate(path(PATHS_DASHBOARD.DASHBOARD));
+      if (location.state && location.state[urlFromQuery]) {
+        navigate(location.state[urlFromQuery]); // I can't use path() here because location.state[urlFromQuery] can be from axiosInterceptor where I can't use PathWithoutLang to pass only path without lang prefix
+      } else {
+        navigate(path(PATHS_DASHBOARD.DASHBOARD));
+      }
     } catch (err) {
       enqueueSnackbar(err as string, {
         variant: "error",

@@ -1,5 +1,6 @@
 import { useRef, useLayoutEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import getSearchParamsFromUrl from "common/router/getSearchParamsFromUrl";
 
 export interface InitialPaginationSearchParamsProps<SortDirection> {
   sortBy: string;
@@ -46,16 +47,9 @@ const usePaginationSearchParams = <SortDirection,>(
     sortDirection,
   });
 
-  // below params are params when you refresh page or write your own search params and hit enter
-  const paramsFromUrlOnRefresh = new URLSearchParams(location.search);
-  const paramsFromUrlOnRefreshAsObject = Array.from(
-    paramsFromUrlOnRefresh
-  ).reduce((prev, current) => {
-    return {
-      ...prev,
-      [current[0]]: current[1],
-    };
-  }, {} as InitialPaginationSearchParamsProps<SortDirection>);
+  const paramsFromUrlOnRefreshAsObject = getSearchParamsFromUrl<
+    InitialPaginationSearchParamsProps<SortDirection>
+  >(location.search);
 
   useLayoutEffect(() => {
     //  options?.pushToInitialParamsOnFirstPageEnter specifies whether the hook will imiedietly push queries in url on first route enter or not
