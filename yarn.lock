@@ -1334,6 +1334,11 @@
   resolved "https://registry.yarnpkg.com/@exodus/schemasafe/-/schemasafe-1.0.0-rc.6.tgz#7985f681564cff4ffaebb5896eb4be20af3aae7a"
   integrity sha512-dDnQizD94EdBwEj/fh3zPRa/HWCS9O5au2PuHhZBbuM3xWHxuaKzPBOEWze7Nn0xW68MIpZ7Xdyn1CoCpjKCuQ==
 
+"@fvilers/disable-react-devtools@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@fvilers/disable-react-devtools/-/disable-react-devtools-1.2.1.tgz#4a3bf562e12f84d9dc3029f652859b45e0404818"
+  integrity sha512-I9j2seCK/uhEa5kHUQUDbYtWWnVbx0yUiRtb8OsHNNeeqKP8AQbBsqY82/pBrwbEiXqRq4YBsdFGhAAIC91W4Q==
+
 "@hapi/address@2.x.x":
   version "2.1.4"
   resolved "https://registry.yarnpkg.com/@hapi/address/-/address-2.1.4.tgz#5d67ed43f3fd41a69d4b9ff7b56e7c0d1d0a81e5"
