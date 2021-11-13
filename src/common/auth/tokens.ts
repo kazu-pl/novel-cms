@@ -17,12 +17,10 @@ export const getTokens = (): Tokens | null => {
   return JSON.parse(tokens);
 };
 
-export const isAccessTokenExpired = (accessToken: string) => {
-  const decodedAccessToken = jwtDecode<JwtPayload>(accessToken);
+export const isTokenExpired = (token: string) => {
+  const decodedToken = jwtDecode<JwtPayload>(token);
 
-  return decodedAccessToken.exp
-    ? decodedAccessToken.exp < Date.now() / 1000
-    : true;
+  return decodedToken.exp ? decodedToken.exp < Date.now() / 1000 : true;
 };
 
 export const removeTokens = () => {

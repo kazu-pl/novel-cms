@@ -9,7 +9,7 @@ import { RequestLoginCredentials } from "types/novel-server.types";
 import { useNavigate } from "react-router-dom";
 import { PATHS_CORE, PATHS_DASHBOARD } from "common/constants/paths";
 import { useLayoutEffect } from "react";
-import { getTokens, isAccessTokenExpired } from "common/auth/tokens";
+import { getTokens, isTokenExpired } from "common/auth/tokens";
 import { useSnackbar } from "notistack";
 import useLocalizedPath from "common/router/useLocalizedPath";
 import { useTranslation } from "react-i18next";
@@ -37,7 +37,11 @@ const LoginView = () => {
 
   useLayoutEffect(() => {
     const tokens = getTokens();
-    if (tokens && !isAccessTokenExpired(tokens.accessToken))
+    if (
+      tokens &&
+      !isTokenExpired(tokens.accessToken) &&
+      !isTokenExpired(tokens.refreshToken)
+    )
       navigate(path(PATHS_DASHBOARD.DASHBOARD));
   });
 
