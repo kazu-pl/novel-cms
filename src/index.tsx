@@ -3,10 +3,14 @@ import App from "./App";
 import { store } from "./common/store/store";
 import { Provider } from "react-redux";
 import * as serviceWorker from "./serviceWorker";
-
+import { disableReactDevTools } from "@fvilers/disable-react-devtools";
 import { hydrate, render } from "react-dom";
 
 import "./i18n";
+
+if (process.env.NODE_ENV === "production") {
+  disableReactDevTools();
+}
 
 const rootElement = document.getElementById("root") as HTMLDivElement;
 
