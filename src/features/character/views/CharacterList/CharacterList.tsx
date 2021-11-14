@@ -148,7 +148,7 @@ const SceneryList = () => {
               title: t("CharacterPages.list.table.columns.total"),
               key: "imagesList",
               render: (row) => row.imagesList.length,
-              isSortable: true,
+              // isSortable: true,
             },
             {
               title: t("CharacterPages.list.table.columns.createdAt"),

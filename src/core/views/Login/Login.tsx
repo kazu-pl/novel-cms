@@ -6,9 +6,9 @@ import Button from "novel-ui/lib/buttons/Button";
 import { login } from "core/store/userSlice";
 import { useAppDispatch } from "common/store/hooks";
 import { RequestLoginCredentials } from "types/novel-server.types";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Navigate } from "react-router-dom";
 import { PATHS_CORE, PATHS_DASHBOARD } from "common/constants/paths";
-import { useLayoutEffect, useEffect } from "react";
+import { useEffect } from "react";
 import { getTokens, isTokenExpired } from "common/auth/tokens";
 import { useSnackbar } from "notistack";
 import useLocalizedPath from "common/router/useLocalizedPath";
@@ -43,16 +43,6 @@ const LoginView = () => {
     password: yup.string().required(),
   });
 
-  useLayoutEffect(() => {
-    const tokens = getTokens();
-    if (
-      tokens &&
-      !isTokenExpired(tokens.accessToken) &&
-      !isTokenExpired(tokens.refreshToken)
-    )
-      navigate(path(PATHS_DASHBOARD.DASHBOARD));
-  });
-
   useEffect(() => {
     if (
       location.state &&
@@ -79,6 +69,15 @@ const LoginView = () => {
       });
     }
   };
+
+  const tokens = getTokens();
+  if (
+    tokens &&
+    !isTokenExpired(tokens.accessToken) &&
+    !isTokenExpired(tokens.refreshToken)
+  ) {
+    return <Navigate to={path(PATHS_DASHBOARD.DASHBOARD)} replace />;
+  }
 
   return (
     <>
