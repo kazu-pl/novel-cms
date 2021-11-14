@@ -1,6 +1,9 @@
 import { Translation } from "../Translation";
 
 const en: Translation = {
+  notifications: {
+    sessionEnd: "Session ended. login to go to the previous page",
+  },
   form: {
     requiredFieldInputMsg: "This field is required",
     wrongEmailMsg: "Wrong email format",

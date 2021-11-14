@@ -11,6 +11,7 @@ import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
 import Typography from "@mui/material/Typography";
 import { urlFromQuery } from "core/views/Login";
+import { useTranslation } from "react-i18next";
 
 export interface PrivateRouteProps extends RouteProps {}
 
@@ -18,6 +19,7 @@ const PrivateRoute = (props: PrivateRouteProps) => {
   const { path } = useLocalizedPath();
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
+  const { t } = useTranslation();
   const tokens = getTokens();
   const [isCheckingAuth, setIsCheckingAuth] = useState(false);
 
@@ -30,12 +32,9 @@ const PrivateRoute = (props: PrivateRouteProps) => {
         const from = window.location.href.slice(window.location.origin.length);
 
         setIsCheckingAuth(false);
-        enqueueSnackbar(
-          "Session ended. login again to go to the previous page.",
-          {
-            variant: "info",
-          }
-        );
+        enqueueSnackbar(t("notifications.sessionEnd"), {
+          variant: "info",
+        });
         navigate(path(PATHS_CORE.LOGIN), {
           state: {
             [urlFromQuery]: from,
@@ -52,7 +51,7 @@ const PrivateRoute = (props: PrivateRouteProps) => {
       setIsCheckingAuth(true);
       handleRefreshToken();
     }
-  }, [tokens, enqueueSnackbar, navigate, path]);
+  }, [tokens, enqueueSnackbar, navigate, path, t]);
 
   if (!tokens) {
     const from = window.location.href.slice(window.location.origin.length);
@@ -71,7 +70,7 @@ const PrivateRoute = (props: PrivateRouteProps) => {
     isTokenExpired(tokens.refreshToken) &&
     isTokenExpired(tokens.accessToken)
   ) {
-    enqueueSnackbar("Session ended. login again to go to the previous page.", {
+    enqueueSnackbar(t("notifications.sessionEnd"), {
       variant: "info",
     });
     const from = window.location.href.slice(window.location.origin.length);

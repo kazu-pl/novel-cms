@@ -59,14 +59,11 @@ const LoginView = () => {
       location.state[urlLogoutReasonQuery.key] &&
       location.state[urlLogoutReasonQuery.key] === urlLogoutReasonQuery.value
     ) {
-      enqueueSnackbar(
-        "Session ended. login again to go to the previous page.",
-        {
-          variant: "info",
-        }
-      );
+      enqueueSnackbar(t("notifications.sessionEnd"), {
+        variant: "info",
+      });
     }
-  }, [location, enqueueSnackbar]);
+  }, [location, enqueueSnackbar, t]);
 
   const handleSubmit = async (values: RequestLoginCredentials) => {
     try {
