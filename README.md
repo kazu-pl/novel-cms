@@ -19,6 +19,49 @@ For more, check:
 - `src/core/views/Login/Logout.tsx`
 - `src/core/views/Login/Login.tsx`
 
+# Redirect users to `/dashbaord` when they are logged in but manually enter `/login` or `/` url and hit enter:
+
+To redirect user from `/login` to another route and don't allow logged user to login again, you need to write function in `Login.tsx` that will handle that behaviour.
+
+Previous I had:
+
+```
+// src/core/views/Login/Login.tsx
+
+useLayoutEffect(() => {
+const tokens = getTokens();
+if (
+  tokens &&
+  !isTokenExpired(tokens.accessToken) &&
+  !isTokenExpired(tokens.refreshToken)
+)
+  navigate(path(PATHS_DASHBOARD.DASHBOARD));
+});
+
+
+```
+
+But it somehow didn't work and user was able to still enter login page (Maybe because it's not react-router-dom v6? ).
+
+To correct that, replace above code with the following one:
+
+```
+// src/core/views/Login/Login.tsx
+
+
+const tokens = getTokens();
+if (
+    tokens &&
+  !isTokenExpired(tokens.accessToken) &&
+  !isTokenExpired(tokens.refreshToken)
+) {
+    return <Navigate to={path(PATHS_DASHBOARD.DASHBOARD)} replace />;
+}
+
+```
+
+It will work now and if someone log in, then change url manually to `/login` (`/` in my project) and hit enter OR open second tab on `/login` (`/` in my project) they will be redirected to `/dashbaord` route.
+
 # Axios interceptor that returns error sent by server so it's possible to display server response message on front application:
 
 ```
