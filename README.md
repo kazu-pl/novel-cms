@@ -1,3 +1,9 @@
+# IMPORTANT: rename `"postbuild": "react-snap"` script to `"snap": "react-snap"`
+
+If you have script `"postbuild": "react-snap"` in your package json, then it will automatically fire when `build` script is done. Its really useful for `postbuild` to auto run and generate static pages with usage of `react-snap` but it works only in your local environment. When I tried to push this app to `vercel` it created an error because there was no chrome in vercel. So i ranamed the script to `snap` so it won't auto fire on build and will allow to deploy to vercel.
+
+BUT it means that if you want to generate static pages you have to do it manually by running `yarn snap` after `yarn build` or change `build` script from `react-scripts build` to something like `react-scripts build && yarn snap`
+
 # How to redirect users after successful login to the page from which they were logged out due to expired session:
 
 - `1` - in axios interceptor and in PrivateRoute when user sessio ended redirect user to `/logout` url but pass query param: `?from=/my/url/from/user/was/logged/out`

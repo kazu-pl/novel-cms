@@ -46,7 +46,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "generateTypes": "node ./generateTypes.ts",
-    "postbuild": "react-snap"
+    "snap": "react-snap"
   },
   "eslintConfig": {
     "extends": "react-app"
