@@ -1,6 +1,10 @@
 import { Translation } from "../Translation";
 
 const de: Translation = {
+  notifications: {
+    sessionEnd:
+      "Sitzung beendet. Einloggen um zur vorherigen Seite zu gelangen",
+  },
   form: {
     requiredFieldInputMsg: "Dieses Feld wird benötigt",
     wrongEmailMsg: "Falsches Emailformat",

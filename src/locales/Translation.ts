@@ -1,4 +1,7 @@
 export interface Translation {
+  notifications: {
+    sessionEnd: string;
+  };
   form: {
     requiredFieldInputMsg: string;
     wrongEmailMsg: string;

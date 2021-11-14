@@ -1,6 +1,9 @@
 import { Translation } from "../Translation";
 
 const pl: Translation = {
+  notifications: {
+    sessionEnd: "Wygasły token. Zaloguj się aby przejść na poprzednią stronę",
+  },
   form: {
     requiredFieldInputMsg: "To pole jest wymagane",
     wrongEmailMsg: "Podaj poprawny email",
