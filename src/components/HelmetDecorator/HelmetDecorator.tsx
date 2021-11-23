@@ -3,7 +3,7 @@ import { avaliableLanguages, fallbackLng } from "locales";
 import { Helmet } from "react-helmet";
 import { useTranslation } from "react-i18next";
 
-const hostname = `https://address.com`;
+const hostname = `https://novel-cms-three.vercel.app`;
 
 export interface HelmetDecoratorProps {
   lang?: string;
@@ -28,10 +28,11 @@ const HelmetDecorator = ({
       <html lang={lang || i18n.language} />
       <title>Novel | {title}</title>
       <meta name="description" content={description} />
-
+      <meta property="og:type" content="website" />
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
-      {imageUrl && <meta property="og:image" content={hostname + imageUrl} />}
+      {/* {imageUrl && <meta property="og:image" content={hostname + imageUrl} />} */}
+      {imageUrl && <meta property="og:image" content={imageUrl} />}
       <meta
         property="og:url"
         content={hostname + window.location.pathname + window.location.search}
