@@ -18,7 +18,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { useLocalizedYup } from "common/yup";
 import FormHelperText from "@mui/material/FormHelperText";
 import { IconButton, Tooltip, Typography } from "@mui/material";
-import PreviewIcon from "@mui/icons-material/Preview";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import replaceAt from "./replaceAt";
@@ -273,7 +273,7 @@ const CharacterOnScreenForm = ({
                             });
                       }}
                     >
-                      <PreviewIcon />
+                      <VisibilityIcon />
                     </IconButton>
                   </Tooltip>
                 </Box>

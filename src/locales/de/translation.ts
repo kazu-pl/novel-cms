@@ -232,6 +232,13 @@ const de: Translation = {
           addNewCharBtn: "Füge einen neuen Charakter hinzu",
         },
       },
+      dialogForm: {
+        title: "Charakters",
+        PreviewTooltip:
+          "Klicken Sie hier, um den Dialog im Vorschaufenster anzuzeigen",
+        addDialogBtn: "Dialog hinzufügen",
+        addNewDialogBtn: "Neuen Dialog hinzufügen",
+      },
       metaData: {
         description: "Kapitel der Spielgeschichte",
         imageAlt: "image alt",

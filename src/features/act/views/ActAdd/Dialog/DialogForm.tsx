@@ -5,11 +5,12 @@ import Button from "novel-ui/lib/buttons/Button";
 import { useState } from "react";
 import TextFieldFormik from "novel-ui/lib/formik/TextFieldFormik";
 import Typography from "@mui/material/Typography";
-import PreviewIcon from "@mui/icons-material/Preview";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import CharacterOnScreenForm from "./CharacterOfScreenForm";
 import { useLocalizedYup } from "common/yup";
+import { useTranslation } from "react-i18next";
 
 export interface DialogFormProps {
   onSubmit: (values: Dialog) => void;
@@ -24,7 +25,7 @@ const DialogForm = ({
 }: DialogFormProps) => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const yup = useLocalizedYup();
-
+  const { t } = useTranslation();
   const handleSubmit = (values: Dialog) => {
     onSubmit(values);
     setIsFormOpen(false);
@@ -82,7 +83,9 @@ const DialogForm = ({
                 border="1px solid rgba(0,0,0,0.2)"
                 p={2}
               >
-                <Typography variant="overline">postacie</Typography>
+                <Typography variant="overline">
+                  {t("actsPages.add.dialogForm.title")}
+                </Typography>
 
                 <FieldArray
                   name="charactersOnScreen"
@@ -97,12 +100,16 @@ const DialogForm = ({
               </Box>
               <Box display="flex" justifyContent="space-between">
                 <Box>
-                  <Tooltip title="see dialog on preview window">
+                  <Tooltip
+                    title={
+                      t("actsPages.add.dialogForm.PreviewTooltip") as string
+                    }
+                  >
                     <IconButton
                       edge="start"
                       onClick={() => applyTextsForPreview(values)}
                     >
-                      <PreviewIcon />
+                      <VisibilityIcon />
                     </IconButton>
                   </Tooltip>
                 </Box>
@@ -112,11 +119,11 @@ const DialogForm = ({
                     color="error"
                     type="button"
                   >
-                    cancel
+                    {t("buttons.cancel")}
                   </Button>
                   <Box ml={2}>
                     <Button variant="contained" onClick={() => submitForm()}>
-                      Dodaj dialog
+                      {t("actsPages.add.dialogForm.addDialogBtn")}
                     </Button>
                   </Box>
                 </Box>
@@ -128,7 +135,7 @@ const DialogForm = ({
       {!isFormOpen && (
         <Box display="flex" justifyContent="flex-end">
           <Button variant="contained" onClick={() => setIsFormOpen(true)}>
-            Dodaj nowy dialog
+            {t("actsPages.add.dialogForm.addNewDialogBtn")}
           </Button>
         </Box>
       )}

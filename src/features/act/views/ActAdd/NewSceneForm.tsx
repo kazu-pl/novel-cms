@@ -22,10 +22,14 @@ import { API_URL } from "common/constants/env";
 import DialogForm from "./Dialog/DialogForm";
 import { useState } from "react";
 import PreviewBox from "./PreviewBox";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import IconButton from "@mui/material/IconButton";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
-const NewSceneDialogs = (values: any) => {
+const CheckValues = (values: any) => {
   useEffect(() => {
-    console.log({ newSceneValues: values });
+    console.log({ values });
   }, [values]);
 
   return null;
@@ -87,8 +91,8 @@ const NewSceneForm = ({
     >
       {({ submitForm, values }) => (
         <>
-          <NewSceneDialogs {...values} />
-          <Box p={2} boxShadow={1} mb={2} mt={2} display="flex">
+          <CheckValues {...values} />
+          <Box mb={2} mt={2} display="flex" p={2} boxShadow={1}>
             <Box width="50%" mr={1}>
               <Box>
                 <Typography>Add new scene</Typography>
@@ -158,6 +162,7 @@ const NewSceneForm = ({
                     name="dialogs"
                     render={(props) => (
                       <DialogForm
+                        {...props}
                         onSubmit={(values) => props.push(values)}
                         applyTextsForPreview={setDialogPreviewData}
                         initialValues={{
@@ -178,8 +183,61 @@ const NewSceneForm = ({
                   {...dialogPreviewData}
                 />
               )}
+              <Box mt={2}>
+                <Typography variant="overline">
+                  Dialogs in this scene:
+                </Typography>
+                <FieldArray
+                  name="dialogs"
+                  render={({ remove }) => (
+                    <>
+                      {values.dialogs.map((dialog, dialogIndex) => (
+                        <Box
+                          key={dialogIndex}
+                          display="flex"
+                          alignItems="center"
+                          justifyContent="space-between"
+                          p={1}
+                          boxShadow={1}
+                        >
+                          <Box display="flex" alignItems="center">
+                            <Typography>
+                              Character:
+                              <span style={{ fontWeight: 500 }}>
+                                {dialog.characterSayingText}
+                              </span>
+                            </Typography>
+                            <Box ml={2} mr={2}>
+                              <Typography>
+                                Text:{" "}
+                                {dialog.text.length > 75
+                                  ? `${dialog.text.slice(0, 75)}...`
+                                  : dialog.text}
+                              </Typography>
+                            </Box>
+                          </Box>
+                          <Box display="flex">
+                            <IconButton
+                              onClick={() => setDialogPreviewData(dialog)}
+                            >
+                              <VisibilityIcon />
+                            </IconButton>
+                            <IconButton onClick={() => {}}>
+                              <EditIcon />
+                            </IconButton>
+                            <IconButton onClick={() => remove(dialogIndex)}>
+                              <DeleteIcon />
+                            </IconButton>
+                          </Box>
+                        </Box>
+                      ))}
+                    </>
+                  )}
+                />
+              </Box>
             </Box>
           </Box>
+
           <Box display="flex" justifyContent="flex-end" mt={2}>
             <Button
               onClick={() => handleCloseForm()}

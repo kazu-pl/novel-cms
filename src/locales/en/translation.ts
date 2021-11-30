@@ -230,6 +230,12 @@ const en: Translation = {
           addNewCharBtn: "Add new character",
         },
       },
+      dialogForm: {
+        title: "Characters",
+        PreviewTooltip: "Click to see dialog on preview window",
+        addDialogBtn: "Add dialog",
+        addNewDialogBtn: "Add new dialog",
+      },
       metaData: {
         description: "Game story acts",
         imageAlt: "image alt",

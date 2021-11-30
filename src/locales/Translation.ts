@@ -220,6 +220,12 @@ export interface Translation {
           addNewCharBtn: string;
         };
       };
+      dialogForm: {
+        title: string;
+        PreviewTooltip: string;
+        addDialogBtn: string;
+        addNewDialogBtn: string;
+      };
       metaData: {
         description: string;
         imageAlt: string;

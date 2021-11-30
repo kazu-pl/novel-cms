@@ -230,6 +230,12 @@ const pl: Translation = {
           addNewCharBtn: "Dodaj nową postać",
         },
       },
+      dialogForm: {
+        title: "Postacie",
+        PreviewTooltip: "Kliknij aby zobaczyć dialog",
+        addDialogBtn: "dodaj dialog",
+        addNewDialogBtn: "Dodaj nowy dialog",
+      },
       metaData: {
         description: "rozdziały gry",
         imageAlt: "image alt",
