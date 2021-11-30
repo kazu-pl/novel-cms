@@ -8,6 +8,7 @@ import {
 import userSlice, { logout } from "core/store/userSlice";
 import scenerySlice from "features/scenery/store/scenerySlice";
 import characterSlice from "features/character/store/characterSlice";
+import actSlice from "features/act/store/actSlice";
 
 import { Middleware } from "@reduxjs/toolkit";
 
@@ -22,6 +23,7 @@ const combinedReducer = combineReducers({
   user: userSlice,
   scenery: scenerySlice,
   character: characterSlice,
+  act: actSlice,
 });
 
 export type RootState = ReturnType<typeof combinedReducer>;

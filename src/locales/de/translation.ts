@@ -15,6 +15,10 @@ const de: Translation = {
     forgotPassword: "Ich habe mein Passwort vergessen",
     enterTitle: "Titel eingeben",
     enterDescription: "Beschreibung eingeben",
+    number: {
+      min: "minimal zulässiger Wert ist:",
+      max: "maximal zulässiger Wert ist:",
+    },
   },
   buttons: {
     add: "hinzufügen",
@@ -39,6 +43,12 @@ const de: Translation = {
       items: {
         list: "Liste der Charaktere",
         add: "neue hinzufügen",
+      },
+    },
+    acts: {
+      title: "Kapitel",
+      items: {
+        add: "hinzufügen",
       },
     },
   },
@@ -204,6 +214,28 @@ const de: Translation = {
         description: "Dies ist eine Charakterbearbeitungsseite",
         imageAlt: "image alt",
         title: "Charakter bearbeiten",
+      },
+    },
+  },
+  actsPages: {
+    add: {
+      title: "Neues Kapitel hinzufügen",
+      charactersOnScreen: {
+        list: {
+          character: "Charakter",
+        },
+        form: {
+          PreviewTooltip:
+            "Klicken Sie hier, um die Charaktere anzuzeigen, bevor Sie sie hinzufügen",
+          editCharBtn: "Bearbeite den Charakter",
+          addCharBtn: "Füge einen Charakter hinzu",
+          addNewCharBtn: "Füge einen neuen Charakter hinzu",
+        },
+      },
+      metaData: {
+        description: "Kapitel der Spielgeschichte",
+        imageAlt: "image alt",
+        title: "Kapitel",
       },
     },
   },

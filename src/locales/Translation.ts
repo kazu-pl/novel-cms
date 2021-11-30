@@ -12,6 +12,10 @@ export interface Translation {
     forgotPassword: string;
     enterTitle: string;
     enterDescription: string;
+    number: {
+      min: string;
+      max: string;
+    };
   };
   buttons: {
     add: string;
@@ -35,6 +39,12 @@ export interface Translation {
       title: string;
       items: {
         list: string;
+        add: string;
+      };
+    };
+    acts: {
+      title: string;
+      items: {
         add: string;
       };
     };
@@ -188,6 +198,27 @@ export interface Translation {
         headlineText: string;
         sceneryPretitle: string;
         text: string;
+      };
+      metaData: {
+        description: string;
+        imageAlt: string;
+        title: string;
+      };
+    };
+  };
+  actsPages: {
+    add: {
+      title: string;
+      charactersOnScreen: {
+        list: {
+          character: string;
+        };
+        form: {
+          PreviewTooltip: string;
+          editCharBtn: string;
+          addCharBtn: string;
+          addNewCharBtn: string;
+        };
       };
       metaData: {
         description: string;

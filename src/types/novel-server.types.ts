@@ -125,7 +125,7 @@ export interface Avatar {
 
 /**
  * this type is the type of response you can try in then() in components try/catch block
- * @example {"message":"resource was created successfuly"}
+ * @example {"message":"request was sucessfully processed"}
  */
 export interface SuccessfulReqMsg {
   /** message you can dispaly on front application */
@@ -221,6 +221,22 @@ export interface SceneriesResponse {
 }
 
 /**
+ * type of single entity of scenery disctionary
+ * @example {"title":"Mansion","id":"0000-0000-0000-0000"}
+ */
+export interface SingleSceneryFromDictionary {
+  title: string;
+  id: string;
+}
+
+/**
+ * @example {"data":[]}
+ */
+export interface SceneriesDictionary {
+  data: SingleSceneryFromDictionary[];
+}
+
+/**
  * type of request data passed in request when creating new character or update basic character data
  * @example {"title":"Yuuta","description":"main character"}
  */
@@ -289,9 +305,141 @@ export interface CharactersResponse {
 }
 
 /**
+ * type of single entity of characters disctionary
+ * @example {"title":"Yuuta","id":"0000-0000-0000-0000"}
+ */
+export interface SingleCharacterFromDictionary {
+  title: string;
+  id: string;
+}
+
+/**
+ * @example {"data":[]}
+ */
+export interface CharactersDictionary {
+  data: SingleCharacterFromDictionary[];
+}
+
+/**
  * response with character data in `data` key
  */
 export interface SingleCharacterResponse {
   /** scenery */
   data: Character;
+}
+
+/**
+ * signle character visible on screen options
+ * @example {"name":"Yuuta","leftPosition":45,"zIndex":2,"imgUrl":"/files/character-sad.jpg"}
+ */
+export interface CharacterOnScreen {
+  /** name of the character visible on screen */
+  name: string;
+
+  /** X transition on the screen */
+  leftPosition: number;
+
+  /** z-index value */
+  zIndex: number;
+
+  /** link to character img */
+  imgUrl: string;
+}
+
+/**
+ * signle Dialog type
+ * @example {"text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras tempus enim ac molestie pharetra. Aliquam pretium pharetra finibus. Etiam rutrum","characterSayingText":"Yuuta","charactersOnScreen":{"allOf":{"$ref":"#/components/schemas/CharacterOnScreen"}}}
+ */
+export interface Dialog {
+  /** text that some charact is saying */
+  text: string;
+
+  /** character name that says the text */
+  characterSayingText: string;
+
+  /** array of characters visible on screen */
+  charactersOnScreen: CharacterOnScreen[];
+}
+
+/**
+ * signle Scene type
+ * @example {"title":"basic conversation between Yuuta and Shion","bgImgUrl":"/files/mansion.jpg","dialogs":{"allOf":{"$ref":"#/components/schemas/Dialog"}}}
+ */
+export interface Scene {
+  /** scene title */
+  title: string;
+
+  /** scene background image */
+  bgImgUrl: string;
+  dialogs: Dialog[];
+}
+
+/**
+ * Act type (used as newly adding Act item type and as a basic type extended by additional items from mongoDB in returning Act)
+ * @example {"title":"Act I - The beginning","desciption":"This is the first Act. It introduces all main characters.","type":"start","nextActId":"Act II - The Dawn","scenes":[]}
+ */
+export interface Act {
+  /** act title. Its unique title (no duplications allowed) */
+  title: string;
+
+  /** act description */
+  description: string;
+
+  /** act type */
+  type: "start" | "normal" | "end";
+
+  /** title of the next Act. If its end act, then nextActId is not needed. If its used to get first act to start game, pass 'start' */
+  nextActId?: string;
+  scenes: Scene[];
+}
+
+/**
+ * Act type that extends basic Act type. It Adds fields from mongoDB
+ * @example {"_id":"6181395d67568b70180ce93b","__v":0,"createdAt":"2021-11-04T11:01:42.143+00:00","updatedAt":"2021-11-04T11:01:42.143+00:00"}
+ */
+export type ActExtended = Act & { _id: string; __v: number; createdAt: string; updatedAt: string };
+
+/**
+ * @example {"_id":"6181395d67568b70180ce93b"}
+ */
+export type RequestUpdateAct = Act & { _id: string };
+
+/**
+ * response with all acts to dispaly them in a table
+ * @example {"data":[],"totalItems":0}
+ */
+export interface ActsResponse {
+  /** an array with all acts */
+  data: ActExtended[];
+
+  /** nmber of total acts */
+  totalItems: number;
+}
+
+/**
+ * contains id of act to delete
+ * @example {"id":"0000-0000-0000-0001"}
+ */
+export interface RequestDeleteAct {
+  /** act id */
+  id: string;
+}
+
+/**
+ * single act id and title
+ * @example {"id":"0000-0000-0000-0000","title":"Act I - The beginning of the Dawn"}
+ */
+export interface SingleActDictionaryObject {
+  /** act id */
+  id: string;
+
+  /** act title to display to user */
+  title: string;
+}
+
+/**
+ * list of objects with id and title of every act
+ */
+export interface ActDictionary {
+  data: SingleActDictionaryObject[];
 }

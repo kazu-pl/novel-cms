@@ -8,6 +8,10 @@ export function useLocalizedYup() {
     mixed: {
       required: t("form.requiredFieldInputMsg"),
     },
+    number: {
+      min: (props) => `${t("form.number.min")} ${props.min}`,
+      max: (props) => `${t("form.number.max")} ${props.max}`,
+    },
     string: {
       email: t("form.wrongEmailMsg"),
     },

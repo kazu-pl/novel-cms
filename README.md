@@ -170,6 +170,33 @@ return response.data;
 
 This was found [here](https://github.com/reduxjs/redux-toolkit/issues/910#issuecomment-801211740)
 
+# How to replace item in array and return new array with replaced element at the same time
+
+```
+export default function replaceAt(array: any[], index: number, value: any) {
+  const ret = array.slice(0);
+  ret[index] = value;
+  return ret;
+}
+
+
+```
+
+USAGE:
+
+```
+const newArrayWithReplacedItem = replaceAt(
+  charactersOnScreenArray,
+  indexOfCharacterToEdit,
+  newCharacterValues
+)
+
+```
+
+this method replaces an item in array and returns new array (with repalced item) at the same time. Solution found [here](https://www.peterbe.com/plog/replace-an-item-in-an-array-without-mutation-in-javascript)
+
+Just search for: `There's a much faster way and that's to use slice and it actually looks nicer too:`
+
 # How to create input type file with formik or other form library:
 
 Basucally, `<input type="file" />` is uncontrolled component and you can't set its value. To get value from uncontrolled component you can create ref and pass it to that `<input />` so you can read that ref value.

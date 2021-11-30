@@ -10,6 +10,7 @@ import {
   CharactersResponse,
   Character,
   SingleCharacterResponse,
+  CharactersDictionary,
 } from "types/novel-server.types";
 
 interface CharacterState {
@@ -20,6 +21,10 @@ interface CharacterState {
   };
   singleCharacter: {
     data: Character | null;
+    isFetching: boolean;
+  };
+  characterDictionary: {
+    data: CharactersDictionary["data"] | null;
     isFetching: boolean;
   };
 }
@@ -34,7 +39,21 @@ const initialState: CharacterState = {
     data: null,
     isFetching: false,
   },
+  characterDictionary: {
+    data: null,
+    isFetching: false,
+  },
 };
+
+export const fetchCharactersDictionary = createAsyncThunk(
+  "character/fetchCharactersDictionary",
+  async () => {
+    const response = await axiosSecureInstance.get<CharactersDictionary>(
+      `/characters/dictionary`
+    );
+    return response.data;
+  }
+);
 
 export const fetchCharacters = createAsyncThunk(
   "character/fetchCharacters",
@@ -173,6 +192,12 @@ const characterSlice = createSlice({
         data: null,
       };
     },
+    resetSceneryDictionaryData(state) {
+      state.characterDictionary = {
+        isFetching: state.characterDictionary.isFetching,
+        data: null,
+      };
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchCharacters.pending, (state) => {
@@ -199,6 +224,17 @@ const characterSlice = createSlice({
     builder.addCase(resetSingleCharacterData, (state) => {
       state.singleCharacter.data = null;
     });
+    builder.addCase(fetchCharactersDictionary.pending, (state) => {
+      state.characterDictionary.isFetching = true;
+    });
+    builder.addCase(fetchCharactersDictionary.fulfilled, (state, action) => {
+      state.characterDictionary.isFetching = false;
+      state.characterDictionary.data = action.payload.data;
+    });
+    builder.addCase(fetchCharactersDictionary.rejected, (state) => {
+      state.characterDictionary.isFetching = false;
+      state.characterDictionary.data = null;
+    });
   },
 });
 
@@ -208,5 +244,10 @@ export const selectSingleCharacter = (state: RootState) =>
   state.character.singleCharacter;
 export const selectSingleCharacterData = (state: RootState) =>
   state.character.singleCharacter.data;
+
+export const selectCharactersDictionary = (state: RootState) =>
+  state.character.characterDictionary;
+
+export const { resetSceneryDictionaryData } = characterSlice.actions;
 
 export default characterSlice.reducer;
