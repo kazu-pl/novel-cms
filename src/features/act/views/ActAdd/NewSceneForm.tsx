@@ -27,6 +27,13 @@ import EditIcon from "@mui/icons-material/Edit";
 import IconButton from "@mui/material/IconButton";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 
+type DialogOptions =
+  | { isEditMode: false; dialogIndex: null }
+  | {
+      isEditMode: true;
+      dialogIndex: number;
+    };
+
 const CheckValues = (values: any) => {
   useEffect(() => {
     console.log({ values });
@@ -82,6 +89,27 @@ const NewSceneForm = ({
     characterSayingText: "",
     charactersOnScreen: [],
   });
+
+  const [initialDialogFormData, setInitialDialogFormData] = useState<Dialog>({
+    text: "",
+    characterSayingText: "",
+    charactersOnScreen: [],
+  });
+
+  const [dialogOptions, setDialogOptions] = useState<DialogOptions>({
+    isEditMode: false,
+    dialogIndex: null,
+  });
+
+  const [isDialogFormOpen, setIsDialogFormOpen] = useState(false);
+
+  const handleCloseDialogForm = () => {
+    setIsDialogFormOpen(false);
+    setDialogOptions({
+      isEditMode: false,
+      dialogIndex: null,
+    });
+  };
 
   return (
     <Formik
@@ -155,22 +183,55 @@ const NewSceneForm = ({
                   mt={2}
                 >
                   <Box mb={2}>
-                    <Typography variant="overline">Dialogs</Typography>
+                    <Typography variant="overline">
+                      {" "}
+                      {t("actsPages.add.dialogForm.title")}
+                    </Typography>
                   </Box>
 
                   <FieldArray
                     name="dialogs"
                     render={(props) => (
-                      <DialogForm
-                        {...props}
-                        onSubmit={(values) => props.push(values)}
-                        applyTextsForPreview={setDialogPreviewData}
-                        initialValues={{
-                          text: "",
-                          characterSayingText: "",
-                          charactersOnScreen: [],
-                        }}
-                      />
+                      <>
+                        {isDialogFormOpen && (
+                          <DialogForm
+                            {...props}
+                            isEditMode={dialogOptions.isEditMode}
+                            onSubmit={(values) => {
+                              dialogOptions.isEditMode
+                                ? props.replace(
+                                    dialogOptions.dialogIndex,
+                                    values
+                                  )
+                                : props.push(values);
+                            }}
+                            applyTextsForPreview={setDialogPreviewData}
+                            initialValues={initialDialogFormData}
+                            closeForm={handleCloseDialogForm}
+                          />
+                        )}
+                        {!isDialogFormOpen && (
+                          <Box display="flex" justifyContent="flex-end">
+                            <Button
+                              variant="contained"
+                              onClick={() => {
+                                setInitialDialogFormData({
+                                  text: "",
+                                  characterSayingText: "",
+                                  charactersOnScreen: [],
+                                });
+                                setDialogOptions({
+                                  isEditMode: false,
+                                  dialogIndex: null,
+                                });
+                                setIsDialogFormOpen(true);
+                              }}
+                            >
+                              {t("actsPages.add.dialogForm.addNewDialogBtn")}
+                            </Button>
+                          </Box>
+                        )}
+                      </>
                     )}
                   />
                 </Box>
@@ -185,7 +246,7 @@ const NewSceneForm = ({
               )}
               <Box mt={2}>
                 <Typography variant="overline">
-                  Dialogs in this scene:
+                  {t("actsPages.add.dialogForm.dialogsInScene.title")}:
                 </Typography>
                 <FieldArray
                   name="dialogs"
@@ -202,14 +263,20 @@ const NewSceneForm = ({
                         >
                           <Box display="flex" alignItems="center">
                             <Typography>
-                              Character:
+                              {t(
+                                "actsPages.add.dialogForm.dialogsInScene.character"
+                              )}
+                              :
                               <span style={{ fontWeight: 500 }}>
                                 {dialog.characterSayingText}
                               </span>
                             </Typography>
                             <Box ml={2} mr={2}>
                               <Typography>
-                                Text:{" "}
+                                {t(
+                                  "actsPages.add.dialogForm.dialogsInScene.text"
+                                )}
+                                :{" "}
                                 {dialog.text.length > 75
                                   ? `${dialog.text.slice(0, 75)}...`
                                   : dialog.text}
@@ -222,7 +289,16 @@ const NewSceneForm = ({
                             >
                               <VisibilityIcon />
                             </IconButton>
-                            <IconButton onClick={() => {}}>
+                            <IconButton
+                              onClick={() => {
+                                setInitialDialogFormData(dialog);
+                                setIsDialogFormOpen(true);
+                                setDialogOptions({
+                                  isEditMode: true,
+                                  dialogIndex,
+                                });
+                              }}
+                            >
                               <EditIcon />
                             </IconButton>
                             <IconButton onClick={() => remove(dialogIndex)}>

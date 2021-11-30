@@ -231,10 +231,17 @@ const en: Translation = {
         },
       },
       dialogForm: {
-        title: "Characters",
+        title: "Dialogs",
+        dialogsInScene: {
+          title: "Dialogs in this scene",
+          character: "Character",
+          text: "Text",
+        },
+        characterFormTitle: "Characters",
         PreviewTooltip: "Click to see dialog on preview window",
         addDialogBtn: "Add dialog",
         addNewDialogBtn: "Add new dialog",
+        editDialogBtn: "Edit dialog",
       },
       metaData: {
         description: "Game story acts",

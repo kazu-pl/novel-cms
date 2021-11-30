@@ -233,11 +233,18 @@ const de: Translation = {
         },
       },
       dialogForm: {
-        title: "Charakters",
+        title: "Dialogs",
+        dialogsInScene: {
+          title: "Dialoge in dieser Szene",
+          character: "Charakters",
+          text: "Text",
+        },
+        characterFormTitle: "Charakters",
         PreviewTooltip:
           "Klicken Sie hier, um den Dialog im Vorschaufenster anzuzeigen",
         addDialogBtn: "Dialog hinzufügen",
         addNewDialogBtn: "Neuen Dialog hinzufügen",
+        editDialogBtn: "Dialog bearbeiten",
       },
       metaData: {
         description: "Kapitel der Spielgeschichte",

@@ -231,10 +231,17 @@ const pl: Translation = {
         },
       },
       dialogForm: {
-        title: "Postacie",
+        title: "Dialogi",
+        dialogsInScene: {
+          title: "Dialogi w tej scenie",
+          character: "Postać",
+          text: "Tekst",
+        },
+        characterFormTitle: "Postacie",
         PreviewTooltip: "Kliknij aby zobaczyć dialog",
         addDialogBtn: "dodaj dialog",
         addNewDialogBtn: "Dodaj nowy dialog",
+        editDialogBtn: "Edytuj dialog",
       },
       metaData: {
         description: "rozdziały gry",

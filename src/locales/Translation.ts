@@ -222,9 +222,16 @@ export interface Translation {
       };
       dialogForm: {
         title: string;
+        dialogsInScene: {
+          title: string;
+          character: string;
+          text: string;
+        };
+        characterFormTitle: string;
         PreviewTooltip: string;
         addDialogBtn: string;
         addNewDialogBtn: string;
+        editDialogBtn: string;
       };
       metaData: {
         description: string;
