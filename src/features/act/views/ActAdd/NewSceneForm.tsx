@@ -22,11 +22,8 @@ import { API_URL } from "common/constants/env";
 import DialogForm, { createDialogValidationSchema } from "./Dialog/DialogForm";
 import { useState } from "react";
 import PreviewBox from "./PreviewBox";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
-import IconButton from "@mui/material/IconButton";
-import VisibilityIcon from "@mui/icons-material/Visibility";
 import { useLocalizedYup, Yup } from "common/yup";
+import DialogListItem from "./Dialog/DialogListItem";
 
 export const createSceneValidationSchema = (yup: Yup) =>
   yup.object({
@@ -268,59 +265,22 @@ const NewSceneForm = ({
                     render={({ remove }) => (
                       <>
                         {values.dialogs.map((dialog, dialogIndex) => (
-                          <Box
-                            key={dialogIndex}
-                            display="flex"
-                            alignItems="center"
-                            justifyContent="space-between"
-                            p={1}
-                            boxShadow={1}
-                          >
-                            <Box display="flex" alignItems="center">
-                              <Typography>
-                                {t(
-                                  "actsPages.add.dialogForm.dialogsInScene.character"
-                                )}
-                                :
-                                <span style={{ fontWeight: 500 }}>
-                                  {dialog.characterSayingText}
-                                </span>
-                              </Typography>
-                              <Box ml={2} mr={2}>
-                                <Typography>
-                                  {t(
-                                    "actsPages.add.dialogForm.dialogsInScene.text"
-                                  )}
-                                  :{" "}
-                                  {dialog.text.length > 75
-                                    ? `${dialog.text.slice(0, 75)}...`
-                                    : dialog.text}
-                                </Typography>
-                              </Box>
-                            </Box>
-                            <Box display="flex">
-                              <IconButton
-                                onClick={() => setDialogPreviewData(dialog)}
-                              >
-                                <VisibilityIcon />
-                              </IconButton>
-                              <IconButton
-                                onClick={() => {
-                                  setInitialDialogFormData(dialog);
-                                  setIsDialogFormOpen(true);
-                                  setDialogOptions({
-                                    isEditMode: true,
-                                    dialogIndex,
-                                  });
-                                }}
-                              >
-                                <EditIcon />
-                              </IconButton>
-                              <IconButton onClick={() => remove(dialogIndex)}>
-                                <DeleteIcon />
-                              </IconButton>
-                            </Box>
-                          </Box>
+                          <DialogListItem
+                            index={dialogIndex}
+                            dialog={dialog}
+                            onSeePreviewIconClick={() =>
+                              setDialogPreviewData(dialog)
+                            }
+                            onEditIconClick={() => {
+                              setInitialDialogFormData(dialog);
+                              setIsDialogFormOpen(true);
+                              setDialogOptions({
+                                isEditMode: true,
+                                dialogIndex,
+                              });
+                            }}
+                            onDeleteIconClick={() => remove(dialogIndex)}
+                          />
                         ))}
                       </>
                     )}

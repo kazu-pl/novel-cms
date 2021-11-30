@@ -19,12 +19,10 @@ import { useLocalizedYup, Yup } from "common/yup";
 import FormHelperText from "@mui/material/FormHelperText";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
-import Typography from "@mui/material/Typography";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
 import replaceAt from "./replaceAt";
 import { useTranslation } from "react-i18next";
+import CharacterOnScreenListItem from "./CharacterOnScreenListItem";
 
 export const createCharacterOnScreenSchema = (yup: Yup) =>
   yup.object({
@@ -102,53 +100,27 @@ const CharacterOnScreenForm = ({
   return (
     <>
       {values.charactersOnScreen.map((character, index) => (
-        <Box
-          key={index}
-          display="flex"
-          alignItems="center"
-          justifyContent="space-between"
-          p={1}
-          boxShadow={1}
-          mb={2}
-        >
-          <Box display="flex" alignItems="center">
-            <Typography>
-              {t("actsPages.add.charactersOnScreen.list.character")}:{" "}
-              <span style={{ fontWeight: 500 }}>{character.name}</span>
-            </Typography>
-            <Box ml={2} mr={2}>
-              <Typography>zIndex: {character.zIndex}</Typography>
-            </Box>
-            <Typography>left: {character.leftPosition}%</Typography>
-          </Box>
-          <Box display="flex">
-            <IconButton
-              onClick={() => {
-                setIsFormVisible(true);
-                setInitialValues(character);
-                setEditModeOptions({
-                  isEditMode: true,
-                  indexOfCharacterToEdit: index,
-                });
-              }}
-            >
-              <EditIcon />
-            </IconButton>
-            <IconButton
-              onClick={() => {
-                remove(index);
-                applyTextsForPreview({
-                  ...values,
-                  charactersOnScreen: values.charactersOnScreen.filter(
-                    (_, characterIndex) => characterIndex !== index
-                  ),
-                });
-              }}
-            >
-              <DeleteIcon />
-            </IconButton>
-          </Box>
-        </Box>
+        <CharacterOnScreenListItem
+          index={index}
+          character={character}
+          onEditIconClick={() => {
+            setIsFormVisible(true);
+            setInitialValues(character);
+            setEditModeOptions({
+              isEditMode: true,
+              indexOfCharacterToEdit: index,
+            });
+          }}
+          onRemoveIconClick={() => {
+            remove(index);
+            applyTextsForPreview({
+              ...values,
+              charactersOnScreen: values.charactersOnScreen.filter(
+                (_, characterIndex) => characterIndex !== index
+              ),
+            });
+          }}
+        />
       ))}
       {isFormVisible && (
         <Formik
