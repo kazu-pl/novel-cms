@@ -145,9 +145,9 @@ const ActList = () => {
               render: (row) => row.scenes.length,
             },
             {
-              title: t("actsPages.list.table.columns.nextActId"),
-              key: "nextActId",
-              render: (row) => row.nextActId,
+              title: t("actsPages.list.table.columns.nextAct"),
+              key: "nextAct",
+              render: (row) => row.nextAct,
             },
             {
               title: t("actsPages.list.table.columns.createdAt"),

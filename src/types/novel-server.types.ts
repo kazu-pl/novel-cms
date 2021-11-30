@@ -376,7 +376,7 @@ export interface Scene {
 
 /**
  * Act type (used as newly adding Act item type and as a basic type extended by additional items from mongoDB in returning Act)
- * @example {"title":"Act I - The beginning","desciption":"This is the first Act. It introduces all main characters.","type":"start","nextActId":"Act II - The Dawn","scenes":[]}
+ * @example {"title":"Act I - The beginning","desciption":"This is the first Act. It introduces all main characters.","type":"start","nextAct":"Act II - The Dawn","scenes":[]}
  */
 export interface Act {
   /** act title. Its unique title (no duplications allowed) */
@@ -388,8 +388,8 @@ export interface Act {
   /** act type */
   type: "start" | "normal" | "end";
 
-  /** title of the next Act. If its end act, then nextActId is not needed. If its used to get first act to start game, pass 'start' */
-  nextActId?: string;
+  /** title of the next Act. If its end act, then nextAct is not needed. If its used to get first act to start game, pass 'start' */
+  nextAct?: string;
   scenes: Scene[];
 }
 

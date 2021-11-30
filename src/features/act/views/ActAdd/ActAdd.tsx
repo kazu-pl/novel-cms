@@ -26,15 +26,8 @@ const initialValues: Act = {
   title: "",
   description: "",
   type: "normal",
-  nextActId: "",
+  nextAct: "",
   scenes: [],
-};
-
-const CheckValues = (values: Act) => {
-  useEffect(() => {
-    console.log({ values });
-  }, [values]);
-  return <div></div>;
 };
 
 const ActAdd = () => {
@@ -48,7 +41,7 @@ const ActAdd = () => {
   const validationSchema = yup.object({
     title: yup.string().required(),
     description: yup.string().required(),
-    nextActId: yup.string(),
+    nextAct: yup.string(),
     type: yup
       .string()
       .oneOf(
@@ -65,8 +58,6 @@ const ActAdd = () => {
   );
 
   const handleSubmit = async (values: Act, actions: FormikHelpers<Act>) => {
-    console.log({ values });
-
     try {
       const response = await dispatch(postActs(values));
       const payload = response.payload as SuccessfulReqMsg;
@@ -106,7 +97,6 @@ const ActAdd = () => {
             >
               {({ isSubmitting, values }) => (
                 <Form>
-                  <CheckValues {...values} />
                   <Box maxWidth={700} width="100%">
                     <Box mb={2}>
                       <TextFieldFormik
@@ -148,15 +138,15 @@ const ActAdd = () => {
                     {actDictionary && (
                       <Box mb={2}>
                         <TextFieldFormik
-                          name="nextActId"
+                          name="nextAct"
                           select
                           clearable
-                          id="nextActId"
+                          id="nextAct"
                           fullWidth
-                          label="nextActId"
+                          label="nextAct"
                         >
                           {actDictionary.map((item, index) => (
-                            <MenuItem key={item.id || index} value={item.id}>
+                            <MenuItem key={item.id || index} value={item.title}>
                               {item.title}
                             </MenuItem>
                           ))}

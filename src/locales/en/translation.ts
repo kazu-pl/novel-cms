@@ -223,7 +223,7 @@ const en: Translation = {
           title: "Title",
           description: "description",
           scenesTotal: "Total scenes",
-          nextActId: "Next Act Id",
+          nextAct: "Next Act Id",
           createdAt: "createdAt",
           actions: "Actions",
         },

@@ -216,7 +216,7 @@ export interface Translation {
           title: string;
           description: string;
           scenesTotal: string;
-          nextActId: string;
+          nextAct: string;
           createdAt: string;
           actions: string;
         };
