@@ -219,15 +219,14 @@ const en: Translation = {
   actsPages: {
     add: {
       title: "Add new act",
-      charactersOnScreen: {
-        list: {
-          character: "Character",
-        },
+      scenePart: {
+        title: "Scenes",
+        addNewSceneBtn: "Add new scene",
+        addSceneBtn: "Add scene",
+        editSceneBtn: "Edit scene",
         form: {
-          PreviewTooltip: "Click to see characters on preview",
-          editCharBtn: "Edit character",
-          addCharBtn: "Ad character",
-          addNewCharBtn: "Add new character",
+          title: "Add new scene",
+          editSceneTitle: "You're editing scene",
         },
       },
       dialogForm: {
@@ -242,6 +241,17 @@ const en: Translation = {
         addDialogBtn: "Add dialog",
         addNewDialogBtn: "Add new dialog",
         editDialogBtn: "Edit dialog",
+      },
+      charactersOnScreen: {
+        list: {
+          character: "Character",
+        },
+        form: {
+          PreviewTooltip: "Click to see characters on preview",
+          editCharBtn: "Edit character",
+          addCharBtn: "Ad character",
+          addNewCharBtn: "Add new character",
+        },
       },
       metaData: {
         description: "Game story acts",

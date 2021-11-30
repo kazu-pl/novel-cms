@@ -19,13 +19,21 @@ import CircularProgress from "@mui/material/CircularProgress";
 import MenuItem from "@mui/material/MenuItem";
 import TextField, { TextFieldProps } from "novel-ui/lib/inputs/TextField";
 import { API_URL } from "common/constants/env";
-import DialogForm from "./Dialog/DialogForm";
+import DialogForm, { createDialogValidationSchema } from "./Dialog/DialogForm";
 import { useState } from "react";
 import PreviewBox from "./PreviewBox";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import IconButton from "@mui/material/IconButton";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import { useLocalizedYup, Yup } from "common/yup";
+
+export const createSceneValidationSchema = (yup: Yup) =>
+  yup.object({
+    bgImgUrl: yup.string().required(),
+    title: yup.string().required(),
+    dialogs: yup.array().of(createDialogValidationSchema(yup)),
+  });
 
 type DialogOptions =
   | { isEditMode: false; dialogIndex: null }
@@ -34,32 +42,25 @@ type DialogOptions =
       dialogIndex: number;
     };
 
-const CheckValues = (values: any) => {
-  useEffect(() => {
-    console.log({ values });
-  }, [values]);
-
-  return null;
-};
-
-const initialValues: Scene = {
-  title: "",
-  bgImgUrl: "",
-  dialogs: [],
-};
-
 export interface NewActFormProps {
   btnLabel: string;
-  pushNewScene: (sceneItem: Scene) => void;
+  onSubmit: (sceneItem: Scene) => void;
   hideForm: () => void;
+  initialValues: Scene;
+  isInSceneEditMode?: boolean;
 }
 
 const NewSceneForm = ({
-  pushNewScene,
+  onSubmit,
   btnLabel,
   hideForm,
+  initialValues,
+  isInSceneEditMode,
 }: NewActFormProps) => {
   const { t } = useTranslation();
+  const yup = useLocalizedYup();
+
+  const validationSchema = createSceneValidationSchema(yup);
 
   const dispatch = useAppDispatch();
   const sceneriesDictionary = useAppSelector(selectSceneriesDictionary);
@@ -80,7 +81,7 @@ const NewSceneForm = ({
   };
 
   const handleSubmit = (values: Scene) => {
-    pushNewScene(values);
+    onSubmit(values);
     handleCloseForm();
   };
 
@@ -115,217 +116,232 @@ const NewSceneForm = ({
     <Formik
       initialValues={initialValues}
       onSubmit={handleSubmit}
-      // validationSchema={validationSchema}
+      validationSchema={validationSchema}
     >
       {({ submitForm, values }) => (
         <>
-          <CheckValues {...values} />
-          <Box mb={2} mt={2} display="flex" p={2} boxShadow={1}>
-            <Box width="50%" mr={1}>
-              <Box>
-                <Typography>Add new scene</Typography>
-                <Box mt={2}>
-                  <TextFieldFormik
-                    name="title"
-                    type="text"
-                    id="title"
-                    label={t("form.enterTitle")}
-                    fullWidth
-                  />
-                </Box>
-                <Box mt={2} display="flex">
-                  <Box mt={2} width="50%" mr={1}>
-                    {sceneriesDictionary.isFetching && <CircularProgress />}
-                    {!sceneriesDictionary.isFetching &&
-                      !!sceneriesDictionary.data && (
-                        <TextField
-                          name="scenery"
+          <Box display="flex" flexDirection="column" p={2} boxShadow={1}>
+            <Box mb={2} display="flex">
+              <Box width="50%" mr={1}>
+                <Box>
+                  {isInSceneEditMode && (
+                    <Typography>
+                      {t("actsPages.add.scenePart.form.editSceneTitle")}:{" "}
+                      <span style={{ fontWeight: 500 }}>
+                        {initialValues.title}
+                      </span>
+                    </Typography>
+                  )}
+
+                  {!isInSceneEditMode && (
+                    <Typography>
+                      {t("actsPages.add.scenePart.form.title")}
+                    </Typography>
+                  )}
+
+                  <Box mt={2}>
+                    <TextFieldFormik
+                      name="title"
+                      type="text"
+                      id="title"
+                      label={t("form.enterTitle")}
+                      fullWidth
+                    />
+                  </Box>
+                  <Box mt={2} display="flex">
+                    <Box mt={2} width="50%" mr={1}>
+                      {sceneriesDictionary.isFetching && <CircularProgress />}
+                      {!sceneriesDictionary.isFetching &&
+                        !!sceneriesDictionary.data && (
+                          <TextField
+                            name="scenery"
+                            select
+                            clearable
+                            id="scenery"
+                            fullWidth
+                            label="scenery"
+                            onChange={fetchSingleSceneryImages}
+                          >
+                            {sceneriesDictionary.data.map((item, index) => (
+                              <MenuItem key={item.id || index} value={item.id}>
+                                {item.title}
+                              </MenuItem>
+                            ))}
+                          </TextField>
+                        )}
+                    </Box>
+                    <Box mt={2} width="50%" ml={1}>
+                      {singleScenery.isFetching && <CircularProgress />}
+                      {!singleScenery.isFetching && !!singleScenery.data && (
+                        <TextFieldFormik
+                          name="bgImgUrl"
                           select
                           clearable
-                          id="scenery"
+                          id="bgImgUrl"
                           fullWidth
-                          label="scenery"
-                          onChange={fetchSingleSceneryImages}
+                          label="bgImgUrl"
                         >
-                          {sceneriesDictionary.data.map((item, index) => (
-                            <MenuItem key={item.id || index} value={item.id}>
-                              {item.title}
+                          {singleScenery.data.imagesList.map((item, index) => (
+                            <MenuItem key={item._id || index} value={item.url}>
+                              {item.filename}
                             </MenuItem>
                           ))}
-                        </TextField>
+                        </TextFieldFormik>
                       )}
+                    </Box>
                   </Box>
-                  <Box mt={2} width="50%" ml={1}>
-                    {singleScenery.isFetching && <CircularProgress />}
-                    {!singleScenery.isFetching && !!singleScenery.data && (
-                      <TextFieldFormik
-                        name="bgImgUrl"
-                        select
-                        clearable
-                        id="bgImgUrl"
-                        fullWidth
-                        label="bgImgUrl"
-                      >
-                        {singleScenery.data.imagesList.map((item, index) => (
-                          <MenuItem key={item._id || index} value={item.url}>
-                            {item.filename}
-                          </MenuItem>
-                        ))}
-                      </TextFieldFormik>
-                    )}
+                  <Box
+                    borderRadius={1}
+                    border="1px solid rgba(0,0,0,0.2)"
+                    p={2}
+                    pt={1}
+                    mt={2}
+                  >
+                    <Box mb={2}>
+                      <Typography variant="overline">
+                        {" "}
+                        {t("actsPages.add.dialogForm.title")}
+                      </Typography>
+                    </Box>
+
+                    <FieldArray
+                      name="dialogs"
+                      render={(props) => (
+                        <>
+                          {isDialogFormOpen && (
+                            <DialogForm
+                              {...props}
+                              isEditMode={dialogOptions.isEditMode}
+                              onSubmit={(values) => {
+                                dialogOptions.isEditMode
+                                  ? props.replace(
+                                      dialogOptions.dialogIndex,
+                                      values
+                                    )
+                                  : props.push(values);
+                              }}
+                              applyTextsForPreview={setDialogPreviewData}
+                              initialValues={initialDialogFormData}
+                              closeForm={handleCloseDialogForm}
+                            />
+                          )}
+                          {!isDialogFormOpen && (
+                            <Box display="flex" justifyContent="flex-end">
+                              <Button
+                                variant="contained"
+                                onClick={() => {
+                                  setInitialDialogFormData({
+                                    text: "",
+                                    characterSayingText: "",
+                                    charactersOnScreen: [],
+                                  });
+                                  setDialogOptions({
+                                    isEditMode: false,
+                                    dialogIndex: null,
+                                  });
+                                  setIsDialogFormOpen(true);
+                                }}
+                              >
+                                {t("actsPages.add.dialogForm.addNewDialogBtn")}
+                              </Button>
+                            </Box>
+                          )}
+                        </>
+                      )}
+                    />
                   </Box>
                 </Box>
-                <Box
-                  borderRadius={1}
-                  border="1px solid rgba(0,0,0,0.2)"
-                  p={2}
-                  pt={1}
-                  mt={2}
-                >
-                  <Box mb={2}>
-                    <Typography variant="overline">
-                      {" "}
-                      {t("actsPages.add.dialogForm.title")}
-                    </Typography>
-                  </Box>
-
+              </Box>
+              <Box width="50%" ml={1}>
+                {values.bgImgUrl && (
+                  <PreviewBox
+                    bgImgUrl={API_URL + values.bgImgUrl}
+                    {...dialogPreviewData}
+                  />
+                )}
+                <Box mt={2}>
+                  <Typography variant="overline">
+                    {t("actsPages.add.dialogForm.dialogsInScene.title")}:
+                  </Typography>
                   <FieldArray
                     name="dialogs"
-                    render={(props) => (
+                    render={({ remove }) => (
                       <>
-                        {isDialogFormOpen && (
-                          <DialogForm
-                            {...props}
-                            isEditMode={dialogOptions.isEditMode}
-                            onSubmit={(values) => {
-                              dialogOptions.isEditMode
-                                ? props.replace(
-                                    dialogOptions.dialogIndex,
-                                    values
-                                  )
-                                : props.push(values);
-                            }}
-                            applyTextsForPreview={setDialogPreviewData}
-                            initialValues={initialDialogFormData}
-                            closeForm={handleCloseDialogForm}
-                          />
-                        )}
-                        {!isDialogFormOpen && (
-                          <Box display="flex" justifyContent="flex-end">
-                            <Button
-                              variant="contained"
-                              onClick={() => {
-                                setInitialDialogFormData({
-                                  text: "",
-                                  characterSayingText: "",
-                                  charactersOnScreen: [],
-                                });
-                                setDialogOptions({
-                                  isEditMode: false,
-                                  dialogIndex: null,
-                                });
-                                setIsDialogFormOpen(true);
-                              }}
-                            >
-                              {t("actsPages.add.dialogForm.addNewDialogBtn")}
-                            </Button>
+                        {values.dialogs.map((dialog, dialogIndex) => (
+                          <Box
+                            key={dialogIndex}
+                            display="flex"
+                            alignItems="center"
+                            justifyContent="space-between"
+                            p={1}
+                            boxShadow={1}
+                          >
+                            <Box display="flex" alignItems="center">
+                              <Typography>
+                                {t(
+                                  "actsPages.add.dialogForm.dialogsInScene.character"
+                                )}
+                                :
+                                <span style={{ fontWeight: 500 }}>
+                                  {dialog.characterSayingText}
+                                </span>
+                              </Typography>
+                              <Box ml={2} mr={2}>
+                                <Typography>
+                                  {t(
+                                    "actsPages.add.dialogForm.dialogsInScene.text"
+                                  )}
+                                  :{" "}
+                                  {dialog.text.length > 75
+                                    ? `${dialog.text.slice(0, 75)}...`
+                                    : dialog.text}
+                                </Typography>
+                              </Box>
+                            </Box>
+                            <Box display="flex">
+                              <IconButton
+                                onClick={() => setDialogPreviewData(dialog)}
+                              >
+                                <VisibilityIcon />
+                              </IconButton>
+                              <IconButton
+                                onClick={() => {
+                                  setInitialDialogFormData(dialog);
+                                  setIsDialogFormOpen(true);
+                                  setDialogOptions({
+                                    isEditMode: true,
+                                    dialogIndex,
+                                  });
+                                }}
+                              >
+                                <EditIcon />
+                              </IconButton>
+                              <IconButton onClick={() => remove(dialogIndex)}>
+                                <DeleteIcon />
+                              </IconButton>
+                            </Box>
                           </Box>
-                        )}
+                        ))}
                       </>
                     )}
                   />
                 </Box>
               </Box>
             </Box>
-            <Box width="50%" ml={1}>
-              {values.bgImgUrl && (
-                <PreviewBox
-                  bgImgUrl={API_URL + values.bgImgUrl}
-                  {...dialogPreviewData}
-                />
-              )}
-              <Box mt={2}>
-                <Typography variant="overline">
-                  {t("actsPages.add.dialogForm.dialogsInScene.title")}:
-                </Typography>
-                <FieldArray
-                  name="dialogs"
-                  render={({ remove }) => (
-                    <>
-                      {values.dialogs.map((dialog, dialogIndex) => (
-                        <Box
-                          key={dialogIndex}
-                          display="flex"
-                          alignItems="center"
-                          justifyContent="space-between"
-                          p={1}
-                          boxShadow={1}
-                        >
-                          <Box display="flex" alignItems="center">
-                            <Typography>
-                              {t(
-                                "actsPages.add.dialogForm.dialogsInScene.character"
-                              )}
-                              :
-                              <span style={{ fontWeight: 500 }}>
-                                {dialog.characterSayingText}
-                              </span>
-                            </Typography>
-                            <Box ml={2} mr={2}>
-                              <Typography>
-                                {t(
-                                  "actsPages.add.dialogForm.dialogsInScene.text"
-                                )}
-                                :{" "}
-                                {dialog.text.length > 75
-                                  ? `${dialog.text.slice(0, 75)}...`
-                                  : dialog.text}
-                              </Typography>
-                            </Box>
-                          </Box>
-                          <Box display="flex">
-                            <IconButton
-                              onClick={() => setDialogPreviewData(dialog)}
-                            >
-                              <VisibilityIcon />
-                            </IconButton>
-                            <IconButton
-                              onClick={() => {
-                                setInitialDialogFormData(dialog);
-                                setIsDialogFormOpen(true);
-                                setDialogOptions({
-                                  isEditMode: true,
-                                  dialogIndex,
-                                });
-                              }}
-                            >
-                              <EditIcon />
-                            </IconButton>
-                            <IconButton onClick={() => remove(dialogIndex)}>
-                              <DeleteIcon />
-                            </IconButton>
-                          </Box>
-                        </Box>
-                      ))}
-                    </>
-                  )}
-                />
-              </Box>
-            </Box>
-          </Box>
 
-          <Box display="flex" justifyContent="flex-end" mt={2}>
-            <Button
-              onClick={() => handleCloseForm()}
-              color="error"
-              type="button"
-            >
-              cancel
-            </Button>
-            <Box ml={2}>
-              <Button variant="contained" onClick={() => submitForm()}>
-                {btnLabel}
+            <Box display="flex" justifyContent="flex-end" mt={2}>
+              <Button
+                onClick={() => handleCloseForm()}
+                color="error"
+                type="button"
+              >
+                {t("buttons.cancel")}
               </Button>
+              <Box ml={2}>
+                <Button variant="contained" onClick={() => submitForm()}>
+                  {btnLabel}
+                </Button>
+              </Box>
             </Box>
           </Box>
         </>

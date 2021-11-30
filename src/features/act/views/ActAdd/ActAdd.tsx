@@ -14,6 +14,8 @@ import {
 import { useAppDispatch, useAppSelector } from "common/store/hooks";
 import ActScenes from "./ActScenes";
 import Button from "novel-ui/lib/buttons/Button";
+import { useLocalizedYup } from "common/yup";
+import { createSceneValidationSchema } from "./NewSceneForm";
 
 const initialValues: Act = {
   title: "",
@@ -33,6 +35,22 @@ const CheckValues = (values: Act) => {
 const ActAdd = () => {
   const { t, i18n } = useTranslation();
   const dispatch = useAppDispatch();
+  const yup = useLocalizedYup();
+
+  const validationSchema = yup.object({
+    title: yup.string().required(),
+    description: yup.string().required(),
+    nextActId: yup.string(),
+    type: yup
+      .string()
+      .oneOf(
+        ["start", "normal", "end"] as Act["type"][],
+        "Start | normal | end"
+      )
+      .required(),
+    scenes: yup.array().of(createSceneValidationSchema(yup)).required(),
+  });
+
   const actDictionary = useAppSelector(selectActDictionary);
   const isDistionaryFetching = useAppSelector(
     (state) => state.act.actsDictionary.isFetching
@@ -63,7 +81,7 @@ const ActAdd = () => {
             <Formik
               initialValues={initialValues}
               onSubmit={handleSubmit}
-              // validationSchema={validationSchema}
+              validationSchema={validationSchema}
             >
               {({ isSubmitting, values }) => (
                 <Form>
@@ -137,7 +155,7 @@ const ActAdd = () => {
                       justifyContent="flex-end"
                     >
                       <Button type="submit" variant="contained">
-                        Submit
+                        {t("buttons.add")}
                       </Button>
                     </Box>
                   </Box>

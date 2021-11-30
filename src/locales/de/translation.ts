@@ -220,16 +220,14 @@ const de: Translation = {
   actsPages: {
     add: {
       title: "Neues Kapitel hinzufügen",
-      charactersOnScreen: {
-        list: {
-          character: "Charakter",
-        },
+      scenePart: {
+        title: "Szenes",
+        addNewSceneBtn: "Neue Szene hinzufügen",
+        addSceneBtn: "Neue hinzufügen",
+        editSceneBtn: "Szene bearbeiten",
         form: {
-          PreviewTooltip:
-            "Klicken Sie hier, um die Charaktere anzuzeigen, bevor Sie sie hinzufügen",
-          editCharBtn: "Bearbeite den Charakter",
-          addCharBtn: "Füge einen Charakter hinzu",
-          addNewCharBtn: "Füge einen neuen Charakter hinzu",
+          title: "Neuen Szene hinzufügen",
+          editSceneTitle: "Du bearbeitest die Szene",
         },
       },
       dialogForm: {
@@ -245,6 +243,18 @@ const de: Translation = {
         addDialogBtn: "Dialog hinzufügen",
         addNewDialogBtn: "Neuen Dialog hinzufügen",
         editDialogBtn: "Dialog bearbeiten",
+      },
+      charactersOnScreen: {
+        list: {
+          character: "Charakter",
+        },
+        form: {
+          PreviewTooltip:
+            "Klicken Sie hier, um die Charaktere anzuzeigen, bevor Sie sie hinzufügen",
+          editCharBtn: "Bearbeite den Charakter",
+          addCharBtn: "Füge einen Charakter hinzu",
+          addNewCharBtn: "Füge einen neuen Charakter hinzu",
+        },
       },
       metaData: {
         description: "Kapitel der Spielgeschichte",

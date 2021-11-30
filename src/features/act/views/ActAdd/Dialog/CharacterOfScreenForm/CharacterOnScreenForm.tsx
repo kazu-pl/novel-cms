@@ -15,14 +15,24 @@ import {
 import MenuItem from "@mui/material/MenuItem";
 import TextField, { TextFieldProps } from "novel-ui/lib/inputs/TextField";
 import CircularProgress from "@mui/material/CircularProgress";
-import { useLocalizedYup } from "common/yup";
+import { useLocalizedYup, Yup } from "common/yup";
 import FormHelperText from "@mui/material/FormHelperText";
-import { IconButton, Tooltip, Typography } from "@mui/material";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
+import Typography from "@mui/material/Typography";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import replaceAt from "./replaceAt";
 import { useTranslation } from "react-i18next";
+
+export const createCharacterOnScreenSchema = (yup: Yup) =>
+  yup.object({
+    leftPosition: yup.number().min(1).max(100).required(),
+    name: yup.string().required(),
+    zIndex: yup.number().min(0).max(100).required(),
+    imgUrl: yup.string().required(),
+  });
 
 export type EditModeOptions =
   | { isEditMode: false; indexOfCharacterToEdit: null }
@@ -49,12 +59,7 @@ const CharacterOnScreenForm = ({
 
   const { t } = useTranslation();
 
-  const validationSchema = yup.object({
-    leftPosition: yup.number().min(1).max(100).required(),
-    name: yup.string().required(),
-    zIndex: yup.number().min(0).max(100).required(),
-    imgUrl: yup.string().required(),
-  });
+  const validationSchema = createCharacterOnScreenSchema(yup);
 
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [initialValues, setInitialValues] = useState<CharacterOnScreen>({

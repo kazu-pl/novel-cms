@@ -1,6 +1,8 @@
 import * as yup from "yup";
 import { useTranslation } from "react-i18next";
 
+export type Yup = typeof yup;
+
 export function useLocalizedYup() {
   const { t } = useTranslation();
 

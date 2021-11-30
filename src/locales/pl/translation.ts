@@ -219,15 +219,15 @@ const pl: Translation = {
   actsPages: {
     add: {
       title: "Dodaj nowy rozdział",
-      charactersOnScreen: {
-        list: {
-          character: "Postać",
-        },
+      scenePart: {
+        title: "Sceny",
+
+        addNewSceneBtn: "Dodaj nową scenę",
+        addSceneBtn: "Dodaj scenę",
+        editSceneBtn: "Edytuj scenę",
         form: {
-          PreviewTooltip: "Kliknij aby zobaczyć postacie przed ich dodaniem",
-          editCharBtn: "Edytuj postać",
-          addCharBtn: "Dodaj postać",
-          addNewCharBtn: "Dodaj nową postać",
+          title: "Dodaj nową scenę",
+          editSceneTitle: "Edytujesz scenę",
         },
       },
       dialogForm: {
@@ -242,6 +242,17 @@ const pl: Translation = {
         addDialogBtn: "dodaj dialog",
         addNewDialogBtn: "Dodaj nowy dialog",
         editDialogBtn: "Edytuj dialog",
+      },
+      charactersOnScreen: {
+        list: {
+          character: "Postać",
+        },
+        form: {
+          PreviewTooltip: "Kliknij aby zobaczyć postacie przed ich dodaniem",
+          editCharBtn: "Edytuj postać",
+          addCharBtn: "Dodaj postać",
+          addNewCharBtn: "Dodaj nową postać",
+        },
       },
       metaData: {
         description: "rozdziały gry",

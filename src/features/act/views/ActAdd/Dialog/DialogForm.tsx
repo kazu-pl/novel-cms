@@ -7,9 +7,21 @@ import Typography from "@mui/material/Typography";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
-import CharacterOnScreenForm from "./CharacterOfScreenForm";
-import { useLocalizedYup } from "common/yup";
+import CharacterOnScreenForm, {
+  createCharacterOnScreenSchema,
+} from "./CharacterOfScreenForm";
+import { useLocalizedYup, Yup } from "common/yup";
 import { useTranslation } from "react-i18next";
+
+export const createDialogValidationSchema = (yup: Yup) =>
+  yup.object({
+    characterSayingText: yup.string().required(),
+    text: yup.string().required(),
+    charactersOnScreen: yup
+      .array()
+      .of(createCharacterOnScreenSchema(yup))
+      .required(),
+  });
 
 export interface DialogFormProps {
   onSubmit: (values: Dialog) => void;
@@ -34,21 +46,7 @@ const DialogForm = ({
     closeForm();
   };
 
-  const validationSchema = yup.object({
-    characterSayingText: yup.string().required(),
-    text: yup.string().required(),
-    charactersOnScreen: yup
-      .array()
-      .of(
-        yup.object({
-          leftPosition: yup.number().min(1).max(100).required(),
-          name: yup.string().required(),
-          zIndex: yup.number().min(0).max(100).required(),
-          imgUrl: yup.string().required(),
-        })
-      )
-      .required(),
-  });
+  const validationSchema = createDialogValidationSchema(yup);
 
   return (
     <Box>

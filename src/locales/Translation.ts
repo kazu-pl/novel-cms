@@ -209,15 +209,14 @@ export interface Translation {
   actsPages: {
     add: {
       title: string;
-      charactersOnScreen: {
-        list: {
-          character: string;
-        };
+      scenePart: {
+        title: string;
+        addNewSceneBtn: string;
+        addSceneBtn: string;
+        editSceneBtn: string;
         form: {
-          PreviewTooltip: string;
-          editCharBtn: string;
-          addCharBtn: string;
-          addNewCharBtn: string;
+          title: string;
+          editSceneTitle: string;
         };
       };
       dialogForm: {
@@ -232,6 +231,17 @@ export interface Translation {
         addDialogBtn: string;
         addNewDialogBtn: string;
         editDialogBtn: string;
+      };
+      charactersOnScreen: {
+        list: {
+          character: string;
+        };
+        form: {
+          PreviewTooltip: string;
+          editCharBtn: string;
+          addCharBtn: string;
+          addNewCharBtn: string;
+        };
       };
       metaData: {
         description: string;

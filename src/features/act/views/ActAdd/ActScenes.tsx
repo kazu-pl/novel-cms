@@ -1,16 +1,18 @@
-import { FieldArrayRenderProps } from "formik";
+import { FieldArray, FieldArrayRenderProps } from "formik";
 import { useState } from "react";
-import { Scene, Act } from "types/novel-server.types";
-import NewActForm from "./NewSceneForm";
+import { Act } from "types/novel-server.types";
+import NewSceneForm from "./NewSceneForm";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Button from "novel-ui/lib/buttons/Button";
+import { useTranslation } from "react-i18next";
+import SceneListItem from "./SceneListItem";
 
 export interface ActSceneFormProps extends FieldArrayRenderProps {}
 
-const ActScenes = ({ name, push, form }: ActSceneFormProps) => {
+const ActScenes = ({ name, push, form, remove }: ActSceneFormProps) => {
   const [isNewSceneFormShown, setIsNewsceneFormShown] = useState(false);
-
+  const { t } = useTranslation();
   const handleHideForm = () => setIsNewsceneFormShown(false);
 
   return (
@@ -21,32 +23,48 @@ const ActScenes = ({ name, push, form }: ActSceneFormProps) => {
       borderRadius={1}
       p={2}
     >
-      <Box mt={1} mb={1}>
-        <Typography>Scenes</Typography>
+      <Box mt={1}>
+        <Typography> {t("actsPages.add.scenePart.title")}</Typography>
       </Box>
 
-      {Array.isArray((form.values as Act).scenes) &&
-        ((form.values as Act).scenes as Scene[]).map((item, index) => (
-          <div key={index}>
-            <p>{item.title}</p>
-          </div>
-        ))}
+      {Array.isArray((form.values as Act).scenes) && (
+        <FieldArray
+          name="scenes"
+          render={(props) => (
+            <>
+              {(form.values as Act).scenes.map((scene, sceneIndex) => (
+                <SceneListItem
+                  index={sceneIndex}
+                  onRemoveIconClick={remove}
+                  scene={scene}
+                  onEditFormSubmit={props.replace}
+                />
+              ))}
+            </>
+          )}
+        />
+      )}
 
       {isNewSceneFormShown && (
-        <NewActForm
-          btnLabel="dodaj nową scenę"
-          pushNewScene={push}
+        <NewSceneForm
+          btnLabel={t("actsPages.add.scenePart.addSceneBtn")}
+          onSubmit={push}
           hideForm={handleHideForm}
+          initialValues={{
+            bgImgUrl: "",
+            title: "",
+            dialogs: [],
+          }}
         />
       )}
 
       {!isNewSceneFormShown && (
-        <Box display="flex" justifyContent="flex-end">
+        <Box display="flex" justifyContent="flex-end" mt={2}>
           <Button
             onClick={() => setIsNewsceneFormShown(true)}
             variant="contained"
           >
-            Add new scene
+            {t("actsPages.add.scenePart.addNewSceneBtn")}
           </Button>
         </Box>
       )}
