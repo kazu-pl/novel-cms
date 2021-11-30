@@ -1,6 +1,6 @@
 import DashboardLayoutWrapper from "common/wrappers/DashboardLayoutWrapper";
 import HelmetDecorator from "components/HelmetDecorator";
-import { Act } from "types/novel-server.types";
+import { Act, SuccessfulReqMsg } from "types/novel-server.types";
 import { useTranslation } from "react-i18next";
 import { Formik, Form, FormikHelpers, FieldArray } from "formik";
 import TextFieldFormik from "novel-ui/lib/formik/TextFieldFormik";
@@ -10,12 +10,17 @@ import { useEffect } from "react";
 import {
   selectActDictionary,
   fetchActsDictionary,
+  postActs,
 } from "features/act/store/actSlice";
 import { useAppDispatch, useAppSelector } from "common/store/hooks";
 import ActScenes from "./ActScenes";
 import Button from "novel-ui/lib/buttons/Button";
 import { useLocalizedYup } from "common/yup";
 import { createSceneValidationSchema } from "./NewSceneForm";
+import { useSnackbar } from "notistack";
+import { useNavigate } from "react-router-dom";
+import useLocalizedPath from "common/router/useLocalizedPath";
+import { PATHS_ACT } from "common/constants/paths";
 
 const initialValues: Act = {
   title: "",
@@ -36,6 +41,9 @@ const ActAdd = () => {
   const { t, i18n } = useTranslation();
   const dispatch = useAppDispatch();
   const yup = useLocalizedYup();
+  const { enqueueSnackbar } = useSnackbar();
+  const navigate = useNavigate();
+  const { path } = useLocalizedPath();
 
   const validationSchema = yup.object({
     title: yup.string().required(),
@@ -58,6 +66,19 @@ const ActAdd = () => {
 
   const handleSubmit = async (values: Act, actions: FormikHelpers<Act>) => {
     console.log({ values });
+
+    try {
+      const response = await dispatch(postActs(values));
+      const payload = response.payload as SuccessfulReqMsg;
+      navigate(path(PATHS_ACT.LIST));
+      enqueueSnackbar(payload.message, {
+        variant: "success",
+      });
+    } catch (error) {
+      enqueueSnackbar(error as string, {
+        variant: "error",
+      });
+    }
   };
 
   useEffect(() => {
@@ -154,7 +175,11 @@ const ActAdd = () => {
                       display="flex"
                       justifyContent="flex-end"
                     >
-                      <Button type="submit" variant="contained">
+                      <Button
+                        type="submit"
+                        variant="contained"
+                        isLoading={isSubmitting}
+                      >
                         {t("buttons.add")}
                       </Button>
                     </Box>

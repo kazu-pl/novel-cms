@@ -40,8 +40,8 @@ const DialogListItem = ({
         <Box ml={2} mr={2}>
           <Typography>
             {t("actsPages.add.dialogForm.dialogsInScene.text")}:{" "}
-            {dialog.text.length > 75
-              ? `${dialog.text.slice(0, 75)}...`
+            {dialog.text.length > 55
+              ? `${dialog.text.slice(0, 55)}...`
               : dialog.text}
           </Typography>
         </Box>

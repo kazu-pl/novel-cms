@@ -6,6 +6,7 @@ import {
   ActExtended,
   ActDictionary,
   FailedReqMsg,
+  Act,
 } from "types/novel-server.types";
 
 interface CharacterState {
@@ -46,6 +47,21 @@ export const fetchActsDictionary = createAsyncThunk(
     try {
       const response = await axiosSecureInstance.get<ActDictionary>(
         `/acts/dictionary`
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue((error as FailedReqMsg).message);
+    }
+  }
+);
+
+export const postActs = createAsyncThunk(
+  "act/postActs",
+  async (act: Act, { rejectWithValue }) => {
+    try {
+      const response = await axiosSecureInstance.post<ActDictionary>(
+        `/acts/add`,
+        act
       );
       return response.data;
     } catch (error) {

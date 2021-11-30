@@ -263,7 +263,7 @@ const NewSceneForm = ({
                   <FieldArray
                     name="dialogs"
                     render={({ remove }) => (
-                      <>
+                      <Box maxHeight={300} overflow="auto" p={1}>
                         {values.dialogs.map((dialog, dialogIndex) => (
                           <DialogListItem
                             index={dialogIndex}
@@ -282,7 +282,7 @@ const NewSceneForm = ({
                             onDeleteIconClick={() => remove(dialogIndex)}
                           />
                         ))}
-                      </>
+                      </Box>
                     )}
                   />
                 </Box>
