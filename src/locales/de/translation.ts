@@ -218,6 +218,27 @@ const de: Translation = {
   actsPages: {
     list: {
       title: "Liste der Kapitel",
+      table: {
+        title: "Kapitels",
+        columns: {
+          title: "Titel",
+          description: "Bezeichnung",
+          scenesTotal: "Gesamtzahl der Szenen",
+          nextActId: "Nächste Akt-ID",
+          createdAt: "hergestellt in",
+          actions: "Aktionen",
+        },
+      },
+      modal: {
+        headlineText: "Kapitel löschen",
+        sceneryPretitle: "Zu löschende Kapitel:",
+        text: "Möchten Sie diesen Kapitels wirklich löschen? Dies kann später nicht mehr rückgängig gemacht werden.",
+      },
+      metaData: {
+        description: "Liste der Kapitelt",
+        imageAlt: "Liste der Kapitelt",
+        title: "Liste der Kapitelt",
+      },
     },
     add: {
       title: "Neues Kapitel hinzufügen",

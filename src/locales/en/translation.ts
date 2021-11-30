@@ -217,6 +217,27 @@ const en: Translation = {
   actsPages: {
     list: {
       title: "Act List",
+      table: {
+        title: "Acts",
+        columns: {
+          title: "Title",
+          description: "description",
+          scenesTotal: "Total scenes",
+          nextActId: "Next Act Id",
+          createdAt: "createdAt",
+          actions: "Actions",
+        },
+      },
+      modal: {
+        headlineText: "Deleting act",
+        sceneryPretitle: "Act to delete: ",
+        text: "Are you sure you want to delete this Act? This can't be undone later.",
+      },
+      metaData: {
+        description: "Act List",
+        imageAlt: "Act List",
+        title: "Act List",
+      },
     },
     add: {
       title: "Add new act",
