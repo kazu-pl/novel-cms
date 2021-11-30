@@ -47,6 +47,7 @@ const pl: Translation = {
     acts: {
       title: "Rozdziały",
       items: {
+        list: "Lista rozdziałów",
         add: "Dodaj nowy rozdział",
       },
     },
@@ -217,6 +218,30 @@ const pl: Translation = {
     },
   },
   actsPages: {
+    list: {
+      title: "Lista rozdzialów",
+      table: {
+        title: "Rozdziały",
+        columns: {
+          title: "Tytuł",
+          description: "Opis",
+          scenesTotal: "Liczba scen",
+          nextActId: "Następny act",
+          createdAt: "Utworzono",
+          actions: "Akcje",
+        },
+      },
+      modal: {
+        headlineText: "Usuwanie rozdziału",
+        sceneryPretitle: "Rozdział do usunięcia: ",
+        text: "Czy jesteś pewien, że chcesz usunąć ten rozdział? Tej operacji nie można cofnąć.",
+      },
+      metaData: {
+        description: "Lista rozdzialów",
+        imageAlt: "Lista rozdzialów",
+        title: "Lista rozdzialów",
+      },
+    },
     add: {
       title: "Dodaj nowy rozdział",
       scenePart: {

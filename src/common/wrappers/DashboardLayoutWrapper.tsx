@@ -143,6 +143,10 @@ const DashboardLayoutWrapper = ({
             label: t("dashboardSidebarItems.acts.title"),
             dropdownItems: [
               {
+                label: t("dashboardSidebarItems.acts.items.list"),
+                to: path(PATHS_ACT.LIST),
+              },
+              {
                 label: t("dashboardSidebarItems.acts.items.add"),
                 to: path(PATHS_ACT.ADD),
               },

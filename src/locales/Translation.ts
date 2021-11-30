@@ -45,6 +45,7 @@ export interface Translation {
     acts: {
       title: string;
       items: {
+        list: string;
         add: string;
       };
     };
@@ -207,6 +208,30 @@ export interface Translation {
     };
   };
   actsPages: {
+    list: {
+      title: string;
+      table: {
+        title: string;
+        columns: {
+          title: string;
+          description: string;
+          scenesTotal: string;
+          nextActId: string;
+          createdAt: string;
+          actions: string;
+        };
+      };
+      modal: {
+        headlineText: string;
+        sceneryPretitle: string;
+        text: string;
+      };
+      metaData: {
+        description: string;
+        imageAlt: string;
+        title: string;
+      };
+    };
     add: {
       title: string;
       scenePart: {
