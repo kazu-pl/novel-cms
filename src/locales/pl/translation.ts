@@ -47,6 +47,7 @@ const pl: Translation = {
     acts: {
       title: "Rozdziały",
       items: {
+        list: "Lista rozdziałów",
         add: "Dodaj nowy rozdział",
       },
     },
@@ -217,6 +218,9 @@ const pl: Translation = {
     },
   },
   actsPages: {
+    list: {
+      title: "Lista rozdzialów",
+    },
     add: {
       title: "Dodaj nowy rozdział",
       scenePart: {

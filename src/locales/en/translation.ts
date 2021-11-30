@@ -46,9 +46,7 @@ const en: Translation = {
     },
     acts: {
       title: "Acts",
-      items: {
-        add: "Add new act",
-      },
+      items: { list: "Act list", add: "Add new act" },
     },
   },
   loginPage: {
@@ -217,6 +215,9 @@ const en: Translation = {
     },
   },
   actsPages: {
+    list: {
+      title: "Act List",
+    },
     add: {
       title: "Add new act",
       scenePart: {

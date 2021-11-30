@@ -45,6 +45,7 @@ export interface Translation {
     acts: {
       title: string;
       items: {
+        list: string;
         add: string;
       };
     };
@@ -207,6 +208,9 @@ export interface Translation {
     };
   };
   actsPages: {
+    list: {
+      title: string;
+    };
     add: {
       title: string;
       scenePart: {

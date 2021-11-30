@@ -47,9 +47,7 @@ const de: Translation = {
     },
     acts: {
       title: "Kapitel",
-      items: {
-        add: "hinzufügen",
-      },
+      items: { list: "Liste der Kapitel", add: "hinzufügen" },
     },
   },
   loginPage: {
@@ -218,6 +216,9 @@ const de: Translation = {
     },
   },
   actsPages: {
+    list: {
+      title: "Liste der Kapitel",
+    },
     add: {
       title: "Neues Kapitel hinzufügen",
       scenePart: {

@@ -33,6 +33,7 @@ import CharacterAdd from "features/character/views/CharacterAdd";
 import CharacterEdit from "features/character/views/CharacterEdit";
 
 import ActAdd from "features/act/views/ActAdd";
+import ActList from "features/act/views/ActList";
 
 const Router = () => {
   useTokenListener();
@@ -136,6 +137,14 @@ const Router = () => {
             element={
               <LocalizedPrivateRoute>
                 <CharacterEdit />
+              </LocalizedPrivateRoute>
+            }
+          />,
+          <Route
+            path={`${path(PATHS_ACT.LIST, lang)}`}
+            element={
+              <LocalizedPrivateRoute>
+                <ActList />
               </LocalizedPrivateRoute>
             }
           />,
