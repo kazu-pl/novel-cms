@@ -5,13 +5,14 @@ import AccountIcon from "@mui/icons-material/Person";
 import ImageIcon from "@mui/icons-material/Image";
 import EmojiPeopleIcon from "@mui/icons-material/EmojiPeople";
 import DashboardIcon from "@mui/icons-material/Dashboard";
-
+import AlignHorizontalLeftIcon from "@mui/icons-material/AlignHorizontalLeft";
 import ColoredIconWrapper from "novel-ui/lib/ColoredIconWrapper";
 import {
   PATHS_CORE,
   PATHS_DASHBOARD,
   PATHS_SCENERY,
   PATHS_CHARACTER,
+  PATHS_ACT,
 } from "common/constants/paths";
 
 import { useAppSelector } from "common/store/hooks";
@@ -129,6 +130,21 @@ const DashboardLayoutWrapper = ({
               {
                 label: t("dashboardSidebarItems.character.items.add"),
                 to: path(PATHS_CHARACTER.ADD),
+              },
+            ],
+          },
+          {
+            variant: "with-dropdown",
+            icon: (
+              <ColoredIconWrapper color="grey">
+                <AlignHorizontalLeftIcon />
+              </ColoredIconWrapper>
+            ),
+            label: t("dashboardSidebarItems.acts.title"),
+            dropdownItems: [
+              {
+                label: t("dashboardSidebarItems.acts.items.add"),
+                to: path(PATHS_ACT.ADD),
               },
             ],
           },

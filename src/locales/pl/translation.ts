@@ -14,6 +14,10 @@ const pl: Translation = {
     forgotPassword: "Zapomniałem hasła",
     enterTitle: "Wprowadź tytuł",
     enterDescription: "Wprowadź opis",
+    number: {
+      min: "minimalna wartość to:",
+      max: "maksymalna wartość to:",
+    },
   },
   buttons: {
     add: "dodaj",
@@ -38,6 +42,12 @@ const pl: Translation = {
       items: {
         list: "Lista postaci",
         add: "Dodaj nową postać",
+      },
+    },
+    acts: {
+      title: "Rozdziały",
+      items: {
+        add: "Dodaj nowy rozdział",
       },
     },
   },
@@ -203,6 +213,51 @@ const pl: Translation = {
         description: "To jest strona do edycji postaci",
         imageAlt: "image alt",
         title: "Edytuj postać",
+      },
+    },
+  },
+  actsPages: {
+    add: {
+      title: "Dodaj nowy rozdział",
+      scenePart: {
+        title: "Sceny",
+
+        addNewSceneBtn: "Dodaj nową scenę",
+        addSceneBtn: "Dodaj scenę",
+        editSceneBtn: "Edytuj scenę",
+        form: {
+          title: "Dodaj nową scenę",
+          editSceneTitle: "Edytujesz scenę",
+        },
+      },
+      dialogForm: {
+        title: "Dialogi",
+        dialogsInScene: {
+          title: "Dialogi w tej scenie",
+          character: "Postać",
+          text: "Tekst",
+        },
+        characterFormTitle: "Postacie",
+        PreviewTooltip: "Kliknij aby zobaczyć dialog",
+        addDialogBtn: "dodaj dialog",
+        addNewDialogBtn: "Dodaj nowy dialog",
+        editDialogBtn: "Edytuj dialog",
+      },
+      charactersOnScreen: {
+        list: {
+          character: "Postać",
+        },
+        form: {
+          PreviewTooltip: "Kliknij aby zobaczyć postacie przed ich dodaniem",
+          editCharBtn: "Edytuj postać",
+          addCharBtn: "Dodaj postać",
+          addNewCharBtn: "Dodaj nową postać",
+        },
+      },
+      metaData: {
+        description: "rozdziały gry",
+        imageAlt: "image alt",
+        title: "Dodaj rozdział",
       },
     },
   },

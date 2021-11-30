@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, isAnyOf } from "@reduxjs/toolkit";
 // import { createAction } from "@reduxjs/toolkit";
 import { axiosSecureInstance } from "common/axios";
 import { RootState } from "common/store/store";
@@ -10,6 +10,7 @@ import {
   SceneriesResponse,
   Scenery,
   SingleSceneryResponse,
+  SceneriesDictionary,
 } from "types/novel-server.types";
 
 interface SceneryState {
@@ -20,6 +21,10 @@ interface SceneryState {
   };
   singleScenery: {
     data: Scenery | null;
+    isFetching: boolean;
+  };
+  sceneryDictionary: {
+    data: SceneriesDictionary["data"] | null;
     isFetching: boolean;
   };
 }
@@ -34,7 +39,21 @@ const initialState: SceneryState = {
     data: null,
     isFetching: false,
   },
+  sceneryDictionary: {
+    data: null,
+    isFetching: false,
+  },
 };
+
+export const fetchSceneriesDictionary = createAsyncThunk(
+  "scenery/fetchSceneriesDictionary",
+  async () => {
+    const response = await axiosSecureInstance.get<SceneriesDictionary>(
+      `/scenery/dictionary`
+    );
+    return response.data;
+  }
+);
 
 export const fetchSceneries = createAsyncThunk(
   "scenery/fetchSceneries",
@@ -171,6 +190,12 @@ const scenerySlice = createSlice({
         data: null,
       };
     },
+    resetSceneryDictionaryData(state) {
+      state.sceneryDictionary = {
+        isFetching: state.singleScenery.isFetching,
+        data: null,
+      };
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchSceneries.pending, (state) => {
@@ -194,6 +219,22 @@ const scenerySlice = createSlice({
     builder.addCase(fetchSingleScenery.rejected, (state) => {
       state.singleScenery.isFetching = false;
     });
+    builder.addCase(fetchSceneriesDictionary.pending, (state) => {
+      state.sceneryDictionary.isFetching = true;
+    });
+    builder.addCase(fetchSceneriesDictionary.fulfilled, (state, action) => {
+      state.sceneryDictionary.data = action.payload.data;
+    });
+    builder.addMatcher(
+      isAnyOf(
+        fetchSceneriesDictionary.rejected,
+        fetchSceneriesDictionary.fulfilled
+      ),
+      (state) => {
+        state.sceneryDictionary.isFetching = false;
+      }
+    );
+
     // builder.addCase(removeSingleSceneryData, (state) => {
     //   state.singleScenery.data = null;
     // });
@@ -206,6 +247,10 @@ export const selectSingleScenery = (state: RootState) =>
 export const selectSingleSceneryData = (state: RootState) =>
   state.scenery.singleScenery.data;
 
-export const { resetSingleSceneryData } = scenerySlice.actions;
+export const selectSceneriesDictionary = (state: RootState) =>
+  state.scenery.sceneryDictionary;
+
+export const { resetSingleSceneryData, resetSceneryDictionaryData } =
+  scenerySlice.actions;
 
 export default scenerySlice.reducer;

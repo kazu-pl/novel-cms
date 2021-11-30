@@ -15,6 +15,10 @@ const de: Translation = {
     forgotPassword: "Ich habe mein Passwort vergessen",
     enterTitle: "Titel eingeben",
     enterDescription: "Beschreibung eingeben",
+    number: {
+      min: "minimal zulässiger Wert ist:",
+      max: "maximal zulässiger Wert ist:",
+    },
   },
   buttons: {
     add: "hinzufügen",
@@ -39,6 +43,12 @@ const de: Translation = {
       items: {
         list: "Liste der Charaktere",
         add: "neue hinzufügen",
+      },
+    },
+    acts: {
+      title: "Kapitel",
+      items: {
+        add: "hinzufügen",
       },
     },
   },
@@ -204,6 +214,52 @@ const de: Translation = {
         description: "Dies ist eine Charakterbearbeitungsseite",
         imageAlt: "image alt",
         title: "Charakter bearbeiten",
+      },
+    },
+  },
+  actsPages: {
+    add: {
+      title: "Neues Kapitel hinzufügen",
+      scenePart: {
+        title: "Szenes",
+        addNewSceneBtn: "Neue Szene hinzufügen",
+        addSceneBtn: "Neue hinzufügen",
+        editSceneBtn: "Szene bearbeiten",
+        form: {
+          title: "Neuen Szene hinzufügen",
+          editSceneTitle: "Du bearbeitest die Szene",
+        },
+      },
+      dialogForm: {
+        title: "Dialogs",
+        dialogsInScene: {
+          title: "Dialoge in dieser Szene",
+          character: "Charakters",
+          text: "Text",
+        },
+        characterFormTitle: "Charakters",
+        PreviewTooltip:
+          "Klicken Sie hier, um den Dialog im Vorschaufenster anzuzeigen",
+        addDialogBtn: "Dialog hinzufügen",
+        addNewDialogBtn: "Neuen Dialog hinzufügen",
+        editDialogBtn: "Dialog bearbeiten",
+      },
+      charactersOnScreen: {
+        list: {
+          character: "Charakter",
+        },
+        form: {
+          PreviewTooltip:
+            "Klicken Sie hier, um die Charaktere anzuzeigen, bevor Sie sie hinzufügen",
+          editCharBtn: "Bearbeite den Charakter",
+          addCharBtn: "Füge einen Charakter hinzu",
+          addNewCharBtn: "Füge einen neuen Charakter hinzu",
+        },
+      },
+      metaData: {
+        description: "Kapitel der Spielgeschichte",
+        imageAlt: "image alt",
+        title: "Kapitel",
       },
     },
   },

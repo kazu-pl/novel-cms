@@ -14,6 +14,10 @@ const en: Translation = {
     forgotPassword: "I forgot my password",
     enterTitle: "enter title",
     enterDescription: "enter description",
+    number: {
+      min: "min allowed value is:",
+      max: "max allowed value is:",
+    },
   },
   buttons: {
     add: "add",
@@ -38,6 +42,12 @@ const en: Translation = {
       items: {
         list: "List of characters",
         add: "Add new character",
+      },
+    },
+    acts: {
+      title: "Acts",
+      items: {
+        add: "Add new act",
       },
     },
   },
@@ -203,6 +213,50 @@ const en: Translation = {
         description: "This is a page to manage characters",
         imageAlt: "image alt",
         title: "Edit character",
+      },
+    },
+  },
+  actsPages: {
+    add: {
+      title: "Add new act",
+      scenePart: {
+        title: "Scenes",
+        addNewSceneBtn: "Add new scene",
+        addSceneBtn: "Add scene",
+        editSceneBtn: "Edit scene",
+        form: {
+          title: "Add new scene",
+          editSceneTitle: "You're editing scene",
+        },
+      },
+      dialogForm: {
+        title: "Dialogs",
+        dialogsInScene: {
+          title: "Dialogs in this scene",
+          character: "Character",
+          text: "Text",
+        },
+        characterFormTitle: "Characters",
+        PreviewTooltip: "Click to see dialog on preview window",
+        addDialogBtn: "Add dialog",
+        addNewDialogBtn: "Add new dialog",
+        editDialogBtn: "Edit dialog",
+      },
+      charactersOnScreen: {
+        list: {
+          character: "Character",
+        },
+        form: {
+          PreviewTooltip: "Click to see characters on preview",
+          editCharBtn: "Edit character",
+          addCharBtn: "Ad character",
+          addNewCharBtn: "Add new character",
+        },
+      },
+      metaData: {
+        description: "Game story acts",
+        imageAlt: "image alt",
+        title: "Acts",
       },
     },
   },

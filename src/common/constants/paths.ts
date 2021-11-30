@@ -25,3 +25,9 @@ export const PATHS_CHARACTER = {
   ADD: "/character/add",
   EDIT: (path: string) => `/character/${path}/edit`,
 };
+
+export const PATHS_ACT = {
+  LIST: "/acts/list",
+  ADD: "/acts/add",
+  EDIT: (path: string) => `/acts/${path}/edit`,
+};
