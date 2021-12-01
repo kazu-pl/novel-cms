@@ -225,6 +225,7 @@ const en: Translation = {
           scenesTotal: "Total scenes",
           nextAct: "Next Act Id",
           createdAt: "createdAt",
+          type: "type",
           actions: "Actions",
         },
       },

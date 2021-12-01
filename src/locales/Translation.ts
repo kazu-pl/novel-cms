@@ -218,6 +218,7 @@ export interface Translation {
           scenesTotal: string;
           nextAct: string;
           createdAt: string;
+          type: string;
           actions: string;
         };
       };

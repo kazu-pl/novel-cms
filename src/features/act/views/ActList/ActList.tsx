@@ -156,6 +156,11 @@ const ActList = () => {
               isSortable: true,
             },
             {
+              title: t("actsPages.list.table.columns.type"),
+              key: "type",
+              render: (row) => row.type,
+            },
+            {
               title: t("actsPages.list.table.columns.actions"),
               key: "actions",
               noWrap: true,

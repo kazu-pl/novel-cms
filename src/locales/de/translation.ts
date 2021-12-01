@@ -226,6 +226,7 @@ const de: Translation = {
           scenesTotal: "Gesamtzahl der Szenen",
           nextAct: "Nächste Akt-ID",
           createdAt: "hergestellt in",
+          type: "type",
           actions: "Aktionen",
         },
       },
