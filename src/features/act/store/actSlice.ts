@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, isAnyOf } from "@reduxjs/toolkit";
 import { axiosSecureInstance } from "common/axios";
 import { RootState } from "common/store/store";
 import { SortDirection } from "novel-ui/lib/Table";
@@ -55,6 +55,16 @@ export const fetchActsDictionary = createAsyncThunk(
     } catch (error) {
       return rejectWithValue((error as FailedReqMsg).message);
     }
+  }
+);
+
+export const fetchSingleAct = createAsyncThunk(
+  "act/fetchSingleAct",
+  async (actId: string) => {
+    const response = await axiosSecureInstance.get<ActExtended>(
+      `/acts/${actId}`
+    );
+    return response.data;
   }
 );
 
@@ -141,6 +151,22 @@ const actSlice = createSlice({
     builder.addCase(fetchActs.rejected, (state) => {
       state.acts.isFetching = false;
     });
+    builder.addCase(fetchSingleAct.pending, (state) => {
+      state.singleAct.isFetching = true;
+    });
+
+    builder.addCase(fetchSingleAct.fulfilled, (state, action) => {
+      state.singleAct.data = action.payload;
+    });
+    builder.addCase(fetchSingleAct.rejected, (state) => {
+      state.singleAct.data = null;
+    });
+    builder.addMatcher(
+      isAnyOf(fetchSingleAct.rejected, fetchSingleAct.fulfilled),
+      (state) => {
+        state.singleAct.isFetching = false;
+      }
+    );
   },
 });
 
@@ -148,5 +174,6 @@ export const selectActDictionary = (state: RootState) =>
   state.act.actsDictionary.data;
 
 export const selectActs = (state: RootState) => state.act.acts;
+export const selectSingleAct = (state: RootState) => state.act.singleAct;
 
 export default actSlice.reducer;

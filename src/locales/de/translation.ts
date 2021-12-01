@@ -284,6 +284,14 @@ const de: Translation = {
         title: "Kapitel",
       },
     },
+    edit: {
+      title: "Akt bearbeiten",
+      metaData: {
+        description: "Akt bearbeiten",
+        imageAlt: "img alt",
+        title: "Akt bearbeiten",
+      },
+    },
   },
   notFoundPage: {
     title: "nicht gefunden",

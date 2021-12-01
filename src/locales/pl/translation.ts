@@ -285,6 +285,14 @@ const pl: Translation = {
         title: "Dodaj rozdział",
       },
     },
+    edit: {
+      title: "Edytuj rozdzial",
+      metaData: {
+        description: "Strona do edycji rozdziału",
+        imageAlt: "img alt",
+        title: "Edytuj Rozdział",
+      },
+    },
   },
   notFoundPage: {
     title: "nie znaleziono",

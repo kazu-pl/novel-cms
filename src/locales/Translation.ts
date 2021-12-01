@@ -274,6 +274,14 @@ export interface Translation {
         title: string;
       };
     };
+    edit: {
+      title: string;
+      metaData: {
+        description: string;
+        imageAlt: string;
+        title: string;
+      };
+    };
   };
   notFoundPage: {
     title: string;

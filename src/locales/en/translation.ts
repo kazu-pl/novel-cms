@@ -281,6 +281,14 @@ const en: Translation = {
         title: "Acts",
       },
     },
+    edit: {
+      title: "Edit Act",
+      metaData: {
+        description: "Edit Act",
+        imageAlt: "img alt",
+        title: "Edit Act",
+      },
+    },
   },
   notFoundPage: {
     title: "Not found",
