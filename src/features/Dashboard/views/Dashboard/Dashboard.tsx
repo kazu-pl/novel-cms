@@ -1,9 +1,17 @@
 import DashboardLayoutWrapper from "common/wrappers/DashboardLayoutWrapper";
 import { useTranslation } from "react-i18next";
 import HelmetDecorator from "components/HelmetDecorator";
+import { useAppSelector } from "common/store/hooks";
+import {
+  selectIsUserProfileFetching,
+  selectUserProfile,
+} from "core/store/userSlice";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const Dashboard = () => {
   const { t, i18n } = useTranslation();
+  const userData = useAppSelector(selectUserProfile);
+  const isLoading = useAppSelector(selectIsUserProfileFetching);
   return (
     <>
       <HelmetDecorator
@@ -14,7 +22,11 @@ const Dashboard = () => {
         title={t("dashboardPage.metaData.title")}
       />
       <DashboardLayoutWrapper>
-        this is Dashboard. There will be some graphs here in the futere.
+        {isLoading ? (
+          <CircularProgress />
+        ) : (
+          `Hello, ${userData?.name} ${userData?.surname}!`
+        )}
       </DashboardLayoutWrapper>
     </>
   );

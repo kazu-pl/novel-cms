@@ -15,10 +15,12 @@ import { RootState } from "common/store/store";
 
 interface UserState {
   userProfile: UserProfile | null;
+  isProfileLoading: boolean;
 }
 
 const initialState: UserState = {
   userProfile: null,
+  isProfileLoading: false,
 };
 
 export const login = createAsyncThunk(
@@ -158,12 +160,22 @@ const counterSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
+    builder.addCase(fetchUserData.pending, (state, action) => {
+      state.isProfileLoading = true;
+    });
+    builder.addCase(fetchUserData.rejected, (state, action) => {
+      state.userProfile = null;
+      state.isProfileLoading = false;
+    });
     builder.addCase(fetchUserData.fulfilled, (state, action) => {
       state.userProfile = action.payload;
+      state.isProfileLoading = false;
     });
   },
 });
 
 export const selectUserProfile = (state: RootState) => state.user.userProfile;
+export const selectIsUserProfileFetching = (state: RootState) =>
+  state.user.isProfileLoading;
 
 export default counterSlice.reducer;
