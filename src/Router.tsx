@@ -34,6 +34,7 @@ import CharacterEdit from "features/character/views/CharacterEdit";
 
 import ActAdd from "features/act/views/ActAdd";
 import ActList from "features/act/views/ActList";
+import ActEdit from "features/act/views/ActEdit/ActEdit";
 
 const Router = () => {
   useTokenListener();
@@ -153,6 +154,14 @@ const Router = () => {
             element={
               <LocalizedPrivateRoute>
                 <ActAdd />
+              </LocalizedPrivateRoute>
+            }
+          />,
+          <Route
+            path={`${path(PATHS_ACT.EDIT(":id"), lang)}`}
+            element={
+              <LocalizedPrivateRoute>
+                <ActEdit />
               </LocalizedPrivateRoute>
             }
           />,

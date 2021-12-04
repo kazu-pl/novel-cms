@@ -228,6 +228,7 @@ const pl: Translation = {
           scenesTotal: "Liczba scen",
           nextAct: "Następny act",
           createdAt: "Utworzono",
+          type: "typ",
           actions: "Akcje",
         },
       },
@@ -283,6 +284,14 @@ const pl: Translation = {
         description: "rozdziały gry",
         imageAlt: "image alt",
         title: "Dodaj rozdział",
+      },
+    },
+    edit: {
+      title: "Edytuj rozdzial",
+      metaData: {
+        description: "Strona do edycji rozdziału",
+        imageAlt: "img alt",
+        title: "Edytuj Rozdział",
       },
     },
   },

@@ -3,7 +3,13 @@ import HelmetDecorator from "components/HelmetDecorator";
 import Table, { SortDirection } from "novel-ui/lib/Table";
 import { useTranslation } from "react-i18next";
 import { useAppDispatch, useAppSelector } from "common/store/hooks";
-import { fetchActs, removeAct, selectActs } from "features/act/store/actSlice";
+import {
+  fetchActs,
+  removeAct,
+  selectActs,
+  fetchActsDictionary,
+  selectActDictionary,
+} from "features/act/store/actSlice";
 import useLocalizedPath from "common/router/useLocalizedPath";
 import { useNavigate } from "react-router";
 import { useSnackbar } from "notistack";
@@ -22,6 +28,7 @@ const ActList = () => {
   const { t, i18n } = useTranslation();
   const dispatch = useAppDispatch();
   const acts = useAppSelector(selectActs);
+  const actsDisctionary = useAppSelector(selectActDictionary);
   const { path } = useLocalizedPath();
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
@@ -77,7 +84,8 @@ const ActList = () => {
 
   useEffect(() => {
     fetchData();
-  }, [fetchData]);
+    dispatch(fetchActsDictionary());
+  }, [dispatch, fetchData]);
 
   const handleDeleteAct = async (id: string) => {
     try {
@@ -136,7 +144,10 @@ const ActList = () => {
             {
               title: t("actsPages.list.table.columns.description"),
               key: "description",
-              render: (row) => row.description,
+              render: (row) =>
+                row.description.length > 50
+                  ? `${row.description.slice(0, 50)}...`
+                  : row.description,
               isSortable: true,
             },
             {
@@ -147,13 +158,22 @@ const ActList = () => {
             {
               title: t("actsPages.list.table.columns.nextAct"),
               key: "nextAct",
-              render: (row) => row.nextAct,
+              render: (row) =>
+                !!row.nextAct
+                  ? actsDisctionary?.find((item) => item.id === row.nextAct)
+                      ?.title
+                  : "",
             },
             {
               title: t("actsPages.list.table.columns.createdAt"),
               key: "createdAt",
               render: (row) => new Date(row.createdAt).toLocaleString(),
               isSortable: true,
+            },
+            {
+              title: t("actsPages.list.table.columns.type"),
+              key: "type",
+              render: (row) => row.type,
             },
             {
               title: t("actsPages.list.table.columns.actions"),

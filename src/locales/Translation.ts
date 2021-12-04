@@ -218,6 +218,7 @@ export interface Translation {
           scenesTotal: string;
           nextAct: string;
           createdAt: string;
+          type: string;
           actions: string;
         };
       };
@@ -268,6 +269,14 @@ export interface Translation {
           addNewCharBtn: string;
         };
       };
+      metaData: {
+        description: string;
+        imageAlt: string;
+        title: string;
+      };
+    };
+    edit: {
+      title: string;
       metaData: {
         description: string;
         imageAlt: string;

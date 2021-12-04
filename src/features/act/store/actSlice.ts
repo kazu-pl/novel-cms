@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, isAnyOf } from "@reduxjs/toolkit";
 import { axiosSecureInstance } from "common/axios";
 import { RootState } from "common/store/store";
 import { SortDirection } from "novel-ui/lib/Table";
@@ -10,6 +10,7 @@ import {
   Act,
   ActsResponse,
   SuccessfulReqMsg,
+  ActExtendedResponse,
 } from "types/novel-server.types";
 
 interface CharacterState {
@@ -58,12 +59,37 @@ export const fetchActsDictionary = createAsyncThunk(
   }
 );
 
-export const postActs = createAsyncThunk(
-  "act/postActs",
+export const fetchSingleAct = createAsyncThunk(
+  "act/fetchSingleAct",
+  async (actId: string) => {
+    const response = await axiosSecureInstance.get<ActExtendedResponse>(
+      `/acts/${actId}`
+    );
+    return response.data;
+  }
+);
+
+export const addNewAct = createAsyncThunk(
+  "act/addNewAct",
   async (act: Act, { rejectWithValue }) => {
     try {
       const response = await axiosSecureInstance.post<ActDictionary>(
         `/acts/add`,
+        act
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue((error as FailedReqMsg).message);
+    }
+  }
+);
+
+export const updateAct = createAsyncThunk(
+  "act/updateAct",
+  async (act: ActExtended, { rejectWithValue }) => {
+    try {
+      const response = await axiosSecureInstance.post<SuccessfulReqMsg>(
+        `/acts/${act._id}/edit`,
         act
       );
       return response.data;
@@ -141,6 +167,22 @@ const actSlice = createSlice({
     builder.addCase(fetchActs.rejected, (state) => {
       state.acts.isFetching = false;
     });
+    builder.addCase(fetchSingleAct.pending, (state) => {
+      state.singleAct.isFetching = true;
+    });
+
+    builder.addCase(fetchSingleAct.fulfilled, (state, action) => {
+      state.singleAct.data = action.payload.data;
+    });
+    builder.addCase(fetchSingleAct.rejected, (state) => {
+      state.singleAct.data = null;
+    });
+    builder.addMatcher(
+      isAnyOf(fetchSingleAct.rejected, fetchSingleAct.fulfilled),
+      (state) => {
+        state.singleAct.isFetching = false;
+      }
+    );
   },
 });
 
@@ -148,5 +190,6 @@ export const selectActDictionary = (state: RootState) =>
   state.act.actsDictionary.data;
 
 export const selectActs = (state: RootState) => state.act.acts;
+export const selectSingleAct = (state: RootState) => state.act.singleAct;
 
 export default actSlice.reducer;

@@ -225,6 +225,7 @@ const en: Translation = {
           scenesTotal: "Total scenes",
           nextAct: "Next Act Id",
           createdAt: "createdAt",
+          type: "type",
           actions: "Actions",
         },
       },
@@ -279,6 +280,14 @@ const en: Translation = {
         description: "Game story acts",
         imageAlt: "image alt",
         title: "Acts",
+      },
+    },
+    edit: {
+      title: "Edit Act",
+      metaData: {
+        description: "Edit Act",
+        imageAlt: "img alt",
+        title: "Edit Act",
       },
     },
   },

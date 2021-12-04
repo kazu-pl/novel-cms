@@ -226,6 +226,7 @@ const de: Translation = {
           scenesTotal: "Gesamtzahl der Szenen",
           nextAct: "Nächste Akt-ID",
           createdAt: "hergestellt in",
+          type: "type",
           actions: "Aktionen",
         },
       },
@@ -282,6 +283,14 @@ const de: Translation = {
         description: "Kapitel der Spielgeschichte",
         imageAlt: "image alt",
         title: "Kapitel",
+      },
+    },
+    edit: {
+      title: "Akt bearbeiten",
+      metaData: {
+        description: "Akt bearbeiten",
+        imageAlt: "img alt",
+        title: "Akt bearbeiten",
       },
     },
   },

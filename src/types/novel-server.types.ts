@@ -400,6 +400,14 @@ export interface Act {
 export type ActExtended = Act & { _id: string; __v: number; createdAt: string; updatedAt: string };
 
 /**
+ * resonse with extended act in data member
+ */
+export interface ActExtendedResponse {
+  /** extended act */
+  data: ActExtended;
+}
+
+/**
  * @example {"_id":"6181395d67568b70180ce93b"}
  */
 export type RequestUpdateAct = Act & { _id: string };
