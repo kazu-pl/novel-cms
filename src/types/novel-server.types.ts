@@ -346,8 +346,10 @@ export interface CharacterOnScreen {
   imgUrl: string;
 }
 
+export type CharacterOnScreenExtended = CharacterOnScreen & { _id: string };
+
 /**
- * signle Dialog type
+ * Single Dialog type
  * @example {"text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras tempus enim ac molestie pharetra. Aliquam pretium pharetra finibus. Etiam rutrum","characterSayingText":"Yuuta","charactersOnScreen":{"allOf":{"$ref":"#/components/schemas/CharacterOnScreen"}}}
  */
 export interface Dialog {
@@ -362,6 +364,11 @@ export interface Dialog {
 }
 
 /**
+ * Single Dialog type with mongoDB _id field
+ */
+export type DialogExtended = Dialog & { _id: string; charactersOnScreen: CharacterOnScreenExtended[] };
+
+/**
  * signle Scene type
  * @example {"title":"basic conversation between Yuuta and Shion","bgImg":{"link":"/files/mansion.jpg","sceneryId":"0000-0000-0000-0000"},"dialogs":{"allOf":{"$ref":"#/components/schemas/Dialog"}}}
  */
@@ -373,6 +380,12 @@ export interface Scene {
   bgImg: { sceneryId: string; link: string };
   dialogs: Dialog[];
 }
+
+export type SceneExtended = Scene & {
+  _id: string;
+  bgImg: { sceneryId: string; link: string; _id: string };
+  dialogs: DialogExtended[];
+};
 
 /**
  * Act type (used as newly adding Act item type and as a basic type extended by additional items from mongoDB in returning Act)
@@ -397,7 +410,13 @@ export interface Act {
  * Act type that extends basic Act type. It Adds fields from mongoDB
  * @example {"_id":"6181395d67568b70180ce93b","__v":0,"createdAt":"2021-11-04T11:01:42.143+00:00","updatedAt":"2021-11-04T11:01:42.143+00:00"}
  */
-export type ActExtended = Act & { _id: string; __v: number; createdAt: string; updatedAt: string };
+export type ActExtended = Act & {
+  scenes: SceneExtended[];
+  _id: string;
+  __v: number;
+  createdAt: string;
+  updatedAt: string;
+};
 
 /**
  * resonse with extended act in data member
