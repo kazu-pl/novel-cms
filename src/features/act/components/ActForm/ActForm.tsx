@@ -93,7 +93,7 @@ const ActForm = ({
                   fullWidth
                   label="nextAct"
                 >
-                  {actDictionary.map((item, index) => (
+                  {actDictionary.map((item) => (
                     <MenuItem key={item.id} value={item.id}>
                       {item.title}
                     </MenuItem>
