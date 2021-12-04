@@ -19,11 +19,11 @@ import CircularProgress from "@mui/material/CircularProgress";
 import MenuItem from "@mui/material/MenuItem";
 import TextField, { TextFieldProps } from "novel-ui/lib/inputs/TextField";
 import { API_URL } from "common/constants/env";
-import DialogForm, { createDialogValidationSchema } from "./Dialog/DialogForm";
+import DialogForm, { createDialogValidationSchema } from "../Dialog/DialogForm";
 import { useState } from "react";
-import PreviewBox from "./PreviewBox";
+import PreviewBox from "../PreviewBox";
 import { useLocalizedYup, Yup } from "common/yup";
-import DialogListItem from "./Dialog/DialogListItem";
+import DialogListItem from "../Dialog/DialogListItem";
 
 export const createSceneValidationSchema = (yup: Yup) =>
   yup.object({

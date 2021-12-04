@@ -10,6 +10,7 @@ import {
   Act,
   ActsResponse,
   SuccessfulReqMsg,
+  ActExtendedResponse,
 } from "types/novel-server.types";
 
 interface CharacterState {
@@ -61,19 +62,34 @@ export const fetchActsDictionary = createAsyncThunk(
 export const fetchSingleAct = createAsyncThunk(
   "act/fetchSingleAct",
   async (actId: string) => {
-    const response = await axiosSecureInstance.get<ActExtended>(
+    const response = await axiosSecureInstance.get<ActExtendedResponse>(
       `/acts/${actId}`
     );
     return response.data;
   }
 );
 
-export const postActs = createAsyncThunk(
-  "act/postActs",
+export const addNewAct = createAsyncThunk(
+  "act/addNewAct",
   async (act: Act, { rejectWithValue }) => {
     try {
       const response = await axiosSecureInstance.post<ActDictionary>(
         `/acts/add`,
+        act
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue((error as FailedReqMsg).message);
+    }
+  }
+);
+
+export const updateAct = createAsyncThunk(
+  "act/updateAct",
+  async (act: ActExtended, { rejectWithValue }) => {
+    try {
+      const response = await axiosSecureInstance.post<SuccessfulReqMsg>(
+        `/acts/${act._id}/edit`,
         act
       );
       return response.data;
@@ -156,7 +172,7 @@ const actSlice = createSlice({
     });
 
     builder.addCase(fetchSingleAct.fulfilled, (state, action) => {
-      state.singleAct.data = action.payload;
+      state.singleAct.data = action.payload.data;
     });
     builder.addCase(fetchSingleAct.rejected, (state) => {
       state.singleAct.data = null;
