@@ -165,7 +165,9 @@ const NewSceneForm = ({
                             clearable
                             id="bgImg.sceneryId"
                             fullWidth
-                            label="scenery"
+                            label={t(
+                              "actsPages.add.scenePart.form.selectSceneryId"
+                            )}
                             onChange={(e) => {
                               fetchSingleSceneryImages(e);
                               setFieldValue("bgImg.link", "");
@@ -188,7 +190,9 @@ const NewSceneForm = ({
                           clearable
                           id="bgImg.link"
                           fullWidth
-                          label="background"
+                          label={t(
+                            "actsPages.add.scenePart.form.selectSceneryBg"
+                          )}
                         >
                           {singleScenery.data.imagesList.map((item, index) => (
                             <MenuItem key={item._id || index} value={item.url}>

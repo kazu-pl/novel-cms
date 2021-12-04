@@ -242,6 +242,10 @@ const en: Translation = {
     },
     add: {
       title: "Add new act",
+      actForm: {
+        type: "Act type",
+        nextAct: "Next Act",
+      },
       scenePart: {
         title: "Scenes",
         addNewSceneBtn: "Add new scene",
@@ -250,6 +254,8 @@ const en: Translation = {
         form: {
           title: "Add new scene",
           editSceneTitle: "You're editing scene",
+          selectSceneryId: "Select scenery",
+          selectSceneryBg: "Select scenery background",
         },
       },
       dialogForm: {
