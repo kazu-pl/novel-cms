@@ -243,6 +243,10 @@ const de: Translation = {
     },
     add: {
       title: "Neues Kapitel hinzufügen",
+      actForm: {
+        type: "Aktart",
+        nextAct: "Nächster Akt",
+      },
       scenePart: {
         title: "Szenes",
         addNewSceneBtn: "Neue Szene hinzufügen",
@@ -251,6 +255,8 @@ const de: Translation = {
         form: {
           title: "Neuen Szene hinzufügen",
           editSceneTitle: "Du bearbeitest die Szene",
+          selectSceneryId: "Landschaft auswählen",
+          selectSceneryBg: "Hintergrund auswählen",
         },
       },
       dialogForm: {

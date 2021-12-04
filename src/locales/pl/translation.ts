@@ -245,15 +245,20 @@ const pl: Translation = {
     },
     add: {
       title: "Dodaj nowy rozdział",
+      actForm: {
+        type: "Typ rozdziału",
+        nextAct: "Nastepny rozdział",
+      },
       scenePart: {
         title: "Sceny",
-
         addNewSceneBtn: "Dodaj nową scenę",
         addSceneBtn: "Dodaj scenę",
         editSceneBtn: "Edytuj scenę",
         form: {
           title: "Dodaj nową scenę",
           editSceneTitle: "Edytujesz scenę",
+          selectSceneryId: "Wybierz scenerię",
+          selectSceneryBg: "Wybierz tło scenerii",
         },
       },
       dialogForm: {

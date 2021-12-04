@@ -73,7 +73,7 @@ const ActForm = ({
                 select
                 id="type"
                 fullWidth
-                label="type"
+                label={t("actsPages.add.actForm.type")}
               >
                 {(["start", "normal", "end"] as Act["type"][]).map((item) => (
                   <MenuItem key={item} value={item}>
@@ -91,9 +91,9 @@ const ActForm = ({
                   clearable
                   id="nextAct"
                   fullWidth
-                  label="nextAct"
+                  label={t("actsPages.add.actForm.nextAct")}
                 >
-                  {actDictionary.map((item, index) => (
+                  {actDictionary.map((item) => (
                     <MenuItem key={item.id} value={item.id}>
                       {item.title}
                     </MenuItem>

@@ -53,7 +53,7 @@ const SceneListItem = ({
               </Typography>
             </Box>
             <Typography>
-              Tło: <span style={{ fontWeight: 500 }}>{scene.bgImgUrl}</span>
+              Tło: <span style={{ fontWeight: 500 }}>{scene.bgImg.link}</span>
             </Typography>
           </Box>
           <Box display="flex">

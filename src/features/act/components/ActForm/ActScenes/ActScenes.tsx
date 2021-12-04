@@ -51,7 +51,10 @@ const ActScenes = ({ name, push, form, remove }: ActSceneFormProps) => {
           onSubmit={push}
           hideForm={handleHideForm}
           initialValues={{
-            bgImgUrl: "",
+            bgImg: {
+              sceneryId: "",
+              link: "",
+            },
             title: "",
             dialogs: [],
           }}

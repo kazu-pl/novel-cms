@@ -235,6 +235,10 @@ export interface Translation {
     };
     add: {
       title: string;
+      actForm: {
+        type: string;
+        nextAct: string;
+      };
       scenePart: {
         title: string;
         addNewSceneBtn: string;
@@ -243,6 +247,8 @@ export interface Translation {
         form: {
           title: string;
           editSceneTitle: string;
+          selectSceneryId: string;
+          selectSceneryBg: string;
         };
       };
       dialogForm: {

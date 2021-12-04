@@ -17,7 +17,7 @@ import {
 import { useEffect } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
 import MenuItem from "@mui/material/MenuItem";
-import TextField, { TextFieldProps } from "novel-ui/lib/inputs/TextField";
+import { TextFieldProps } from "novel-ui/lib/inputs/TextField";
 import { API_URL } from "common/constants/env";
 import DialogForm, { createDialogValidationSchema } from "../Dialog/DialogForm";
 import { useState } from "react";
@@ -27,7 +27,10 @@ import DialogListItem from "../Dialog/DialogListItem";
 
 export const createSceneValidationSchema = (yup: Yup) =>
   yup.object({
-    bgImgUrl: yup.string().required(),
+    bgImg: yup.object({
+      sceneryId: yup.string().required(),
+      link: yup.string().required(),
+    }),
     title: yup.string().required(),
     dialogs: yup.array().of(createDialogValidationSchema(yup)),
   });
@@ -66,6 +69,12 @@ const NewSceneForm = ({
   useEffect(() => {
     dispatch(fetchSceneriesDictionary());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (!!initialValues.bgImg.sceneryId) {
+      dispatch(fetchSingleScenery(initialValues.bgImg.sceneryId));
+    }
+  }, [dispatch, initialValues.bgImg.sceneryId]);
 
   const fetchSingleSceneryImages: TextFieldProps["onChange"] = (e) => {
     dispatch(fetchSingleScenery(e.target.value));
@@ -115,7 +124,7 @@ const NewSceneForm = ({
       onSubmit={handleSubmit}
       validationSchema={validationSchema}
     >
-      {({ submitForm, values }) => (
+      {({ submitForm, values, setFieldValue }) => (
         <>
           <Box display="flex" flexDirection="column" p={2} boxShadow={1}>
             <Box mb={2} display="flex">
@@ -150,33 +159,40 @@ const NewSceneForm = ({
                       {sceneriesDictionary.isFetching && <CircularProgress />}
                       {!sceneriesDictionary.isFetching &&
                         !!sceneriesDictionary.data && (
-                          <TextField
-                            name="scenery"
+                          <TextFieldFormik
+                            name="bgImg.sceneryId"
                             select
                             clearable
-                            id="scenery"
+                            id="bgImg.sceneryId"
                             fullWidth
-                            label="scenery"
-                            onChange={fetchSingleSceneryImages}
+                            label={t(
+                              "actsPages.add.scenePart.form.selectSceneryId"
+                            )}
+                            onChange={(e) => {
+                              fetchSingleSceneryImages(e);
+                              setFieldValue("bgImg.link", "");
+                            }}
                           >
                             {sceneriesDictionary.data.map((item, index) => (
                               <MenuItem key={item.id || index} value={item.id}>
                                 {item.title}
                               </MenuItem>
                             ))}
-                          </TextField>
+                          </TextFieldFormik>
                         )}
                     </Box>
                     <Box mt={2} width="50%" ml={1}>
                       {singleScenery.isFetching && <CircularProgress />}
                       {!singleScenery.isFetching && !!singleScenery.data && (
                         <TextFieldFormik
-                          name="bgImgUrl"
+                          name="bgImg.link"
                           select
                           clearable
-                          id="bgImgUrl"
+                          id="bgImg.link"
                           fullWidth
-                          label="bgImgUrl"
+                          label={t(
+                            "actsPages.add.scenePart.form.selectSceneryBg"
+                          )}
                         >
                           {singleScenery.data.imagesList.map((item, index) => (
                             <MenuItem key={item._id || index} value={item.url}>
@@ -250,9 +266,9 @@ const NewSceneForm = ({
                 </Box>
               </Box>
               <Box width="50%" ml={1}>
-                {values.bgImgUrl && (
+                {values.bgImg && values.bgImg.link && (
                   <PreviewBox
-                    bgImgUrl={API_URL + values.bgImgUrl}
+                    bgImgUrl={API_URL + values.bgImg.link}
                     {...dialogPreviewData}
                   />
                 )}

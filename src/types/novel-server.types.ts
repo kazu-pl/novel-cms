@@ -363,14 +363,14 @@ export interface Dialog {
 
 /**
  * signle Scene type
- * @example {"title":"basic conversation between Yuuta and Shion","bgImgUrl":"/files/mansion.jpg","dialogs":{"allOf":{"$ref":"#/components/schemas/Dialog"}}}
+ * @example {"title":"basic conversation between Yuuta and Shion","bgImg":{"link":"/files/mansion.jpg","sceneryId":"0000-0000-0000-0000"},"dialogs":{"allOf":{"$ref":"#/components/schemas/Dialog"}}}
  */
 export interface Scene {
   /** scene title */
   title: string;
 
   /** scene background image */
-  bgImgUrl: string;
+  bgImg: { sceneryId: string; link: string };
   dialogs: Dialog[];
 }
 
