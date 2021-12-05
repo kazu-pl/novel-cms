@@ -261,6 +261,8 @@ const de: Translation = {
       },
       dialogForm: {
         title: "Dialogs",
+        characterSayingText: "Lautsprecher",
+        text: "text",
         dialogsInScene: {
           title: "Dialoge in dieser Szene",
           character: "Charakters",
@@ -278,8 +280,10 @@ const de: Translation = {
           character: "Charakter",
         },
         form: {
+          characterName: "Charakter",
           PreviewTooltip:
             "Klicken Sie hier, um die Charaktere anzuzeigen, bevor Sie sie hinzufügen",
+          copyFromPrev: "Zeichen aus dem vorherigen Dialog kopieren",
           editCharBtn: "Bearbeite den Charakter",
           addCharBtn: "Füge einen Charakter hinzu",
           addNewCharBtn: "Füge einen neuen Charakter hinzu",

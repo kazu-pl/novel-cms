@@ -5,6 +5,7 @@ import Button from "novel-ui/lib/buttons/Button";
 import TextFieldFormik from "novel-ui/lib/formik/TextFieldFormik";
 import Typography from "@mui/material/Typography";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import FileCopyIcon from "@mui/icons-material/FileCopy";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import CharacterOnScreenForm, {
@@ -29,6 +30,8 @@ export interface DialogFormProps {
   closeForm: () => void;
   applyTextsForPreview: (values: Dialog) => void;
   isEditMode: boolean;
+  getPrevDialogData: () => Dialog | null;
+  onCancelIconClick?: () => void;
 }
 
 const DialogForm = ({
@@ -37,6 +40,8 @@ const DialogForm = ({
   closeForm,
   applyTextsForPreview,
   isEditMode,
+  onCancelIconClick,
+  getPrevDialogData,
 }: DialogFormProps) => {
   const yup = useLocalizedYup();
   const { t } = useTranslation();
@@ -56,14 +61,14 @@ const DialogForm = ({
         validationSchema={validationSchema}
         enableReinitialize
       >
-        {({ submitForm, values }) => (
+        {({ submitForm, values, setFieldValue }) => (
           <Box>
             <Box mb={2}>
               <TextFieldFormik
                 name="characterSayingText"
                 type="text"
                 id="characterSayingText"
-                label="characterSayingText"
+                label={t("actsPages.add.dialogForm.characterSayingText")}
                 fullWidth
               />
             </Box>
@@ -72,7 +77,7 @@ const DialogForm = ({
                 name="text"
                 type="text"
                 id="title"
-                label="text"
+                label={t("actsPages.add.dialogForm.text")}
                 multiline
                 rows={3}
                 fullWidth
@@ -111,9 +116,38 @@ const DialogForm = ({
                     <VisibilityIcon />
                   </IconButton>
                 </Tooltip>
+
+                <Tooltip
+                  title={
+                    t(
+                      "actsPages.add.charactersOnScreen.form.copyFromPrev"
+                    ) as string
+                  }
+                >
+                  <IconButton
+                    onClick={() => {
+                      const prevDialog = getPrevDialogData();
+                      if (prevDialog !== null) {
+                        setFieldValue(
+                          "charactersOnScreen",
+                          prevDialog.charactersOnScreen
+                        );
+                      }
+                    }}
+                  >
+                    <FileCopyIcon />
+                  </IconButton>
+                </Tooltip>
               </Box>
               <Box display="flex">
-                <Button onClick={() => closeForm()} color="error" type="button">
+                <Button
+                  onClick={() => {
+                    closeForm();
+                    onCancelIconClick && onCancelIconClick();
+                  }}
+                  color="error"
+                  type="button"
+                >
                   {t("buttons.cancel")}
                 </Button>
                 <Box ml={2}>

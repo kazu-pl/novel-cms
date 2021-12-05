@@ -263,6 +263,8 @@ const pl: Translation = {
       },
       dialogForm: {
         title: "Dialogi",
+        characterSayingText: "Mówca",
+        text: "Tekst",
         dialogsInScene: {
           title: "Dialogi w tej scenie",
           character: "Postać",
@@ -279,7 +281,9 @@ const pl: Translation = {
           character: "Postać",
         },
         form: {
+          characterName: "Postać",
           PreviewTooltip: "Kliknij aby zobaczyć postacie przed ich dodaniem",
+          copyFromPrev: "Skopiuj postacie z poprzedniego dialogu",
           editCharBtn: "Edytuj postać",
           addCharBtn: "Dodaj postać",
           addNewCharBtn: "Dodaj nową postać",

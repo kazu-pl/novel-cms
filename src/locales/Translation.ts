@@ -253,6 +253,8 @@ export interface Translation {
       };
       dialogForm: {
         title: string;
+        characterSayingText: string;
+        text: string;
         dialogsInScene: {
           title: string;
           character: string;
@@ -269,7 +271,9 @@ export interface Translation {
           character: string;
         };
         form: {
+          characterName: string;
           PreviewTooltip: string;
+          copyFromPrev: string;
           editCharBtn: string;
           addCharBtn: string;
           addNewCharBtn: string;

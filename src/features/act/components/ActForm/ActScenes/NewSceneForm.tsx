@@ -24,6 +24,11 @@ import { useState } from "react";
 import PreviewBox from "../PreviewBox";
 import { useLocalizedYup, Yup } from "common/yup";
 import DialogListItem from "../Dialog/DialogListItem";
+import {
+  StyledWrapper,
+  StyledControlsWrapper,
+  StyledPreviewBoxWrapper,
+} from "./NewSceneForm.styled";
 
 export const createSceneValidationSchema = (yup: Yup) =>
   yup.object({
@@ -118,6 +123,8 @@ const NewSceneForm = ({
     });
   };
 
+  const [prevDialogIndex, setprevDialogIndex] = useState<number | null>(null);
+
   return (
     <Formik
       initialValues={initialValues}
@@ -126,9 +133,9 @@ const NewSceneForm = ({
     >
       {({ submitForm, values, setFieldValue }) => (
         <>
-          <Box display="flex" flexDirection="column" p={2} boxShadow={1}>
-            <Box mb={2} display="flex">
-              <Box width="50%" mr={1}>
+          <Box display="flex" flexDirection="column" p={2} boxShadow={1} mt={2}>
+            <StyledWrapper>
+              <StyledControlsWrapper>
                 <Box>
                   {isInSceneEditMode && (
                     <Typography>
@@ -154,7 +161,7 @@ const NewSceneForm = ({
                       fullWidth
                     />
                   </Box>
-                  <Box mt={2} display="flex">
+                  <Box display="flex">
                     <Box mt={2} width="50%" mr={1}>
                       {sceneriesDictionary.isFetching && <CircularProgress />}
                       {!sceneriesDictionary.isFetching &&
@@ -224,6 +231,7 @@ const NewSceneForm = ({
                           {isDialogFormOpen && (
                             <DialogForm
                               {...props}
+                              onCancelIconClick={() => setprevDialogIndex(null)}
                               isEditMode={dialogOptions.isEditMode}
                               onSubmit={(values) => {
                                 dialogOptions.isEditMode
@@ -232,6 +240,17 @@ const NewSceneForm = ({
                                       values
                                     )
                                   : props.push(values);
+                              }}
+                              getPrevDialogData={() => {
+                                if (prevDialogIndex !== null) {
+                                  return prevDialogIndex > 0
+                                    ? values.dialogs[prevDialogIndex - 1]
+                                    : null;
+                                } else {
+                                  return values.dialogs.length > 0
+                                    ? values.dialogs[values.dialogs.length - 1]
+                                    : null;
+                                }
                               }}
                               applyTextsForPreview={setDialogPreviewData}
                               initialValues={initialDialogFormData}
@@ -264,8 +283,8 @@ const NewSceneForm = ({
                     />
                   </Box>
                 </Box>
-              </Box>
-              <Box width="50%" ml={1}>
+              </StyledControlsWrapper>
+              <StyledPreviewBoxWrapper>
                 {values.bgImg && values.bgImg.link && (
                   <PreviewBox
                     bgImgUrl={API_URL + values.bgImg.link}
@@ -288,6 +307,7 @@ const NewSceneForm = ({
                               setDialogPreviewData(dialog)
                             }
                             onEditIconClick={() => {
+                              setprevDialogIndex(dialogIndex);
                               setInitialDialogFormData(dialog);
                               setIsDialogFormOpen(true);
                               setDialogOptions({
@@ -302,8 +322,8 @@ const NewSceneForm = ({
                     )}
                   />
                 </Box>
-              </Box>
-            </Box>
+              </StyledPreviewBoxWrapper>
+            </StyledWrapper>
 
             <Box display="flex" justifyContent="flex-end" mt={2}>
               <Button
