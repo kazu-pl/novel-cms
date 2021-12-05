@@ -158,7 +158,9 @@ const CharacterOnScreenForm = ({
                           clearable
                           id="characterId"
                           fullWidth
-                          label="name"
+                          label={t(
+                            "actsPages.add.charactersOnScreen.form.characterName"
+                          )}
                           onChange={(e) => {
                             fetchSingleCharacerImages(e);
                             setFieldValue("imgUrl", "");

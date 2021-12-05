@@ -66,7 +66,7 @@ const DialogForm = ({
                 name="characterSayingText"
                 type="text"
                 id="characterSayingText"
-                label="characterSayingText"
+                label={t("actsPages.add.dialogForm.characterSayingText")}
                 fullWidth
               />
             </Box>
@@ -75,7 +75,7 @@ const DialogForm = ({
                 name="text"
                 type="text"
                 id="title"
-                label="text"
+                label={t("actsPages.add.dialogForm.text")}
                 multiline
                 rows={3}
                 fullWidth
@@ -115,7 +115,13 @@ const DialogForm = ({
                   </IconButton>
                 </Tooltip>
 
-                <Tooltip title={"copy characters from prev dialog"}>
+                <Tooltip
+                  title={
+                    t(
+                      "actsPages.add.charactersOnScreen.form.copyFromPrev"
+                    ) as string
+                  }
+                >
                   <IconButton
                     onClick={() => {
                       const prevDialog = getPrevDialogData();
