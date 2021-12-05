@@ -28,7 +28,7 @@ const PreviewBox = ({
           alt={character.name}
           left={character.leftPosition}
           zIndex={character.zIndex}
-          key={character.name}
+          key={character.characterId}
         />
       ))}
 

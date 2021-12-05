@@ -330,10 +330,13 @@ export interface SingleCharacterResponse {
 
 /**
  * signle character visible on screen options
- * @example {"name":"Yuuta","leftPosition":45,"zIndex":2,"imgUrl":"/files/character-sad.jpg"}
+ * @example {"characterId":"0000-0000-0000-0000","leftPosition":45,"name":"Aqua","zIndex":2,"imgUrl":"/files/character-sad.jpg"}
  */
 export interface CharacterOnScreen {
-  /** name of the character visible on screen */
+  /** id of the character visible on screen */
+  characterId: string;
+
+  /** character name */
   name: string;
 
   /** X transition on the screen */

@@ -13,10 +13,10 @@ import {
   selectSingleCharacter,
 } from "features/character/store/characterSlice";
 import MenuItem from "@mui/material/MenuItem";
-import TextField, { TextFieldProps } from "novel-ui/lib/inputs/TextField";
+import { TextFieldProps } from "novel-ui/lib/inputs/TextField";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useLocalizedYup, Yup } from "common/yup";
-import FormHelperText from "@mui/material/FormHelperText";
+
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -27,6 +27,7 @@ import CharacterOnScreenListItem from "./CharacterOnScreenListItem";
 export const createCharacterOnScreenSchema = (yup: Yup) =>
   yup.object({
     leftPosition: yup.number().min(1).max(100).required(),
+    characterId: yup.string().required(),
     name: yup.string().required(),
     zIndex: yup.number().min(0).max(100).required(),
     imgUrl: yup.string().required(),
@@ -62,6 +63,7 @@ const CharacterOnScreenForm = ({
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [initialValues, setInitialValues] = useState<CharacterOnScreen>({
     leftPosition: 50,
+    characterId: "",
     name: "",
     zIndex: 1,
     imgUrl: "",
@@ -80,6 +82,7 @@ const CharacterOnScreenForm = ({
 
     setInitialValues({
       leftPosition: 50,
+      characterId: "",
       name: "",
       zIndex: 1,
       imgUrl: "",
@@ -92,6 +95,12 @@ const CharacterOnScreenForm = ({
   useEffect(() => {
     dispatch(fetchCharactersDictionary());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (!!initialValues.characterId) {
+      dispatch(fetchSingleCharacter(initialValues.characterId));
+    }
+  }, [dispatch, initialValues.characterId]);
 
   const fetchSingleCharacerImages: TextFieldProps["onChange"] = (e) => {
     dispatch(fetchSingleCharacter(e.target.value));
@@ -143,38 +152,36 @@ const CharacterOnScreenForm = ({
                   {!charactersDictionary.isFetching &&
                     !!charactersDictionary.data && (
                       <>
-                        <TextField
-                          name="name"
+                        <TextFieldFormik
+                          name="characterId"
                           select
                           clearable
-                          id="name"
+                          id="characterId"
                           fullWidth
                           label="name"
                           onChange={(e) => {
                             fetchSingleCharacerImages(e);
-                            setFieldValue(
-                              "name",
-                              e.target.value === ""
-                                ? ""
-                                : charactersDictionary.data?.filter(
+                            setFieldValue("imgUrl", "");
+                            if (!!charactersDictionary.data) {
+                              if (e.target.value === "") {
+                                setFieldValue("name", "");
+                              } else {
+                                setFieldValue(
+                                  "name",
+                                  charactersDictionary.data.find(
                                     (item) => item.id === e.target.value
-                                  )[0].title
-                            );
+                                  )?.title
+                                );
+                              }
+                            }
                           }}
                         >
                           {charactersDictionary.data.map((item, index) => (
-                            <MenuItem key={item.id || index} value={item.id}>
+                            <MenuItem key={item.id} value={item.id}>
                               {item.title}
                             </MenuItem>
                           ))}
-                        </TextField>
-                        {(touched.name || !!errors.name) && (
-                          <FormHelperText
-                            sx={{ color: (theme) => theme.palette.error.main }}
-                          >
-                            {errors.name}
-                          </FormHelperText>
-                        )}
+                        </TextFieldFormik>
                       </>
                     )}
                 </Box>
@@ -190,7 +197,7 @@ const CharacterOnScreenForm = ({
                       label="imgUrl"
                     >
                       {singleCharacter.data.imagesList.map((item, index) => (
-                        <MenuItem key={item._id || index} value={item.url}>
+                        <MenuItem key={item._id} value={item.url}>
                           {item.filename}
                         </MenuItem>
                       ))}
@@ -265,6 +272,7 @@ const CharacterOnScreenForm = ({
                       });
                       setInitialValues({
                         leftPosition: 50,
+                        characterId: "",
                         name: "",
                         zIndex: 1,
                         imgUrl: "",

@@ -38,6 +38,7 @@ const ActScenes = ({ name, push, form, remove }: ActSceneFormProps) => {
                   onRemoveIconClick={remove}
                   scene={scene}
                   onEditFormSubmit={props.replace}
+                  key={scene.title}
                 />
               ))}
             </>
