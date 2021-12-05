@@ -31,6 +31,7 @@ export interface DialogFormProps {
   applyTextsForPreview: (values: Dialog) => void;
   isEditMode: boolean;
   getPrevDialogData: () => Dialog | null;
+  onCancelIconClick?: () => void;
 }
 
 const DialogForm = ({
@@ -39,6 +40,7 @@ const DialogForm = ({
   closeForm,
   applyTextsForPreview,
   isEditMode,
+  onCancelIconClick,
   getPrevDialogData,
 }: DialogFormProps) => {
   const yup = useLocalizedYup();
@@ -138,7 +140,14 @@ const DialogForm = ({
                 </Tooltip>
               </Box>
               <Box display="flex">
-                <Button onClick={() => closeForm()} color="error" type="button">
+                <Button
+                  onClick={() => {
+                    closeForm();
+                    onCancelIconClick && onCancelIconClick();
+                  }}
+                  color="error"
+                  type="button"
+                >
                   {t("buttons.cancel")}
                 </Button>
                 <Box ml={2}>

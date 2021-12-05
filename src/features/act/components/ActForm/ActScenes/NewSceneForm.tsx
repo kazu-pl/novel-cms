@@ -123,6 +123,8 @@ const NewSceneForm = ({
     });
   };
 
+  const [prevDialogIndex, setprevDialogIndex] = useState<number | null>(null);
+
   return (
     <Formik
       initialValues={initialValues}
@@ -229,6 +231,7 @@ const NewSceneForm = ({
                           {isDialogFormOpen && (
                             <DialogForm
                               {...props}
+                              onCancelIconClick={() => setprevDialogIndex(null)}
                               isEditMode={dialogOptions.isEditMode}
                               onSubmit={(values) => {
                                 dialogOptions.isEditMode
@@ -238,11 +241,17 @@ const NewSceneForm = ({
                                     )
                                   : props.push(values);
                               }}
-                              getPrevDialogData={() =>
-                                values.dialogs.length > 0
-                                  ? values.dialogs[values.dialogs.length - 1]
-                                  : null
-                              }
+                              getPrevDialogData={() => {
+                                if (prevDialogIndex !== null) {
+                                  return prevDialogIndex > 0
+                                    ? values.dialogs[prevDialogIndex - 1]
+                                    : null;
+                                } else {
+                                  return values.dialogs.length > 0
+                                    ? values.dialogs[values.dialogs.length - 1]
+                                    : null;
+                                }
+                              }}
                               applyTextsForPreview={setDialogPreviewData}
                               initialValues={initialDialogFormData}
                               closeForm={handleCloseDialogForm}
@@ -298,6 +307,7 @@ const NewSceneForm = ({
                               setDialogPreviewData(dialog)
                             }
                             onEditIconClick={() => {
+                              setprevDialogIndex(dialogIndex);
                               setInitialDialogFormData(dialog);
                               setIsDialogFormOpen(true);
                               setDialogOptions({
