@@ -12,13 +12,13 @@ import { useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "common/store/hooks";
 import NotFoundWrapper from "common/wrappers/NotFoundWrapper";
 import { useSnackbar } from "notistack";
-import { useEffect, useCallback } from "react";
 import ActForm, { ActFormProps } from "features/act/components/ActForm";
 import { CircularProgress } from "@mui/material";
 import { Act, ActExtended, SuccessfulReqMsg } from "types/novel-server.types";
 import { useNavigate } from "react-router-dom";
 import useLocalizedPath from "common/router/useLocalizedPath";
 import { PATHS_ACT } from "common/constants/paths";
+import { useState, useEffect } from "react";
 
 export interface ActEditProps {}
 
@@ -32,26 +32,23 @@ const ActEdit = () => {
   const { path } = useLocalizedPath();
   const navigate = useNavigate();
   const actDictionary = useAppSelector(selectActDictionary);
-  const isDistionaryFetching = useAppSelector(
-    (state) => state.act.actsDictionary.isFetching
-  );
 
-  const fetch = useCallback(async () => {
-    try {
-      await dispatch(fetchSingleAct(id));
-    } catch (error) {
-      if (error) {
-        enqueueSnackbar(error as string, {
-          variant: "error",
-        });
-      }
-    }
-  }, [dispatch, id, enqueueSnackbar]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    dispatch(fetchActsDictionary());
+    const fetch = async () => {
+      setIsLoading(true);
+
+      await Promise.all([
+        dispatch(fetchSingleAct(id)),
+        dispatch(fetchActsDictionary()),
+      ]);
+
+      setIsLoading(false);
+    };
+
     fetch();
-  }, [fetch, dispatch]);
+  }, [dispatch, id]);
 
   const handleSubmit: ActFormProps["onSubmit"] = async (values, helpers) => {
     try {
@@ -70,7 +67,7 @@ const ActEdit = () => {
     }
   };
 
-  if (isDistionaryFetching || act.isFetching) {
+  if (isLoading) {
     return <CircularProgress />;
   }
 
@@ -84,10 +81,7 @@ const ActEdit = () => {
         title={t("actsPages.edit.metaData.title")}
       />
       <DashboardLayoutWrapper title={t("actsPages.edit.title")}>
-        <NotFoundWrapper
-          isLoadingData={act.isFetching || isDistionaryFetching}
-          isNotFound={!act.data}
-        >
+        <NotFoundWrapper isLoadingData={isLoading} isNotFound={!act.data}>
           {!!actDictionary && !!act.data && (
             <ActForm
               actDictionary={actDictionary}
