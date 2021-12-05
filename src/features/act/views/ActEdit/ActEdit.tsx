@@ -85,9 +85,10 @@ const ActEdit = () => {
           {!!actDictionary && !!act.data && (
             <ActForm
               actDictionary={actDictionary}
-              initialValues={act.data as Act}
+              initialValues={{ nextAct: "", ...(act.data as Act) }}
               onSubmit={handleSubmit}
               submitButtonLabel={t("buttons.update")}
+              disallowedActIdToSelectAsNextAct={id}
             />
           )}
         </NotFoundWrapper>

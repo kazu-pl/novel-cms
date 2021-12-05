@@ -50,10 +50,15 @@ axiosSecureInstance.interceptors.response.use(
         } catch (error) {
           // catch error when obtaining new access token failed
           const axiosError = error as AxiosError;
+
           const from = window.location.href.slice(
             window.location.origin.length
           );
-          window.location.href = `${PATHS_CORE.LOGOUT}?${urlLogoutReasonQuery.key}=${urlLogoutReasonQuery.value}&${urlFromQuery}=${from}`;
+
+          const fromWithoutQuery =
+            from.indexOf("?") > 0 ? from.slice(0, from.indexOf("?")) : from;
+
+          window.location.href = `${PATHS_CORE.LOGOUT}?${urlLogoutReasonQuery.key}=${urlLogoutReasonQuery.value}&${urlFromQuery}=${fromWithoutQuery}`;
           // history.push(PATHS_CORE.LOGOUT); // TODO: this won't work in react-router 6. You will get pushed to /logout but application won't be pushed to that url. Just url will change. Instead, use  window.location.href which will reload application
 
           // alert("you were logged out due to ended session");
