@@ -238,6 +238,11 @@ const NewSceneForm = ({
                                     )
                                   : props.push(values);
                               }}
+                              getPrevDialogData={() =>
+                                values.dialogs.length > 0
+                                  ? values.dialogs[values.dialogs.length - 1]
+                                  : null
+                              }
                               applyTextsForPreview={setDialogPreviewData}
                               initialValues={initialDialogFormData}
                               closeForm={handleCloseDialogForm}

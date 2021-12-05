@@ -5,6 +5,7 @@ import Button from "novel-ui/lib/buttons/Button";
 import TextFieldFormik from "novel-ui/lib/formik/TextFieldFormik";
 import Typography from "@mui/material/Typography";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import FileCopyIcon from "@mui/icons-material/FileCopy";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import CharacterOnScreenForm, {
@@ -29,6 +30,7 @@ export interface DialogFormProps {
   closeForm: () => void;
   applyTextsForPreview: (values: Dialog) => void;
   isEditMode: boolean;
+  getPrevDialogData: () => Dialog | null;
 }
 
 const DialogForm = ({
@@ -37,6 +39,7 @@ const DialogForm = ({
   closeForm,
   applyTextsForPreview,
   isEditMode,
+  getPrevDialogData,
 }: DialogFormProps) => {
   const yup = useLocalizedYup();
   const { t } = useTranslation();
@@ -56,7 +59,7 @@ const DialogForm = ({
         validationSchema={validationSchema}
         enableReinitialize
       >
-        {({ submitForm, values }) => (
+        {({ submitForm, values, setFieldValue }) => (
           <Box>
             <Box mb={2}>
               <TextFieldFormik
@@ -109,6 +112,22 @@ const DialogForm = ({
                     onClick={() => applyTextsForPreview(values)}
                   >
                     <VisibilityIcon />
+                  </IconButton>
+                </Tooltip>
+
+                <Tooltip title={"copy characters from prev dialog"}>
+                  <IconButton
+                    onClick={() => {
+                      const prevDialog = getPrevDialogData();
+                      if (prevDialog !== null) {
+                        setFieldValue(
+                          "charactersOnScreen",
+                          prevDialog.charactersOnScreen
+                        );
+                      }
+                    }}
+                  >
+                    <FileCopyIcon />
                   </IconButton>
                 </Tooltip>
               </Box>
