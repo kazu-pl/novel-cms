@@ -174,7 +174,7 @@ const NewSceneForm = ({
                             }}
                           >
                             {sceneriesDictionary.data.map((item, index) => (
-                              <MenuItem key={item.id || index} value={item.id}>
+                              <MenuItem key={item.id} value={item.id}>
                                 {item.title}
                               </MenuItem>
                             ))}
@@ -195,7 +195,7 @@ const NewSceneForm = ({
                           )}
                         >
                           {singleScenery.data.imagesList.map((item, index) => (
-                            <MenuItem key={item._id || index} value={item.url}>
+                            <MenuItem key={item._id} value={item.url}>
                               {item.filename}
                             </MenuItem>
                           ))}
