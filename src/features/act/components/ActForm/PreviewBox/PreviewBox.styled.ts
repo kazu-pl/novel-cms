@@ -20,7 +20,7 @@ export const StyledDialogTextWrapper = styled.div`
   filter: blur(0.5px);
   color: white;
 
-  padding: 8px;
+  padding: 0 0px 8px 0px;
   border-radius: 4px;
 
   display: flex;
@@ -31,6 +31,18 @@ export const StyledDialogTextWrapper = styled.div`
 
 export const StyledCharacterNameWrapper = styled.p`
   align-self: center;
+  min-height: 24px;
+  width: 100%;
+  text-align: center;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.25) 0%,
+    rgba(255, 255, 255, 0.25) 100%
+  );
+`;
+
+export const StyledCharacterTextWrapper = styled.div`
+  padding: 0 8px 8px 8px;
 `;
 
 interface StyledCharacterImgProps {

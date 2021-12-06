@@ -33,8 +33,11 @@ const DialogListItem = ({
       boxShadow={1}
     >
       <Box display="flex" alignItems="center">
+        <Box mr={1}>
+          <Typography>{index + 1}. </Typography>
+        </Box>
         <Typography>
-          {t("actsPages.add.dialogForm.dialogsInScene.character")}:
+          {t("actsPages.add.dialogForm.dialogsInScene.character")}:{" "}
           <span style={{ fontWeight: 500 }}>{dialog.characterSayingText}</span>
         </Typography>
         <Box ml={2} mr={2}>

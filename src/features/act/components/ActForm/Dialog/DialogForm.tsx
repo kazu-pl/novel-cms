@@ -16,7 +16,7 @@ import { useTranslation } from "react-i18next";
 
 export const createDialogValidationSchema = (yup: Yup) =>
   yup.object({
-    characterSayingText: yup.string().required(),
+    characterSayingText: yup.string(),
     text: yup.string().required(),
     charactersOnScreen: yup
       .array()
