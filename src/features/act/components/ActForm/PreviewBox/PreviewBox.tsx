@@ -4,6 +4,7 @@ import {
   StyledDialogTextWrapper,
   StyledCharacterNameWrapper,
   StyledCharacterImg,
+  StyledCharacterTextWrapper,
 } from "./PreviewBox.styled";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -36,7 +37,11 @@ const PreviewBox = ({
         <StyledCharacterNameWrapper>
           {characterSayingText}
         </StyledCharacterNameWrapper>
-        <Typography variant="caption">{text}</Typography>
+        <StyledCharacterTextWrapper>
+          <Typography variant="caption" component="p">
+            {text}
+          </Typography>
+        </StyledCharacterTextWrapper>
       </StyledDialogTextWrapper>
     </Box>
   );

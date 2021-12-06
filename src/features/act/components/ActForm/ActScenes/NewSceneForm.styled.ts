@@ -25,3 +25,7 @@ export const StyledPreviewBoxWrapper = styled.div`
     width: 50%;
   }
 `;
+
+export const StyledDialogsCounter = styled.span`
+  font-weight: 500;
+`;

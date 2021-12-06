@@ -28,6 +28,7 @@ import {
   StyledWrapper,
   StyledControlsWrapper,
   StyledPreviewBoxWrapper,
+  StyledDialogsCounter,
 } from "./NewSceneForm.styled";
 
 export const createSceneValidationSchema = (yup: Yup) =>
@@ -293,7 +294,10 @@ const NewSceneForm = ({
                 )}
                 <Box mt={2}>
                   <Typography variant="overline">
-                    {t("actsPages.add.dialogForm.dialogsInScene.title")}:
+                    {t("actsPages.add.dialogForm.dialogsInScene.title")}:{" "}
+                    <StyledDialogsCounter>
+                      {values.dialogs.length}
+                    </StyledDialogsCounter>
                   </Typography>
                   <FieldArray
                     name="dialogs"

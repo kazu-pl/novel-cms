@@ -360,7 +360,7 @@ export interface Dialog {
   text: string;
 
   /** character name that says the text */
-  characterSayingText: string;
+  characterSayingText?: string;
 
   /** array of characters visible on screen */
   charactersOnScreen: CharacterOnScreen[];
