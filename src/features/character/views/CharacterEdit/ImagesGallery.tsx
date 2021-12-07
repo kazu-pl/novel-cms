@@ -40,7 +40,9 @@ const ImagesGallery = ({ onDeleteIconClick }: ImagesGalleryProps) => {
                 >
                   <DeleteIcon />
                 </IconButton>
-                <Tooltip title="see on full screen">
+                <Tooltip
+                  title={t("filesPages.common.fullScreenTooltip") as string}
+                >
                   <IconButton
                     onClick={() => navigate(PATHS_FILES.FILES(item.filename))}
                   >
