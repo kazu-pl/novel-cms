@@ -19,6 +19,13 @@ For more, check:
 - `src/core/views/Login/Logout.tsx`
 - `src/core/views/Login/Login.tsx`
 
+# Error: Command "yarn install" exited with 128 on Vercel
+
+if you got error `Error: Command "yarn install" exited with 128` while building app on vercel it means your project uses private repo and you didn't add it via SSH to the project.
+Maybe you use your own custom UI library and you changed it visibility to private? It so, then during build process on vercel you will get that error (if you just added it git link to `package.json` instead of adding it with SSH).
+
+To correct this, just change that private repo visibility.
+
 # Redirect users to `/dashbaord` when they are logged in but manually enter `/login` or `/` url and hit enter:
 
 To redirect user from `/login` to another route and don't allow logged user to login again, you need to write function in `Login.tsx` that will handle that behaviour.
