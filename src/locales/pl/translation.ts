@@ -260,6 +260,11 @@ const pl: Translation = {
           selectSceneryId: "Wybierz scenerię",
           selectSceneryBg: "Wybierz tło scenerii",
         },
+        modal: {
+          headlineText: "Usuwanie sceny",
+          sceneryPretitle: "Scena: ",
+          text: "Czy jesteś pewien, że chcesz usunąć tę scenę? Pamiętaj, że jeśli usuwasz scenę z już istniejącego aktu to usuwasz ją z pamięci tymczasowej aktu. Aby całkowicie usunąć scenę, zaktualizuj Akt.",
+        },
       },
       dialogForm: {
         title: "Dialogi",
@@ -269,6 +274,12 @@ const pl: Translation = {
           title: "Dialogi w tej scenie",
           character: "Postać",
           text: "Tekst",
+        },
+        modal: {
+          title: "Usuwanie dialogu",
+          speaker: "Mówca",
+          text: "Tekst",
+          info: `Jesteś pewien, że chciałeś usunąć dialog? Potwierdzajac usuniesz dialog jedynie z roboczej pamięci aktu. Pamiętaj aby zaktualizować scenę i akt aby ostatecznie usunąć dialog.`,
         },
         characterFormTitle: "Postacie",
         PreviewTooltip: "Kliknij aby zobaczyć dialog",

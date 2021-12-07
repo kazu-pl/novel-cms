@@ -258,6 +258,11 @@ const de: Translation = {
           selectSceneryId: "Landschaft auswählen",
           selectSceneryBg: "Hintergrund auswählen",
         },
+        modal: {
+          headlineText: "Szene löschen",
+          sceneryPretitle: "Szene: ",
+          text: "Möchten Sie diese Szene wirklich löschen? Denken Sie daran, dass Sie die Szene aus dem temporären Speicher des Akts löschen. Um die Szene vollständig zu löschen, aktualisieren Sie den Act.",
+        },
       },
       dialogForm: {
         title: "Dialogs",
@@ -267,6 +272,12 @@ const de: Translation = {
           title: "Dialoge in dieser Szene",
           character: "Charakters",
           text: "Text",
+        },
+        modal: {
+          title: "Dialog löschen",
+          speaker: "Lautsprecher",
+          text: "Text",
+          info: `Möchten Sie den Dialog wirklich löschen? Mit dem Absenden löschen Sie es nur aus dem Editieraktenspeicher. Denken Sie daran, dass Sie Scene und Act aktualisieren müssen, um diesen Dialog wirklich zu löschen.`,
         },
         characterFormTitle: "Charakters",
         PreviewTooltip:
