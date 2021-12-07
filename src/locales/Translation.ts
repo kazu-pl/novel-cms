@@ -250,6 +250,11 @@ export interface Translation {
           selectSceneryId: string;
           selectSceneryBg: string;
         };
+        modal: {
+          headlineText: string;
+          sceneryPretitle: string;
+          text: string;
+        };
       };
       dialogForm: {
         title: string;
@@ -265,6 +270,12 @@ export interface Translation {
         addDialogBtn: string;
         addNewDialogBtn: string;
         editDialogBtn: string;
+        modal: {
+          title: string;
+          speaker: string;
+          text: string;
+          info: string;
+        };
       };
       charactersOnScreen: {
         list: {

@@ -257,16 +257,26 @@ const en: Translation = {
           selectSceneryId: "Select scenery",
           selectSceneryBg: "Select scenery background",
         },
+        modal: {
+          headlineText: "Delete scene",
+          sceneryPretitle: "Scene: ",
+          text: "Are you sure you want to delete this scene? Remember that if you are deleting the scene from already existing Akt then you're deleting it from the temporary memory of the act. To completely delete the scene, update the Act",
+        },
       },
       dialogForm: {
         title: "Dialogs",
-
         characterSayingText: "Speaker",
         text: "text",
         dialogsInScene: {
           title: "Dialogs in this scene",
           character: "Character",
           text: "Text",
+        },
+        modal: {
+          title: "Delete dialog",
+          speaker: "Speaker",
+          text: "Text",
+          info: `Are you sure you want to delete dialog? By submiting you will delete it only from editing act memory. Remember you must update Scene and Act to really delete this dialog.`,
         },
         characterFormTitle: "Characters",
         PreviewTooltip: "Click to see dialog on preview window",

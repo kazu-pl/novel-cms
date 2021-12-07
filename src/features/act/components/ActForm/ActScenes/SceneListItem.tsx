@@ -2,7 +2,7 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import IconButton from "@mui/material/IconButton";
+import IconButton, { IconButtonProps } from "@mui/material/IconButton";
 import { Scene } from "types/novel-server.types";
 import NewSceneForm from "./NewSceneForm";
 import { useState } from "react";
@@ -11,7 +11,7 @@ import { useTranslation } from "react-i18next";
 export interface SceneItemProps {
   index: number;
   scene: Scene;
-  onRemoveIconClick: (index: number) => void;
+  onRemoveIconClick: IconButtonProps["onClick"];
   onEditFormSubmit: (index: number, newValue: Scene) => void;
 }
 
@@ -64,7 +64,7 @@ const SceneListItem = ({
             >
               <EditIcon />
             </IconButton>
-            <IconButton onClick={() => onRemoveIconClick(index)}>
+            <IconButton onClick={onRemoveIconClick}>
               <DeleteIcon />
             </IconButton>
           </Box>
