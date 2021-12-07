@@ -1,3 +1,5 @@
+import { API_URL } from "common/constants/env";
+
 export const NOT_FOUND_LINK_WITHOUT_SLASH = "404";
 
 export const PATHS_CORE = {
@@ -30,4 +32,14 @@ export const PATHS_ACT = {
   LIST: "/acts/list",
   ADD: "/acts/add",
   EDIT: (path: string) => `/acts/${path}/edit`,
+};
+
+export const PATHS_FILES = {
+  FILES: (link: string) => `/files${link[0] === "/" ? link : `/${link}`}`,
+  /**
+   * Creates url to get file from server
+   * @param fileName is a just a file name without any url prefixes
+   * @returns string
+   */
+  FILE_GET_API_LINK: (fileName: string) => `${API_URL}/files/${fileName}`,
 };

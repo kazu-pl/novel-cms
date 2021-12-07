@@ -315,6 +315,11 @@ const pl: Translation = {
       },
     },
   },
+  filesPages: {
+    common: {
+      fullScreenTooltip: "Zobacz na pełnym ekranie",
+    },
+  },
   notFoundPage: {
     title: "nie znaleziono",
     goToMainPageBtn: "wróć do dashbaordu",

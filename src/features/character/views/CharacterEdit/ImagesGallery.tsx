@@ -7,8 +7,11 @@ import { useAppSelector } from "common/store/hooks";
 import { selectSingleCharacterData } from "features/character/store/characterSlice";
 import { API_URL } from "common/constants/env";
 import Box from "@mui/system/Box";
-import { Typography } from "@mui/material";
+import { Tooltip, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import { useNavigate } from "react-router-dom";
+import { PATHS_FILES } from "common/constants/paths";
 
 export interface ImagesGalleryProps {
   onDeleteIconClick: (filename: string) => void;
@@ -17,6 +20,7 @@ export interface ImagesGalleryProps {
 const ImagesGallery = ({ onDeleteIconClick }: ImagesGalleryProps) => {
   const character = useAppSelector(selectSingleCharacterData);
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   return (
     <Box display="flex" flexWrap="wrap">
@@ -29,12 +33,21 @@ const ImagesGallery = ({ onDeleteIconClick }: ImagesGalleryProps) => {
         <Card sx={{ flexGrow: 1, m: 1 }} key={item.filename}>
           <CardHeader
             action={
-              <IconButton
-                aria-label="delete"
-                onClick={() => onDeleteIconClick(item.filename)}
-              >
-                <DeleteIcon />
-              </IconButton>
+              <>
+                <IconButton
+                  aria-label="delete"
+                  onClick={() => onDeleteIconClick(item.filename)}
+                >
+                  <DeleteIcon />
+                </IconButton>
+                <Tooltip title="see on full screen">
+                  <IconButton
+                    onClick={() => navigate(PATHS_FILES.FILES(item.filename))}
+                  >
+                    <VisibilityIcon />
+                  </IconButton>
+                </Tooltip>
+              </>
             }
             title={
               item.filename.length > 30
@@ -55,6 +68,11 @@ const ImagesGallery = ({ onDeleteIconClick }: ImagesGalleryProps) => {
             height="194"
             image={`${API_URL + item.url}`}
             alt={item.filename}
+            sx={{
+              maxHeight: 400,
+              height: "auto",
+              objectFit: "contain",
+            }}
           />
         </Card>
       ))}

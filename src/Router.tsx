@@ -7,6 +7,7 @@ import {
   PATHS_SCENERY,
   PATHS_CHARACTER,
   PATHS_ACT,
+  PATHS_FILES,
 } from "common/constants/paths";
 
 import Login from "core/views/Login";
@@ -35,6 +36,8 @@ import CharacterEdit from "features/character/views/CharacterEdit";
 import ActAdd from "features/act/views/ActAdd";
 import ActList from "features/act/views/ActList";
 import ActEdit from "features/act/views/ActEdit/ActEdit";
+
+import Files from "features/files/views/Files";
 
 const Router = () => {
   useTokenListener();
@@ -167,6 +170,7 @@ const Router = () => {
           />,
         ];
       })}
+      <Route path={PATHS_FILES.FILES(":fileName")} element={<Files />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
