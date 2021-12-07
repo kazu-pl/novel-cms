@@ -312,6 +312,11 @@ const en: Translation = {
       },
     },
   },
+  filesPages: {
+    common: {
+      fullScreenTooltip: "See on full screen",
+    },
+  },
   notFoundPage: {
     title: "Not found",
     goToMainPageBtn: "Go to dashbaord",

@@ -305,6 +305,11 @@ export interface Translation {
       };
     };
   };
+  filesPages: {
+    common: {
+      fullScreenTooltip: string;
+    };
+  };
   notFoundPage: {
     title: string;
     goToMainPageBtn: string;
