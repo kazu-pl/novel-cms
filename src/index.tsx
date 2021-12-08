@@ -1,19 +1,36 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import { store } from './app/store';
-import { Provider } from 'react-redux';
-import * as serviceWorker from './serviceWorker';
+import { StrictMode } from "react";
+import App from "./App";
+import { store } from "./common/store/store";
+import { Provider } from "react-redux";
+import * as serviceWorker from "./serviceWorker";
+import { disableReactDevTools } from "@fvilers/disable-react-devtools";
+import { hydrate, render } from "react-dom";
 
-ReactDOM.render(
-  <React.StrictMode>
+import "./i18n";
+
+if (process.env.NODE_ENV === "production") {
+  disableReactDevTools();
+}
+
+const rootElement = document.getElementById("root") as HTMLDivElement;
+
+if (rootElement.hasChildNodes()) {
+  hydrate(
+    <StrictMode>
+      <Provider store={store}>
+        <App />
+      </Provider>
+    </StrictMode>,
+    rootElement
+  );
+} else {
+  render(
     <Provider store={store}>
       <App />
-    </Provider>
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+    </Provider>,
+    rootElement
+  );
+}
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
