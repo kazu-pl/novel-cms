@@ -3,7 +3,7 @@ import { avaliableLanguages, fallbackLng } from "locales";
 import { Helmet } from "react-helmet";
 import { useTranslation } from "react-i18next";
 
-const hostname = `https://novel-cms-three.vercel.app`;
+const hostname = `https://novel-cms.vercel.app`;
 
 export interface HelmetDecoratorProps {
   lang?: string;
