@@ -282,6 +282,7 @@ const de: Translation = {
         characterFormTitle: "Charakters",
         PreviewTooltip:
           "Klicken Sie hier, um den Dialog im Vorschaufenster anzuzeigen",
+        putInQuoteTooltip: `Anführungszeichen hinzufügen " "`,
         addDialogBtn: "Dialog hinzufügen",
         addNewDialogBtn: "Neuen Dialog hinzufügen",
         editDialogBtn: "Dialog bearbeiten",
