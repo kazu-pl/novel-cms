@@ -13,6 +13,10 @@ import CharacterOnScreenForm, {
 } from "./CharacterOfScreenForm";
 import { useLocalizedYup, Yup } from "common/yup";
 import { useTranslation } from "react-i18next";
+import { selectCharactersDictionary } from "features/character/store/characterSlice";
+import { useAppSelector } from "common/store/hooks";
+import { CircularProgress, MenuItem } from "@mui/material";
+import FormatQuoteIcon from "@mui/icons-material/FormatQuote";
 
 export const createDialogValidationSchema = (yup: Yup) =>
   yup.object({
@@ -45,6 +49,7 @@ const DialogForm = ({
 }: DialogFormProps) => {
   const yup = useLocalizedYup();
   const { t } = useTranslation();
+  const charactersDictionary = useAppSelector(selectCharactersDictionary);
 
   const handleSubmit = (values: Dialog) => {
     onSubmit(values);
@@ -64,13 +69,25 @@ const DialogForm = ({
         {({ submitForm, values, setFieldValue }) => (
           <Box>
             <Box mb={2}>
-              <TextFieldFormik
-                name="characterSayingText"
-                type="text"
-                id="characterSayingText"
-                label={t("actsPages.add.dialogForm.characterSayingText")}
-                fullWidth
-              />
+              {charactersDictionary.isFetching && <CircularProgress />}
+              {!charactersDictionary.isFetching && !!charactersDictionary.data && (
+                <>
+                  <TextFieldFormik
+                    name="characterSayingText"
+                    select
+                    clearable
+                    id="characterSayingText"
+                    fullWidth
+                    label={t("actsPages.add.dialogForm.characterSayingText")}
+                  >
+                    {charactersDictionary.data.map((item) => (
+                      <MenuItem key={item.id} value={item.title}>
+                        {item.title}
+                      </MenuItem>
+                    ))}
+                  </TextFieldFormik>
+                </>
+              )}
             </Box>
             <Box mb={2}>
               <TextFieldFormik
@@ -136,6 +153,24 @@ const DialogForm = ({
                     }}
                   >
                     <FileCopyIcon />
+                  </IconButton>
+                </Tooltip>
+
+                <Tooltip
+                  title={
+                    t("actsPages.add.dialogForm.putInQuoteTooltip") as string
+                  }
+                >
+                  <IconButton
+                    onClick={() => {
+                      setFieldValue("text", `"${values.text}"`);
+                      applyTextsForPreview({
+                        ...values,
+                        text: `"${values.text}"`,
+                      });
+                    }}
+                  >
+                    <FormatQuoteIcon />
                   </IconButton>
                 </Tooltip>
               </Box>

@@ -283,6 +283,7 @@ const pl: Translation = {
         },
         characterFormTitle: "Postacie",
         PreviewTooltip: "Kliknij aby zobaczyć dialog",
+        putInQuoteTooltip: `Dodaj znaki " " `,
         addDialogBtn: "dodaj dialog",
         addNewDialogBtn: "Dodaj nowy dialog",
         editDialogBtn: "Edytuj dialog",

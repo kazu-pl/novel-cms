@@ -67,7 +67,7 @@ const ActAdd = () => {
       />
       <DashboardLayoutWrapper title={t("actsPages.add.title")}>
         {isDistionaryFetching ? (
-          <div>Loading</div>
+          <div>Loading . . . </div>
         ) : (
           <ActForm
             onSubmit={handleSubmit}

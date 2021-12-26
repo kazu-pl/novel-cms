@@ -267,6 +267,7 @@ export interface Translation {
         };
         characterFormTitle: string;
         PreviewTooltip: string;
+        putInQuoteTooltip: string;
         addDialogBtn: string;
         addNewDialogBtn: string;
         editDialogBtn: string;
