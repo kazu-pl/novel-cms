@@ -280,6 +280,7 @@ const en: Translation = {
         },
         characterFormTitle: "Characters",
         PreviewTooltip: "Click to see dialog on preview window",
+        putInQuoteTooltip: `Add quotes " " `,
         addDialogBtn: "Add dialog",
         addNewDialogBtn: "Add new dialog",
         editDialogBtn: "Edit dialog",
