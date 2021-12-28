@@ -45,7 +45,11 @@ axiosSecureInstance.interceptors.response.use(
 
           return axiosSecureInstance({
             ...originalConfig,
-            data: JSON.parse(originalConfig.data), // originalConfig.data is string but you have to pass object type for axios to stringify it and send to server. If you pass jsut originalConfig without JSON.parse() then axios won't send any body (you will be able to see in browser in requests tab that it sends body, but on server you won't see any body)
+            ...(originalConfig.data !== undefined && {
+              data: JSON.parse(originalConfig.data),
+            }),
+            // originalConfig.data is stringified but you have to pass object type for axios to stringify it and send to server. If you pass jsut originalConfig without JSON.parse() then axios won't send any body (you will be able to see in browser in requests tab that it sends body, but on server you won't see any body).
+            // PAY ATTENTION - pass that parsed data object ONLY if it exists becuase not every request contains body and in that base originalConfig.data would be undefined and if you parse undefined then there will be an error and it will be catched by below catch (error) {} block that does window.location.href
           });
         } catch (error) {
           // catch error when obtaining new access token failed
