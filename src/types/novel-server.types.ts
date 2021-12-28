@@ -473,3 +473,21 @@ export interface SingleActDictionaryObject {
 export interface ActDictionary {
   data: SingleActDictionaryObject[];
 }
+
+/**
+ * object of game save
+ */
+export interface RequestGameSave {
+  actId: string;
+  actTitle: string;
+  sceneIndex: number;
+  dialogIndex: number;
+  text: string;
+  characterSayingText?: string;
+}
+
+export type ExtendedGameSave = RequestGameSave & { _id: string };
+
+export interface ExtendedGameSaveResponse {
+  data: ExtendedGameSave[];
+}
