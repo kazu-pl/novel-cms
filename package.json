@@ -1,6 +1,6 @@
 {
   "name": "cms",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "private": true,
   "dependencies": {
     "@fvilers/disable-react-devtools": "^1.2.1",
