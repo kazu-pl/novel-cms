@@ -1,7 +1,6 @@
 import { useLocalizedYup } from "common/yup";
 import { Formik, Form, FormikHelpers } from "formik";
 import { useTranslation } from "react-i18next";
-import { useRef } from "react";
 import FileInputFormik, {
   ExtendedFile,
 } from "novel-ui/lib/formik/FileInputFormik";
@@ -25,7 +24,6 @@ const initialMultipleFileValues: FormValues = {
 };
 
 const NewCharacterImagesForm = () => {
-  const inputFilesRef = useRef<HTMLInputElement | null>(null);
   let { id } = useParams();
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
@@ -40,13 +38,11 @@ const NewCharacterImagesForm = () => {
     values: FormValues,
     helpers: FormikHelpers<FormValues>
   ) => {
-    if (!inputFilesRef.current || !inputFilesRef.current.files) return;
-    const filesFromInputRef = Array.from(inputFilesRef.current.files);
-
+    if (!values.files) return;
     const formData = new FormData();
 
-    filesFromInputRef.forEach((file) => {
-      formData.append("files", file);
+    values.files.forEach((file) => {
+      formData.append("files", file.file);
     });
     try {
       const response = await dispatch(
@@ -76,8 +72,7 @@ const NewCharacterImagesForm = () => {
           <FileInputFormik
             name="files"
             id="contained-button-file"
-            accept="images"
-            inputRef={inputFilesRef}
+            accept="image/*"
             multiple
             text={t("buttons.selectFile")}
           />
