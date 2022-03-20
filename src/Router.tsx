@@ -1,6 +1,10 @@
+import { lazy } from "react";
 import { Routes, Route } from "react-router-dom";
+
+// Route and PrivateRoute also could be lazy loaded but it almost has no effect so I left it like so
 import LocalizedRoute from "common/router/Route";
 import LocalizedPrivateRoute from "common/router/PrivateRoute";
+
 import {
   PATHS_CORE,
   PATHS_DASHBOARD,
@@ -10,34 +14,43 @@ import {
   PATHS_FILES,
 } from "common/constants/paths";
 
-import Login from "core/views/Login";
-import Logout from "core/views/Logout";
-import NotFound from "core/views/NotFound";
-
-import Dashboard from "features/Dashboard/views/Dashboard";
-
-import Account from "core/views/Account/Account";
-import ForgotPassword from "core/views/ForgotPassword/ForgotPassword";
-import ResetPassword from "core/views/ResetPassword/ResetPassword";
-
 import useTokenListener from "common/auth/useTokenListener";
 
 import { avaliableLanguages } from "locales";
 import useLocalizedPath from "common/router/useLocalizedPath";
 
-import SceneryList from "features/scenery/views/SceneryList";
-import SceneryAdd from "features/scenery/views/SceneryAdd";
-import SceneryEdit from "features/scenery/views/SceneryEdit";
+const Files = lazy(() => import("features/files/views/Files"));
 
-import CharacterList from "features/character/views/CharacterList";
-import CharacterAdd from "features/character/views/CharacterAdd";
-import CharacterEdit from "features/character/views/CharacterEdit";
+const Login = lazy(() => import("core/views/Login"));
+const Logout = lazy(() => import("core/views/Logout"));
+const ForgotPassword = lazy(
+  () => import("core/views/ForgotPassword/ForgotPassword")
+);
+const ResetPassword = lazy(
+  () => import("core/views/ResetPassword/ResetPassword")
+);
+const NotFound = lazy(() => import("core/views/NotFound"));
 
-import ActAdd from "features/act/views/ActAdd";
-import ActList from "features/act/views/ActList";
-import ActEdit from "features/act/views/ActEdit/ActEdit";
+const Account = lazy(() => import("core/views/Account/Account"));
+const Dashboard = lazy(() => import("features/Dashboard/views/Dashboard"));
 
-import Files from "features/files/views/Files";
+const SceneryList = lazy(() => import("features/scenery/views/SceneryList"));
+const SceneryAdd = lazy(() => import("features/scenery/views/SceneryAdd"));
+const SceneryEdit = lazy(() => import("features/scenery/views/SceneryEdit"));
+
+const CharacterList = lazy(
+  () => import("features/character/views/CharacterList")
+);
+const CharacterAdd = lazy(
+  () => import("features/character/views/CharacterAdd")
+);
+const CharacterEdit = lazy(
+  () => import("features/character/views/CharacterEdit")
+);
+
+const ActAdd = lazy(() => import("features/act/views/ActAdd"));
+const ActList = lazy(() => import("features/act/views/ActList"));
+const ActEdit = lazy(() => import("features/act/views/ActEdit/ActEdit"));
 
 const Router = () => {
   useTokenListener();
