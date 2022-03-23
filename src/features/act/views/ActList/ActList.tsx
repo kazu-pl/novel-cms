@@ -15,7 +15,7 @@ import { useNavigate } from "react-router";
 import { useSnackbar } from "notistack";
 import { useState, useCallback, useEffect } from "react";
 import usePaginationSearchParams from "common/router/usePaginationSearchParams";
-import { SuccessfulReqMsg } from "types/novel-server.types";
+import { ActExtended, SuccessfulReqMsg } from "types/novel-server.types";
 import { PATHS_ACT } from "common/constants/paths";
 import { Box } from "@mui/system";
 import { IconButton } from "@mui/material";
@@ -38,13 +38,13 @@ const ActList = () => {
     name: "",
   });
 
-  const [searchParams, setSearchParams] =
-    usePaginationSearchParams<SortDirection>({
-      currentPage: 1,
-      pageSize: 5,
-      sortDirection: "asc",
-      sortBy: "createdAt",
-    });
+  const [searchParams, setSearchParams] = usePaginationSearchParams({
+    currentPage: 1,
+    pageSize: 5,
+    sortDirection: "asc",
+    sortBy: "createdAt",
+    search: "",
+  });
 
   const handleOnChangePage = (page: number) => {
     setSearchParams({ currentPage: page });
@@ -120,7 +120,8 @@ const ActList = () => {
       <DashboardLayoutWrapper title={t("actsPages.list.title")}>
         <Table
           isLoading={acts.isFetching}
-          data={acts.data}
+          // I need to pass `([] as ActExtended[])` because for some reason passing just acts.data throws an error when running react-snap connected to TypeScript?
+          data={acts.data || ([] as ActExtended[])}
           tableName={t("actsPages.list.table.title")}
           pagination={{
             currentPage: searchParams.currentPage,

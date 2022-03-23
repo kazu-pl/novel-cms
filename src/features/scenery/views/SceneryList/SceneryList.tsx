@@ -4,26 +4,26 @@ import HelmetDecorator from "components/HelmetDecorator";
 import Button from "novel-ui/lib/buttons/Button";
 import { PATHS_SCENERY } from "common/constants/paths";
 import { useAppDispatch, useAppSelector } from "common/store/hooks";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   fetchSceneries,
   selectSceneries,
   removeScenery,
 } from "features/scenery/store/scenerySlice";
 import { useCallback } from "react";
-import Table from "novel-ui/lib/Table";
+import Table, { SortDirection } from "novel-ui/lib/Table";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import IconButton from "@mui/material/IconButton";
 import Box from "@mui/material/Box";
 import useLocalizedPath from "common/router/useLocalizedPath";
 import { useNavigate } from "react-router-dom";
-import { SuccessfulReqMsg } from "types/novel-server.types";
+import { Scenery, SuccessfulReqMsg } from "types/novel-server.types";
 import usePaginationSearchParams from "common/router/usePaginationSearchParams";
 import { useSnackbar } from "notistack";
 import ActionModal from "components/ActionModal";
-
-type SortDirection = "asc" | "desc";
+import TextField from "novel-ui/lib/inputs/TextField";
+import debounce from "lodash.debounce";
 
 const SceneryList = () => {
   const { t, i18n } = useTranslation();
@@ -32,23 +32,25 @@ const SceneryList = () => {
   const { path } = useLocalizedPath();
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
+
   const [sceneryToRemoveModalData, setSceneryToRemoveModalData] = useState({
     isOpen: false,
     id: "",
     name: "",
   });
-  const [searchParams, setSearchParams] =
-    usePaginationSearchParams<SortDirection>(
-      {
-        currentPage: 1,
-        pageSize: 5,
-        sortDirection: "asc",
-        sortBy: "createdAt",
-      }
-      // {
-      // pushToInitialParamsOnFirstPageEnter: false
-      // }
-    );
+
+  const [searchParams, setSearchParams] = usePaginationSearchParams(
+    {
+      currentPage: 1,
+      pageSize: 5,
+      sortDirection: "asc",
+      sortBy: "createdAt",
+      search: "",
+    }
+    // {
+    // pushToInitialParamsOnFirstPageEnter: false
+    // }
+  );
 
   const handleOnChangePage = (page: number) => {
     setSearchParams({ currentPage: page });
@@ -70,6 +72,7 @@ const SceneryList = () => {
           pageSize: searchParams.pageSize,
           sortBy: searchParams.sortBy,
           sortDirection: searchParams.sortDirection,
+          search: searchParams.search,
         })
       );
     } catch (error) {
@@ -83,6 +86,7 @@ const SceneryList = () => {
     searchParams.sortDirection,
     searchParams.pageSize,
     searchParams.currentPage,
+    searchParams.search,
     enqueueSnackbar,
   ]);
 
@@ -110,6 +114,15 @@ const SceneryList = () => {
       });
     }
   };
+
+  const debouncedSearchOnChangeHandler = useMemo(
+    () =>
+      debounce((event) => {
+        setSearchParams({ search: event.target.value });
+      }, 1000),
+    [setSearchParams]
+  );
+
   return (
     <>
       <HelmetDecorator
@@ -122,7 +135,9 @@ const SceneryList = () => {
       <DashboardLayoutWrapper title={t("SceneryPages.list.title")}>
         <Table
           isLoading={sceneries.isFetching}
-          data={sceneries.data}
+          // data={sceneries.data}
+          // for some reason I need to pass ` || ([] as Scenery[])` in order to make react-snap work
+          data={sceneries.data || ([] as Scenery[])}
           tableName={t("SceneryPages.list.table.title")}
           pagination={{
             currentPage: searchParams.currentPage,
@@ -136,6 +151,17 @@ const SceneryList = () => {
           onChangePage={handleOnChangePage}
           onChangeRowsPerPage={onChangeRowsPerPage}
           onChangeSort={onChangeSort}
+          filters={
+            <div style={{ display: "flex", justifyContent: "flex-end" }}>
+              <TextField
+                placeholder="search..."
+                defaultValue={searchParams.search || ""}
+                onChange={debouncedSearchOnChangeHandler}
+                size="small"
+              />
+            </div>
+          }
+          isFiltersBarVisibleInitially={!!searchParams.search}
           columns={[
             {
               title: t("SceneryPages.list.table.columns.title"),
