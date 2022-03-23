@@ -18,7 +18,7 @@ import IconButton from "@mui/material/IconButton";
 import Box from "@mui/material/Box";
 import useLocalizedPath from "common/router/useLocalizedPath";
 import { useNavigate } from "react-router-dom";
-import { SuccessfulReqMsg } from "types/novel-server.types";
+import { Scenery, SuccessfulReqMsg } from "types/novel-server.types";
 import usePaginationSearchParams from "common/router/usePaginationSearchParams";
 import { useSnackbar } from "notistack";
 import ActionModal from "components/ActionModal";
@@ -122,7 +122,9 @@ const SceneryList = () => {
       <DashboardLayoutWrapper title={t("SceneryPages.list.title")}>
         <Table
           isLoading={sceneries.isFetching}
-          data={sceneries.data}
+          // data={sceneries.data}
+          // for some reason I need to pass ` || ([] as Scenery[])` in order to make react-snap work
+          data={sceneries.data || ([] as Scenery[])}
           tableName={t("SceneryPages.list.table.title")}
           pagination={{
             currentPage: searchParams.currentPage,
