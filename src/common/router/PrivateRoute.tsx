@@ -23,6 +23,8 @@ const PrivateRoute = (props: PrivateRouteProps) => {
   const tokens = getTokens();
   const [isCheckingAuth, setIsCheckingAuth] = useState(false);
 
+  const isReactSnapRunning = navigator.userAgent === "ReactSnap";
+
   useLayoutEffect(() => {
     const handleRefreshToken = async () => {
       try {
@@ -53,7 +55,7 @@ const PrivateRoute = (props: PrivateRouteProps) => {
     }
   }, [tokens, enqueueSnackbar, navigate, path, t]);
 
-  if (!tokens) {
+  if (!isReactSnapRunning && !tokens) {
     const from = window.location.href.slice(window.location.origin.length);
     return (
       <Navigate
@@ -67,8 +69,9 @@ const PrivateRoute = (props: PrivateRouteProps) => {
   }
 
   if (
-    isTokenExpired(tokens.refreshToken) &&
-    isTokenExpired(tokens.accessToken)
+    !isReactSnapRunning &&
+    isTokenExpired(tokens!.refreshToken) &&
+    isTokenExpired(tokens!.accessToken)
   ) {
     enqueueSnackbar(t("notifications.sessionEnd"), {
       variant: "info",
@@ -83,6 +86,12 @@ const PrivateRoute = (props: PrivateRouteProps) => {
         }}
       />
     );
+  }
+
+  // if  you run react-snap  you can't return <UserProfileWrapper> component because it performs api request to "/me" to get user data but it will failed becuase localStorage is empty if react snap is running so every protected request will fail and throw an error in console.
+  // generally, ANY route that performs protected request will fail becuase it won't be possible to attach tokens from localStorage to private request becuase localStorage will always be empty when runing react-snap (LS will be brand new LS it will be just empty object. You can put some data in it but it won't have any data like tokens by default)
+  if (isReactSnapRunning) {
+    return <Route {...props} />;
   }
 
   return isCheckingAuth ? (

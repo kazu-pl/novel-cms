@@ -17,6 +17,17 @@ const axiosSecureInstance = axios.create({
 axiosSecureInstance.interceptors.request.use((config) => {
   const tokens = getTokens();
 
+  if (navigator.userAgent === "ReactSnap") {
+    // If you run react-snap then return object with empty options so axios WON'T EVEN PERFORM ANY REQUEST TO FETCH .e.g. acts or characters
+
+    // FOUND HERE: https://github.com/axios/axios/issues/1497#issuecomment-404211504
+    return {
+      headers: {},
+      method: config.method,
+      url: "",
+    };
+  }
+
   config.headers = {
     Authorization: `Bearer ${tokens && tokens.accessToken}`,
   };

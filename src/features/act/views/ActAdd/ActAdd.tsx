@@ -68,14 +68,15 @@ const ActAdd = () => {
       <DashboardLayoutWrapper title={t("actsPages.add.title")}>
         {isDistionaryFetching ? (
           <div>Loading . . . </div>
-        ) : (
+        ) : actDictionary ? (
+          // return Actform but only and only if actDictionary data IS FETCHED AND NO ERROR OCCURED
           <ActForm
             onSubmit={handleSubmit}
-            actDictionary={actDictionary!}
+            actDictionary={actDictionary}
             initialValues={initialValues}
             submitButtonLabel={t("buttons.add")}
           />
-        )}
+        ) : null}
       </DashboardLayoutWrapper>
     </>
   );

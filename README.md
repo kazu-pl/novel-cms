@@ -1,3 +1,255 @@
+# `In browser redirect` warning/issue/message when creating index.html files with `yarn react-snap` AND HOW TO PRE-RENDER PROTECTED ROUTES:
+
+"In browser redirect" means that somewhere you have redirect like this one:
+
+```tsx
+// more detailed info in: src/common/router/PrivateRoute.tsx
+
+const PrivateRoute = (props) => {
+  const tokens = getTokens();
+
+  // below is the code that creates that "In browser redirect" issue
+  if (!tokens) {
+    const from = window.location.href.slice(window.location.origin.length);
+    return <Navigate to={path(PATHS_CORE.LOGIN)} replace />;
+  }
+
+  return (
+    <UserProfileWrapper>
+      <Route {...props} />
+    </UserProfileWrapper>
+  );
+};
+```
+
+That code will search for tokens in LocalStorage and if won't find them it will redirect to `/login`. It will be unable to find them because LocalStorage created in `react-snap` IS EMPTY OBJECT. It will be empty so you would need to manually put some tokens into that LocalStorage.
+To not redirect do `/login` when `react-snap` is running, you can add additional condition:
+
+```tsx
+// navigator.userAgent !== "ReactSnap" is the additional condition. FOUND HERE: https://github.com/stereobooster/react-snap/issues/245#issuecomment-414347911
+
+if (navigator.userAgent !== "ReactSnap" && !tokens) {
+  const from = window.location.href.slice(window.location.origin.length);
+  return <Navigate to={path(PATHS_CORE.LOGIN)} replace />;
+}
+```
+
+Now user (react-snap in that case) won't be redirected in browser so react-snap can enter protected route. But PrivateRoute usually returns `UserProfileWrapper`and that component assumes that user is logged in and it performs api request for user data.
+The reuqest will fail with 401 because react-snap is not really authenticated so yarn-snap will throw an error. So you also need to NOT return `UserProfileWrapper` like this:
+
+```tsx
+//  more detailed info in: src/common/router/PrivateRoute.tsx
+
+const PrivateRoute = (props) => {
+  const tokens = getTokens();
+
+  if (navigator.userAgent !== "ReactSnap" && !tokens) {
+    const from = window.location.href.slice(window.location.origin.length);
+    return <Navigate to={path(PATHS_CORE.LOGIN)} replace />;
+  }
+
+  // if process is object (if react-snap is running) then return just Route WITHOUT UserProfileWrapper
+  if (navigator.userAgent === "ReactSnap") {
+    return <Route {...props} />;
+  }
+
+  return (
+    <UserProfileWrapper>
+      <Route {...props} />
+    </UserProfileWrapper>
+  );
+};
+```
+
+### CANCEL REQUESTS TO PROTECTED ENDPOINTS THAT ARE FIRED ON MOUNT BY PROTECTED VIEWS
+
+Some views that are protected (available only for logged in users) may fire api requests as soon as they are mounted like e.g. fetching some data for table or something. It will trigger error like this:
+
+```
+⚠️  warning at /character/list: got 401 HTTP code for https://novel-server.herokuapp.com/characters?sortBy=createdAt&sortDirection=asc&pageSize=5&currentPage=1
+️�  console.log at /character/list: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+
+```
+
+In that case `react-snap` won't create `index.html` pages or will create but only for certain languages. To handle this issue you need to EITHER:
+
+- NOT perform any requests to protected api endpoints (It could be achieved by adding logic to `axios request interceptor` that does not perform any request if `navigator.userAgent === "ReactSnap`)
+- write script to log user manually (HIGHLY NOT RECOMMENDED BEUCASE OF LACK IN SECURITY)
+- disable auth in server just for the time of snaping front application (some requests may fail because sometimes API needs some data from tokens like userId)
+
+So the best option is the first one (to not perform any request).
+
+you can achieve it like below:
+
+```tsx
+// src/common/axios/axiosSecureInstance.ts
+
+import axios from "axios";
+
+const axiosSecureInstance = axios.create({
+  baseURL: API_URL,
+});
+
+axiosSecureInstance.interceptors.request.use((config) => {
+  const tokens = getTokens();
+
+  if (navigator.userAgent === "ReactSnap") {
+    // If you run react-snap then return object with empty options so axios WON'T EVEN PERFORM ANY REQUEST TO FETCH .e.g data for table with products. FOUND HERE: https://github.com/axios/axios/issues/1497#issuecomment-404211504
+
+    return {
+      headers: {},
+      method: config.method,
+      url: "",
+    };
+  }
+
+  config.headers = {
+    Authorization: `Bearer ${tokens && tokens.accessToken}`,
+  };
+
+  return config;
+});
+```
+
+### NOT CREATE index.html FOR `/logout` PAGE OR ANY OTHER PAGE:
+
+`react-snap` would create `index.html` for route `/logout` because there's some `Link` or `NavLink` from `react-router` that redirects to `/login`, so in order to NOT create `index.html` for `/login` (or any other route) you would need to either:
+1 - not use `/logout` at all (and dispatch clearing store action in every place where there was redirect to /logout) `NOT RECOMMENDED`
+2 - OR add some conditional redirect like this `RECOMMENDED`:
+
+```tsx
+if (navigator.userAgent !== "ReactSnap") {
+  <Link to={path(PATHS.LOGOUT)} />;
+}
+```
+
+OR if you pass array with data for dropdown or anything like that:
+
+```tsx
+// src/common/wrappers/DashboardLayoutWrapper.tsx
+
+const DashboardLayoutWrapper = () => {
+  const isReactSnapRunning = navigator.userAgent === "ReactSnap";
+
+  return (
+    <DashboardLayout
+      appBarProps={{
+        title: "Dropdown Menu",
+        avatarLink: "some_url.com",
+        userDropdown: isReactSnapRunning
+          ? [
+              {
+                icon: <AccountIcon />,
+                to: path(PATHS_CORE.ACCOUNT),
+                label: t("dashboardPage.userDropdown.account"),
+              },
+              // if react snap is running then DO NOT PASS /logout route because it has redirect which would cause problems with react-snap
+            ]
+          : [
+              {
+                icon: <AccountIcon />,
+                to: path(PATHS_CORE.ACCOUNT),
+                label: t("dashboardPage.userDropdown.account"),
+              },
+              // here we are in real running browser and not in react-snap so we can safetly pass /logout route
+              {
+                icon: <LogoutIcon />,
+                to: PATHS_CORE.LOGOUT,
+                label: t("dashboardPage.userDropdown.logout"),
+                isErrorColor: true,
+              },
+            ],
+      }}
+    />
+  );
+};
+```
+
+# `i18next::languageUtils: rejecting language code not found in supportedLngs: dev` warning in console
+
+This error happens when you have don't pass any `fallbackLng` in `src/i18n.ts` and pass `supportedLngs` so i18n will by default add lang `dev` into `fallbackLng` which of course is not present in available langs in `supportedLngs` which causes the warning.
+
+You can see that in console because i18n is configured to display that info in development:
+
+```tsx
+// src.i18n.ts
+
+i18n.init({
+  debug: process.env.NODE_ENV === "development",
+});
+```
+
+So in order to disable that error you need to either:
+
+- add `fallbackLng` as your lang for routes without lang prefix (for example: `fallbackLng: "pl"`)
+- add `dev` lang to supported langs? and NOT USE IT AS REAL LANG IN URLS ?
+- disable fetching `fallbackLng` at all by passing `false` PREFFERED !
+
+You can also add `fallbackLng` as default lang `"pl"` BUT ONLY IN DEVELOPMENT MODE like debug options:
+
+```tsx
+// src.i18n.ts
+
+import { fallbackLng } from "locales";
+
+i18n.init({
+  ...(process.env.NODE_ENV === "development" && { fallbackLng }),
+});
+```
+
+OR (`THE BEST - 3rd OPTION`) simply disable loading fallbackLng at all by:
+
+```tsx
+// src.i18n.ts
+
+import { fallbackLng } from "locales";
+
+i18n.init({
+  fallbackLng: false,
+});
+```
+
+# `Failed to load resource: net::ERR_CONNECTION_REFUSED` Error while trying to generate static `index.html` files
+
+It means that there was an error with network. Check the following steps to overcome that error:
+
+- maybe you don't have network connection at the time of sending that request
+- maybe you put wrong API url in `.env` file, e.g. you put adres of your local server but forgot to run it
+- maybe the server itself has some problems
+
+# `TypeError: Cannot read property 'map' of undefined` Error while trying to generate static `index.html` files
+
+If you got error like this:
+
+```
+�  console.log at /en/character/list: TypeError: Cannot read property 'map' of undefined
+�  console.log at /en/character/list: {
+  error: {},
+  errorInfo: {
+    componentStack: '\n' +
+      '    at jt (http://localhost:45678/static/js/2.9f0241fc.chunk.js:1:26099)\n' +
+      '    at div\n' +
+
+```
+
+then it probably means that on route `/en/character/list` you try to render `Table` and as `data` prop you just pass the data const from redux store which works fine in browser but for some reason it throws that error when trying to use `react-snap`. This is just type / typeScript error. You can fix it with:
+
+```tsx
+import { selectCharacters } from "features/character/store/characterSlice";
+import { Character } from "types/novel-server.types";
+
+const SomeComponent = () => {
+  const characters = useAppSelector(selectCharacters);
+
+  return (
+    <Table
+      // data={characters.data} // this is also of type `Character[]` and by default its value is just [] and it works in browser but DOES NOT work in react-snap
+      data={characters.data || ([] as Character[])} // this works both in browser and in react-snap
+    />
+  );
+};
+```
+
 # IMPORTANT: rename `"postbuild": "react-snap"` script to `"snap": "react-snap"`
 
 If you have script `"postbuild": "react-snap"` in your package json, then it will automatically fire when `build` script is done. Its really useful for `postbuild` to auto run and generate static pages with usage of `react-snap` but it works only in your local environment. When I tried to push this app to `vercel` it created an error because there was no chrome in vercel. So i ranamed the script to `snap` so it won't auto fire on build and will allow to deploy to vercel.

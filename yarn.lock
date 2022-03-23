@@ -8522,8 +8522,8 @@ notistack@^2.0.3:
     hoist-non-react-statics "^3.3.0"
 
 "novel-ui@https://github.com/kazu-pl/novel-ui.git":
-  version "1.1.10"
-  resolved "https://github.com/kazu-pl/novel-ui.git#ffd13f4005f2ed0badf89df996e0b66b7f8c0f59"
+  version "1.1.11"
+  resolved "https://github.com/kazu-pl/novel-ui.git#b064a96dcc327a8c7ca4f60439f47d9456797b79"
   dependencies:
     "@mui/styled-engine" "npm:@mui/styled-engine-sc@latest"
 

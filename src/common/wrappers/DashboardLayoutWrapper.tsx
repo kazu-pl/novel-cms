@@ -40,6 +40,8 @@ const DashboardLayoutWrapper = ({
   const userProfileData = useAppSelector(selectUserProfile);
   const { t } = useTranslation();
 
+  const isReactSnapRunning = navigator.userAgent === "ReactSnap";
+
   return (
     <Dashboard
       title={title}
@@ -57,19 +59,29 @@ const DashboardLayoutWrapper = ({
             ? `${API_URL + userProfileData?.avatar}`
             : undefined,
         },
-        userDropdown: [
-          {
-            icon: <AccountIcon />,
-            to: PATHS_CORE.ACCOUNT,
-            label: t("dashboardPage.userDropdown.account"),
-          },
-          {
-            icon: <LogoutIcon />,
-            to: PATHS_CORE.LOGOUT,
-            label: t("dashboardPage.userDropdown.logout"),
-            isErrorColor: true,
-          },
-        ],
+        userDropdown: isReactSnapRunning
+          ? [
+              {
+                icon: <AccountIcon />,
+                to: path(PATHS_CORE.ACCOUNT),
+                label: t("dashboardPage.userDropdown.account"),
+              },
+              // if react snap is running then DO NOT PASS /logout route because it has redirect which would cause problems with react-snap
+            ]
+          : [
+              {
+                icon: <AccountIcon />,
+                to: path(PATHS_CORE.ACCOUNT),
+                label: t("dashboardPage.userDropdown.account"),
+              },
+              // here we are in real browser and not in react-snap so we can add /logout route
+              {
+                icon: <LogoutIcon />,
+                to: PATHS_CORE.LOGOUT,
+                label: t("dashboardPage.userDropdown.logout"),
+                isErrorColor: true,
+              },
+            ],
         additionalControls: <LangSwicher />,
       }}
       sidebarProps={{
