@@ -62,11 +62,13 @@ export const fetchCharacters = createAsyncThunk(
     sortDirection,
     pageSize,
     currentPage,
+    search,
   }: {
     sortBy: string;
     sortDirection: SortDirection;
     pageSize: number;
     currentPage: number;
+    search: string;
   }) => {
     const response = await axiosSecureInstance.get<CharactersResponse>(
       `/characters`,
@@ -76,6 +78,7 @@ export const fetchCharacters = createAsyncThunk(
           sortDirection,
           pageSize,
           currentPage,
+          ...(!!search && { search }),
         },
       }
     );

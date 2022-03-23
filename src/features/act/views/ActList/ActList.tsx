@@ -38,13 +38,13 @@ const ActList = () => {
     name: "",
   });
 
-  const [searchParams, setSearchParams] =
-    usePaginationSearchParams<SortDirection>({
-      currentPage: 1,
-      pageSize: 5,
-      sortDirection: "asc",
-      sortBy: "createdAt",
-    });
+  const [searchParams, setSearchParams] = usePaginationSearchParams({
+    currentPage: 1,
+    pageSize: 5,
+    sortDirection: "asc",
+    sortBy: "createdAt",
+    search: "",
+  });
 
   const handleOnChangePage = (page: number) => {
     setSearchParams({ currentPage: page });
