@@ -53,7 +53,7 @@ just copy THE WHOLE CONTENT OF THAT `id_rsa.pub` FILE.
 
 Go to `GitHub/settings/SSH and GPG keys` and paste the public key. As title you can write something like `key of my personal PC` or whatever.
 
-##### Step 4: test your SSH connection
+##### Step 4: test your SSH connection and add GitHub to known hosts
 
 Steps you need to follow in this step are listed [here](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/testing-your-ssh-connection)
 
@@ -110,6 +110,8 @@ Couldn't find any versions for "new-package" that matches "git@github.com:your-p
 ```
 
 then it means that you forgot to add `git+ssh://` prefix and `yarn` found another package with the same name you provided in your `package.json` and wants to install it
+
+KEEP IN MIND THAT IF YOU DO IT, vercel WILL THROW 128 ERROR WHEN TRYING TO BUILD YOUR APP because it does not have any ssh key
 
 # How to add `Accept-Language` header to axios headers to have API response in the right language:
 

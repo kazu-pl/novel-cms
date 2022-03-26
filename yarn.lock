@@ -8538,9 +8538,9 @@ notistack@^2.0.3:
     clsx "^1.1.0"
     hoist-non-react-statics "^3.3.0"
 
-"novel-ui@git+ssh://git@github.com:kazu-pl/novel-ui.git":
+"novel-ui@https://github.com/kazu-pl/novel-ui.git":
   version "1.1.12"
-  resolved "git+ssh://git@github.com:kazu-pl/novel-ui.git#3176f485fc2a0a65b73a0b6d80fbb3b79ed4b5b9"
+  resolved "https://github.com/kazu-pl/novel-ui.git#3176f485fc2a0a65b73a0b6d80fbb3b79ed4b5b9"
   dependencies:
     "@mui/styled-engine" "npm:@mui/styled-engine-sc@latest"
 
