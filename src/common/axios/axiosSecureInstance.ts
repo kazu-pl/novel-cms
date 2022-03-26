@@ -5,6 +5,7 @@ import { API_URL } from "common/constants/env";
 import { PATHS_CORE } from "common/constants/paths";
 import { refreshAccessToken } from "core/store/userSlice";
 import { urlLogoutReasonQuery, urlFromQuery } from "core/views/Login";
+import i18n from "../../i18n";
 
 interface ExtendedAxiosConfig extends AxiosRequestConfig {
   _retry: boolean;
@@ -30,6 +31,7 @@ axiosSecureInstance.interceptors.request.use((config) => {
 
   config.headers = {
     Authorization: `Bearer ${tokens && tokens.accessToken}`,
+    "Accept-Language": i18n.language,
   };
 
   return config;

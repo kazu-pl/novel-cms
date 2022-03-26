@@ -1,3 +1,30 @@
+# How to add `Accept-Language` header to axios headers to have API response in the right language:
+
+You can make achieve it by adding that header to axios request interceptor and import your `i18n.ts` file and pick its `language` property:
+
+```ts
+// src/common/axios/axiosInstance.ts
+
+import axios from "axios";
+import { API_URL } from "common/constants/env";
+
+import i18n from "../../i18n";
+
+const axiosInstance = axios.create({
+  baseURL: API_URL,
+});
+
+axiosInstance.interceptors.request.use((config) => {
+  config.headers = {
+    "Accept-Language": i18n.language,
+  };
+
+  return config;
+});
+
+export default axiosInstance;
+```
+
 # `In browser redirect` warning/issue/message when creating index.html files with `yarn react-snap` AND HOW TO PRE-RENDER PROTECTED ROUTES:
 
 "In browser redirect" means that somewhere you have redirect like this one:

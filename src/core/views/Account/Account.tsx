@@ -7,6 +7,7 @@ import {
   RequestRenewPassword,
   RequestUpdateUser,
   FailedReqMsg,
+  SuccessfulReqMsg,
 } from "types/novel-server.types";
 import {
   fetchUserData,
@@ -77,8 +78,9 @@ const Account = () => {
 
   const onSubmit = async (values: typeof initialValues) => {
     try {
-      await dispatch(updateUserData(values));
-      enqueueSnackbar("updated Successfully", {
+      const response = await dispatch(updateUserData(values));
+      const payload = response.payload as SuccessfulReqMsg;
+      enqueueSnackbar(payload.message, {
         variant: "success",
       });
       dispatch(fetchUserData());
@@ -92,8 +94,9 @@ const Account = () => {
 
   const onSubmitPasswords = async (values: typeof initialPasswordValues) => {
     try {
-      await dispatch(updateUserPassword(values));
-      enqueueSnackbar("password updated Successfully", {
+      const response = await dispatch(updateUserPassword(values));
+      const payload = response.payload as SuccessfulReqMsg;
+      enqueueSnackbar(payload.message, {
         variant: "success",
       });
     } catch (err) {
