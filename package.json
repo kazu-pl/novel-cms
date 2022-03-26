@@ -1,6 +1,6 @@
 {
   "name": "cms",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "private": true,
   "dependencies": {
     "@fvilers/disable-react-devtools": "^1.2.1",
@@ -24,7 +24,7 @@
     "jwt-decode": "^3.1.2",
     "lodash.debounce": "^4.0.8",
     "notistack": "^2.0.3",
-    "novel-ui": "https://github.com/kazu-pl/novel-ui.git",
+    "novel-ui": "git+ssh://git@github.com:kazu-pl/novel-ui.git",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-helmet": "^6.1.0",

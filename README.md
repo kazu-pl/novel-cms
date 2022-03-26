@@ -1,3 +1,116 @@
+# How to install private GitHub/npm package via ssh
+
+To install package via `ssh` you can follow th instructions listed [here](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/checking-for-existing-ssh-keys).
+
+Those steps are:
+
+##### Step 1: Check if your machine already has a public/private rsa key pair
+
+First of all, check if you already ssh set up to access you private git repo. To do that, run:
+`ssh git@github.com`
+
+If you don’t receive any message like successful, continue to the next step:
+Go to ssh key folder. It is under `C:\Users\Username\.ssh` on windows and `~/.ssh/` on Linux.
+
+If you already have keys before, you could see files like `id_rsa` and `id_rsa.pub` (`id_ rsa` is name but it can be any other name) inside of the `.ssh` folder.
+
+`id_rsa` is the default key pair of your computer. The `id_rsa` contains your private key and the `id_rsa.pub` contains your public key. If you already have them, open the content of `id_rsa.pub`, copy it and go to the github and paste it in the new ssh key as explained in the step 3. (you can skip step 2) If you don’t have `id_rsa`, go to step 2
+
+##### Step 2: Generate rsa key pair public/private
+
+Open the terminal and then paste the text below, substituting in your GitHub email address:
+
+`ssh-keygen -t ed25519 -C "your_email@example.com"` (USE THIS ONE)
+
+This creates a new ssh key, using the provided email as a label.
+
+Generating public/private rsa key pair.
+When you’re prompted to:
+
+```
+"Enter a file in which to save the key,"
+```
+
+you can either `press Enter` (This accepts the default file location) or type file name.
+
+Next, at the prompt, type a secure passphrase. For more information, see “Working with SSH key passphrases”. You will be asked with this:
+
+```
+Enter passphrase (empty for no passphrase): [Type a passphrase]
+```
+
+You can just `press enter` without any passphrase.
+
+The above will generate the default ssh key pair id_rsa that git.exe will automatically use to authenticate during ssh.
+
+##### Step 3: Paste public key into github.com
+
+Copy the SSH key to your clipboard. If your SSH key file has a different name than the example code, modify the filename to match your current setup. When copying your key, don’t add any newlines or whitespace.
+To achieve it open terminal (like git bash for example) IN THE .ssh FOLDER AND TYPE:
+`clip < ~/.ssh/id_rsa.pub`
+OR
+just copy THE WHOLE CONTENT OF THAT `id_rsa.pub` FILE.
+
+Go to `GitHub/settings/SSH and GPG keys` and paste the public key. As title you can write something like `key of my personal PC` or whatever.
+
+##### Step 4: test your SSH connection
+
+Steps you need to follow in this step are listed [here](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/testing-your-ssh-connection)
+
+Now you can test if you are connect to github using ssh with:
+
+`ssh -T git@github.com`
+
+When you type the above command you may see a warning like this:
+
+```
+> The authenticity of host 'github.com (IP ADDRESS)' can't be established.
+> RSA key fingerprint is SHA256:nThbg6kXUpJWGl7E1IGOCspRomTxdCARLviKw6E5SY8.
+> Are you sure you want to continue connecting (yes/no)?
+
+```
+
+You need to verify if that fingerprint `SHA256:nThbg6kXUpJWGl7E1IGOCspRomTxdCARLviKw6E5SY8` exists in GitHub public key fingerprints.
+To do so visit this [link](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/githubs-ssh-key-fingerprints) and check if that fingerprint is listed in public keys.
+
+If it is, then come back to your terminal and type `yes` so it will add `github` to known hosts (it will add it do `known_hosts` file that is in `.ssh` folder)
+
+When you typed `yes` you should see something like this:
+
+```
+Warning: Permanently added 'github.com,140.82.121.3' (ECDSA) to the list of known hosts.
+Hi Your-GitHub-Username! You've successfully authenticated, but GitHub does not provide shell access.
+```
+
+check if the resulting message contains your github username. If you receive `permission denied` see this [link](https://docs.github.com/en/authentication/troubleshooting-ssh/error-permission-denied-publickey)
+
+##### Step 5: install your private package
+
+Now you can use the `git+ssh` link in your repo, add it to `package.json` and run `yarn` to install that package like so:
+
+```json
+{
+  "new-package": "git+ssh://git@your_git_server.com:your_username/your_private_repo_name.git"
+}
+```
+
+PAY ATTENPTION THAT YOU NEED TO MANUALLY ADD `git+ssh://` TO YOUR PACKAGE URL BECAUSE GitHub PROVIDES ONLY THE `git@your_git_server.com:your_username/your_private_repo_name.git` part
+
+IF YOU GET ERROR LIKE:
+
+```
+$ yarn
+yarn install v1.22.4
+[1/4] Resolving packages...
+Couldn't find any versions for "new-package" that matches "git@github.com:your-profile-name/your-private-repo.git"
+? Please choose a version of "new-package" from this list: (Use arrow keys)
+> 0.1.3
+  0.1.2
+  0.1.1
+```
+
+then it means that you forgot to add `git+ssh://` prefix and `yarn` found another package with the same name you provided in your `package.json` and wants to install it
+
 # How to add `Accept-Language` header to axios headers to have API response in the right language:
 
 You can make achieve it by adding that header to axios request interceptor and import your `i18n.ts` file and pick its `language` property:
