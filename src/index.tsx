@@ -1,6 +1,6 @@
 import { StrictMode } from "react";
 import App from "./App";
-import { store } from "./common/store/store";
+import { store } from "./common/store";
 import { Provider } from "react-redux";
 import * as serviceWorker from "./serviceWorker";
 import { disableReactDevTools } from "@fvilers/disable-react-devtools";

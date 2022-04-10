@@ -1,4 +1,2 @@
-import { default as axiosInstance } from "./axiosInstance";
-import { default as axiosSecureInstance } from "./axiosSecureInstance";
-
-export { axiosInstance, axiosSecureInstance };
+export { default as axiosInstance } from "./axiosInstance";
+export { default as axiosSecureInstance } from "./axiosSecureInstance";

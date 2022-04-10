@@ -11,7 +11,7 @@ import {
   Tokens,
   UserProfile,
 } from "types/novel-server.types";
-import { RootState } from "common/store/store";
+import { RootState } from "common/store";
 
 interface UserState {
   userProfile: UserProfile | null;
