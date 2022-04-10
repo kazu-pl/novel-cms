@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk, isAnyOf } from "@reduxjs/toolkit";
 // import { createAction } from "@reduxjs/toolkit";
 import { axiosSecureInstance } from "common/axios";
-import { RootState } from "common/store/store";
+import { RootState } from "common/store";
 import { SortDirection } from "novel-ui/lib/Table";
 import {
   RequestScenery,
