@@ -30,6 +30,20 @@ import { useSnackbar } from "notistack";
 import FileInputFormik, {
   ExtendedFile,
 } from "novel-ui/lib/formik/FileInputFormik";
+import { Lang } from "locales";
+
+const getDifferentPasswdMsg = (lng: Lang) => {
+  switch (lng) {
+    case "pl":
+      return "Różne hasła";
+    case "en":
+      return "Different passwords";
+    case "de":
+      return "Unterschiedliche Passwörter";
+    default:
+      return "Różne hasła";
+  }
+};
 
 interface FileFormValues {
   file: ExtendedFile | null;
@@ -67,7 +81,13 @@ const Account = () => {
 
   const validationPasswordSchema = yup.object({
     password: yup.string().required(),
-    repeatedPassword: yup.string().required(),
+    repeatedPassword: yup
+      .string()
+      .oneOf(
+        [yup.ref("password")],
+        getDifferentPasswdMsg(i18n.language as Lang)
+      )
+      .required(),
   });
 
   const validationFileSchema = yup.object({
