@@ -40,7 +40,4 @@ axiosInstance.interceptors.response.use(
 export default axiosInstance;
 
 // TODO:
-// ######## OK - 1 - ogarnać to server didn't send any erro data w axiosInstance oraz w axiosSecureIsntance
-// ######## OK - 2 - ogarnąć validację formularza passworda przy updatuowaniu konta żeby byłbłąd jak hasła są różne
 // 3 - ogarnąc te if(isLoading) { return <p>loagind</p> } w dynamicznych routach zamiast wrappera?
-// 4 - dodać typowanie errorów tutaj i w axiosSecureInstance
