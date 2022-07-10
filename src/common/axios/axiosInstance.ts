@@ -22,8 +22,6 @@ axiosInstance.interceptors.response.use(
   async (err) => {
     const error = err as AxiosError;
 
-    // error here is of type AxiosError
-
     if (error.response) {
       if (error.response.data) {
         return Promise.reject(error.response.data); // returns data object which is the data send my server so i can dispaly msg that server send to front

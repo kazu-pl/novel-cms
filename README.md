@@ -506,13 +506,38 @@ CORRECTED:
 ```ts
 return axiosSecureInstance({
   ...originalConfig,
-  ...(originalConfig.data !== undefined && {
-    data: JSON.parse(originalConfig.data),
-  }),
+  ...(originalConfig.data !== undefined &&
+    !(originalConfig.data instanceof FormData) && {
+      // if originalConfig.data is FormData (you send files) you can't pass it as a json file becuase it's not just regular object
+      data: JSON.parse(originalConfig.data),
+    }),
   // originalConfig.data is stringified but you have to pass object type for axios to stringify it and send to server. If you pass jsut originalConfig without JSON.parse() then axios won't send any body (you will be able to see in browser in requests tab that it sends body, but on server you won't see any body).
   // PAY ATTENTION - pass that parsed data object ONLY if it exists becuase not every request contains body and in that base originalConfig.data would be undefined and if you parse undefined then there will be an error and it will be catched by below catch (error) {} block that does window.location.href
 });
 ```
+
+BUT, if you want to return only:
+
+```ts
+return axiosSecureInstance(originalConfig);
+```
+
+instead of parsing body you can hardcode `Content-type` header:
+
+```ts
+axiosSecureInstance.interceptors.request.use((config) => {
+  const tokens = getTokens();
+
+  config.headers = {
+    Authorization: `Bearer ${tokens && tokens.accessToken}`,
+    "Content-Type": "application/json", // ALTERNATIVE: if you hardcode content-type you don't need to parse body after refreshing accessToken. You also won't need to checking if body is instance of FormData
+  };
+
+  return config;
+});
+```
+
+Now you don't have to parse any `originalConfig.data` or checking if it's an instance of `FormData`
 
 For more details, check: `src/common/axios/axiosSecureInstance.ts`
 
