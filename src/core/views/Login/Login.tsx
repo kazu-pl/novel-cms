@@ -2,8 +2,9 @@ import Box from "@mui/material/Box";
 import { useLocalizedYup } from "common/yup";
 import { Formik, Form } from "formik";
 import TextFieldFormik from "novel-ui/lib/formik/TextFieldFormik";
+import CheckboxFormik from "novel-ui/lib/formik/CheckboxFormik";
 import Button from "novel-ui/lib/buttons/Button";
-import { login } from "core/store/userSlice";
+import { handleRememberMe, login } from "core/store/userSlice";
 import { useAppDispatch } from "common/store/hooks";
 import { RequestLoginCredentials } from "types/novel-server.types";
 import { useNavigate, useLocation, Navigate } from "react-router-dom";
@@ -24,9 +25,14 @@ export const urlLogoutReasonQuery = {
 };
 export const urlFromQuery = "from";
 
-const initialValues: RequestLoginCredentials = {
+interface LoginFormValues extends RequestLoginCredentials {
+  rememberMe: boolean;
+}
+
+const initialValues: LoginFormValues = {
   email: "",
   password: "",
+  rememberMe: true,
 };
 
 const LoginView = () => {
@@ -41,6 +47,7 @@ const LoginView = () => {
   const validationSchema = yup.object({
     email: yup.string().email().required(),
     password: yup.string().required(),
+    rememberMe: yup.boolean(),
   });
 
   useEffect(() => {
@@ -55,7 +62,12 @@ const LoginView = () => {
     }
   }, [location, enqueueSnackbar, t]);
 
-  const handleSubmit = async (values: RequestLoginCredentials) => {
+  const handleSubmit = async (values: LoginFormValues) => {
+    if (!values.rememberMe) {
+      // if you login and rememberMe is false, then add listener that will remove tokens from LocalStorage when user closes the tab or the whole browser
+      window.addEventListener("unload", handleRememberMe);
+    }
+
     try {
       await dispatch(login(values));
       if (location.state && location.state[urlFromQuery]) {
@@ -103,7 +115,6 @@ const LoginView = () => {
                 label={t("form.emailInputLabel")}
                 fullWidth
               />
-
               <Box pt={2}>
                 <TextFieldFormik
                   name="password"
@@ -113,6 +124,15 @@ const LoginView = () => {
                   fullWidth
                 />
               </Box>
+
+              <Box pt={2} display="flex" justifyContent="flex-start">
+                <CheckboxFormik
+                  name="rememberMe"
+                  id="rememberMe"
+                  label={t("form.rememberMe")}
+                />
+              </Box>
+
               <Box pt={2} display="flex" justifyContent="flex-end">
                 <Button
                   variant="contained"
