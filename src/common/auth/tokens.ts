@@ -26,3 +26,12 @@ export const isTokenExpired = (token: string) => {
 export const removeTokens = () => {
   localStorage.removeItem(LOCALSTORAGE_AUTH_TOKENS);
 };
+
+export const tokenExpiresInSeconds = (token?: string) => {
+  if (!token) {
+    return 0;
+  }
+
+  const decodedToken = jwtDecode<JwtPayload>(token);
+  return decodedToken.exp ? decodedToken.exp - Date.now() / 1000 || 0 : 0;
+};
