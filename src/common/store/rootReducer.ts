@@ -15,7 +15,8 @@ const combinedReducer = combineReducers({
 export type RootState = ReturnType<typeof combinedReducer>;
 
 const rootReducer = (rootState: RootState | undefined, action: AnyAction) => {
-  if (action.type === logout.fulfilled.type) {
+  // change logout.fulfilled.type to logout.pending.type to make sure that store will reset itself right after dispatching action, not when server sends 200 after logut action. It's just to make sure that there won't be any delays between sending logout action, reseting store and removing tokens
+  if (action.type === logout.pending.type) {
     if (rootState) {
       rootState = undefined;
     }

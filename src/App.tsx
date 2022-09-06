@@ -17,6 +17,7 @@ import Router from "./Router";
 
 import muiTheme from "common/theme/muiTheme";
 import ErrorBoundary from "ErrorBoundary";
+import RefreshAccessTokenWrapper from "common/wrappers/RefreshAccessTokenWrapper";
 
 function App() {
   return (
@@ -30,7 +31,9 @@ function App() {
                 <CreateGlobalStyle />
                 <SnackbarProvider>
                   <BrowserRouter>
-                    <Router />
+                    <RefreshAccessTokenWrapper>
+                      <Router />
+                    </RefreshAccessTokenWrapper>
                   </BrowserRouter>
                 </SnackbarProvider>
               </StyledThemeProvider>

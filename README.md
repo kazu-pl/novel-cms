@@ -1,3 +1,238 @@
+# How to create RefreshAccessTokenWrapper that will refresh accessToken in the background
+
+First, you will need to create a function, that will calculate how much time is left before accessToken will be expired. You can create something like this:
+
+```tsx
+// src/common/auth/tokens.ts
+
+export const tokenExpiresInSeconds = (token?: string) => {
+  if (!token) {
+    return 0;
+  }
+
+  const decodedToken = jwtDecode<JwtPayload>(token);
+  return decodedToken.exp ? decodedToken.exp - Date.now() / 1000 || 0 : 0;
+};
+```
+
+Aditionally, you may (or may not but in general it's better to do it) need to make sure that store in redux resets right after logout action is dispatched, so change it:
+
+```tsx
+// src/common/store/rootreducer.ts
+const rootReducer = (rootState: RootState | undefined, action: AnyAction) => {
+  // change logout.fulfilled.type to logout.pending.type to make sure that store will reset itself right after dispatching action, not when server sends 200 after logut action. It's just to make sure that there won't be any delays between sending logout action, reseting store and removing tokens
+  if (action.type === logout.pending.type) {
+    if (rootState) {
+      rootState = undefined;
+    }
+  }
+  return combinedReducer(rootState, action);
+};
+```
+
+then you will need to create functions that will set timeout index in localStorage which will allow you to refresh accessToken in only one tab in case there are more of them open in the browser. It will additionally allow you to remove timeout (that refreshes the accessToken) when you click logout button (you won't need to refresh accessToken anymore since you are logged out). To achive this, create functions like this:
+
+```tsx
+// src/common/wrappers/RefreshAccessTokenWrapper/refreshAccessTokenLSTokens.ts
+
+export const REFRESHING_TOKEN_KEY = "novel-cms_refrehing-timeout";
+
+export const setRefreshingTimeout = (timeout: number) => {
+  localStorage.setItem(REFRESHING_TOKEN_KEY, `${timeout}`);
+};
+
+export const removeRefreshingTimeout = () => {
+  localStorage.removeItem(REFRESHING_TOKEN_KEY);
+};
+
+export const getRefreshingTimeout = () => {
+  const timeout = localStorage.getItem(REFRESHING_TOKEN_KEY);
+
+  if (!timeout || typeof +timeout !== "number") {
+    return null;
+  }
+
+  return +timeout;
+};
+```
+
+On top of that, we will need to stop the timeout when user actually clicks the logout button, in order to do that, just clear the interval and remove it form localStorage in logout action like so:
+
+```ts
+// src/core/store/userSlice.ts
+
+import {
+  getRefreshingTimeout,
+  removeRefreshingTimeout,
+} from "common/wrappers/RefreshAccessTokenWrapper/refreshAccessTokenLSTokens";
+
+export const logout = createAsyncThunk(
+  "logout",
+  async (_, { rejectWithValue }) => {
+    const tokens = getTokens();
+
+    try {
+      getRefreshingTimeout() && window.clearTimeout(getRefreshingTimeout()!); // clear timeout if it exists in localStorage
+      removeRefreshingTimeout(); // remove the timeout index from localStorage
+
+      // ... rest of logout logic
+      //  fetch() and send tokens to blacklist them
+    } catch (error) {
+      // handle error
+    }
+  }
+);
+```
+
+We will also need react hook tha will clear setTimeout index every time user refreshes the page so when the page loads again it can once again start refreshing tokens (in the actuall RefreshAccessTokenWrapper there's a condition that will not allow to refresh token if timeout index is in localStorage - this is to prevent refreshing token in multiple tabs at the same time):
+
+```tsx
+// src/common/wrappers/RefreshAccessTokenWrapper/useRemoveRefreshingTokensKeyListener.tsx
+
+import { useCallback, useEffect } from "react";
+import {
+  REFRESHING_TOKEN_KEY,
+  removeRefreshingTimeout,
+} from "./refreshAccessTokenLSTokens";
+
+/**
+ * 1 - Clears setTimeout in case when refreshing timeout key was deleted from LocalStorage. Useful when user has couple of tabs and they refresh one of them - it will reset timeouts from all other tabs so the refreshing one can become the one that refreshes token
+ *
+ * 2 - Clears LocalStorage key (the key is responsible for indicating whether any tab refreshes access token) on `unload` event - when closing tab.
+ */
+const useRemoveRefreshingTokensKeyListener = (
+  timeoutIndex: React.MutableRefObject<number | null>
+) => {
+  const handleStorageChange = useCallback(
+    (e: StorageEvent) => {
+      if (e.key === REFRESHING_TOKEN_KEY && e.newValue === null) {
+        timeoutIndex.current && window.clearInterval(timeoutIndex.current);
+      }
+    },
+    [timeoutIndex]
+  );
+
+  useEffect(() => {
+    window.addEventListener("storage", handleStorageChange);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, [handleStorageChange]);
+
+  const handleRemoveIsRefreshingToken = useCallback(() => {
+    removeRefreshingTimeout();
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("unload", handleRemoveIsRefreshingToken);
+  }, [handleRemoveIsRefreshingToken]);
+};
+
+export default useRemoveRefreshingTokensKeyListener;
+```
+
+And finally we can create our RefreshAccessTokenWrapper component:
+
+```tsx
+// src/common/wrappers/RefreshAccessTokenWrapper/RefreshAccessTokenWrapper.tsx
+
+import { getTokens, tokenExpiresInSeconds } from "common/auth/tokens";
+import { PATHS_CORE } from "common/constants/paths";
+import { useAppSelector } from "common/store/hooks";
+import { refreshAccessToken } from "core/store/userSlice";
+import { urlLogoutReasonQuery } from "core/views/Login";
+import { useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  getRefreshingTimeout,
+  removeRefreshingTimeout,
+  setRefreshingTimeout,
+} from "./refreshAccessTokenLSTokens";
+import useRemoveRefreshingTokensKeyListener from "./useRemoveRefreshingTokensKeyListener";
+
+interface RefreshAccessTokenWrapperProps {
+  children: React.ReactNode;
+}
+
+const RefreshAccessTokenWrapper = ({
+  children,
+}: RefreshAccessTokenWrapperProps) => {
+  const navigate = useNavigate();
+
+  const timeoutIndex = useRef<number | null>(null);
+  const userData = useAppSelector((state) => state.user.userProfile);
+
+  useEffect(() => {
+    const tokens = getTokens();
+    // if getRefreshingTimeout() is truthy it means there is already a refreshing timeout index in LS (which means there's a tab that refreshes access token) then stop here and do not set new setTimeout because we don't want multiple tabs to refresh tokens, only one
+    if (getRefreshingTimeout()) return;
+
+    // userData here is only to fire this whole useEffect again when user really was logged in, it's not needed for logic, it's only for refiring the logic inside of useEffect
+    // tokens are important because you want to refresh accessToken only if it exists
+    if (userData && tokens?.accessToken) {
+      const handleRefreshAccessToken = async () => {
+        try {
+          const resWithTokens = await refreshAccessToken();
+
+          const nextTimeout = setTimeout(
+            handleRefreshAccessToken,
+            tokenExpiresInSeconds(resWithTokens.accessToken) * 1000 * 0.75
+          ) as unknown as number;
+
+          setRefreshingTimeout(nextTimeout);
+          timeoutIndex.current = nextTimeout;
+        } catch (error) {
+          timeoutIndex.current && window.clearTimeout(timeoutIndex.current);
+
+          timeoutIndex.current = null;
+          removeRefreshingTimeout();
+
+          navigate(
+            `${PATHS_CORE.LOGOUT}?${urlLogoutReasonQuery.key}=${urlLogoutReasonQuery.value}`
+          );
+        }
+      };
+
+      const timeout = setTimeout(
+        handleRefreshAccessToken,
+        tokenExpiresInSeconds(tokens.accessToken) * 1000 * 0.75
+      ) as unknown as number;
+
+      setRefreshingTimeout(timeout);
+      timeoutIndex.current = timeout;
+    }
+  }, [timeoutIndex, userData, navigate]);
+
+  useRemoveRefreshingTokensKeyListener(timeoutIndex);
+
+  return <>{children}</>;
+};
+
+export default RefreshAccessTokenWrapper;
+```
+
+And last but not least, import that `RefreshAccessTokenWrapper` and wrap it around `Router` component with routing (it's important to use it INSIDE of BrowserRouter):
+
+```tsx
+import { BrowserRouter } from "react-router-dom";
+import Router from "./Router";
+
+import RefreshAccessTokenWrapper from "common/wrappers/RefreshAccessTokenWrapper";
+
+function App() {
+  return (
+    <BrowserRouter>
+      <RefreshAccessTokenWrapper>
+        <Router />
+      </RefreshAccessTokenWrapper>
+    </BrowserRouter>
+  );
+}
+
+export default App;
+```
+
 # How to create `remember me` checkbox (or actually radio button) and its behavior
 
 `1` - Create checkbox that sets `rememberMe` boolean and when you submit login form you can add eventListener that will remove tokens from localStorage if `rememberMe` is false:
