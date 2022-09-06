@@ -5,6 +5,7 @@ const en: Translation = {
     sessionEnd: "Session ended. login to go to the previous page",
   },
   form: {
+    rememberMe: "Remember me",
     requiredFieldInputMsg: "This field is required",
     wrongEmailMsg: "Wrong email format",
     emailInputLabel: "Enter your email",

@@ -6,6 +6,7 @@ const de: Translation = {
       "Sitzung beendet. Einloggen um zur vorherigen Seite zu gelangen",
   },
   form: {
+    rememberMe: "behalte mich in Erinnerung",
     requiredFieldInputMsg: "Dieses Feld wird benötigt",
     wrongEmailMsg: "Falsches Emailformat",
     emailInputLabel: "Geben Sie Ihr email ein",

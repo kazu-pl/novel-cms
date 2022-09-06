@@ -12,6 +12,10 @@ import {
   UserProfile,
 } from "types/novel-server.types";
 import { RootState } from "common/store";
+import {
+  getRefreshingTimeout,
+  removeRefreshingTimeout,
+} from "common/wrappers/RefreshAccessTokenWrapper/refreshAccessTokenLSTokens";
 
 interface UserState {
   userProfile: UserProfile | null;
@@ -49,12 +53,23 @@ export const refreshAccessToken = async (): Promise<AccessToken> => {
   return response.data;
 };
 
+export const handleRememberMe = () => {
+  const tokens = getTokens();
+  axiosInstance.post("/cms/logout", tokens);
+  removeTokens();
+};
+
 export const logout = createAsyncThunk(
   "logout",
   async (_, { rejectWithValue }) => {
     const tokens = getTokens();
     try {
+      getRefreshingTimeout() && window.clearTimeout(getRefreshingTimeout()!);
+      removeRefreshingTimeout();
       removeTokens(); // you have to remove tokens before request, removing after awaiting for response will run iunto infinite loop of redirecting between dashboard and login
+
+      window.removeEventListener("unload", handleRememberMe); // remove event listener as it is no longer needed becaucse you remove tokens anyway
+
       const response = await axiosInstance.post("/cms/logout", tokens);
       return response.data;
     } catch (error) {
