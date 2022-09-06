@@ -49,12 +49,21 @@ export const refreshAccessToken = async (): Promise<AccessToken> => {
   return response.data;
 };
 
+export const handleRememberMe = () => {
+  const tokens = getTokens();
+  axiosInstance.post("/cms/logout", tokens);
+  removeTokens();
+};
+
 export const logout = createAsyncThunk(
   "logout",
   async (_, { rejectWithValue }) => {
     const tokens = getTokens();
     try {
       removeTokens(); // you have to remove tokens before request, removing after awaiting for response will run iunto infinite loop of redirecting between dashboard and login
+
+      window.removeEventListener("unload", handleRememberMe); // remove event listener as it is no longer needed becaucse you remove tokens anyway
+
       const response = await axiosInstance.post("/cms/logout", tokens);
       return response.data;
     } catch (error) {

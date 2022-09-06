@@ -5,6 +5,7 @@ const pl: Translation = {
     sessionEnd: "Wygasły token. Zaloguj się aby przejść na poprzednią stronę",
   },
   form: {
+    rememberMe: "Zapamiętaj mnie",
     requiredFieldInputMsg: "To pole jest wymagane",
     wrongEmailMsg: "Podaj poprawny email",
     emailInputLabel: "Wprowadź email",

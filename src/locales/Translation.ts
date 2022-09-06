@@ -3,6 +3,7 @@ export interface Translation {
     sessionEnd: string;
   };
   form: {
+    rememberMe: string;
     requiredFieldInputMsg: string;
     wrongEmailMsg: string;
     emailInputLabel: string;

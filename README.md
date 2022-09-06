@@ -1,3 +1,85 @@
+# How to create `remember me` checkbox (or actually radio button) and its behavior
+
+`1` - Create checkbox that sets `rememberMe` boolean and when you submit login form you can add eventListener that will remove tokens from localStorage if `rememberMe` is false:
+
+```tsx
+import { handleRememberMe } from "features/core/store/userSlice.tsx"; // import action from userSlice that removes tokens from localStorage. It's important to make one action and use it here instead of passing anonymous arrow function to addEventListener (to make sure that the function you pass has the same reference in both addEventListener and removeEventListener)
+
+interface LoginFormValues {
+  login: string;
+  password: string;
+  rememberMe: boolean;
+}
+
+const initialValues: LoginFormValues = {
+  email: "",
+  password: "",
+  rememberMe: true,
+};
+
+const Login = () => {
+  const handleSubmit = (values: LoginFormValues) => {
+    if (!values.rememberMe) {
+      // if you login and rememberMe is false, then add listener that will remove tokens from LocalStorage when user closes the tab or the whole browser
+      window.addEventListener("unload", handleRememberMe);
+    }
+
+    dispatch(login({ login, password }));
+  };
+
+  return (
+    <Formik onSubmit={handleSubmit} initialValues={initialValues}>
+      <Box pt={2} display="flex" justifyContent="flex-start">
+        <CheckboxFormik
+          name="rememberMe"
+          id="rememberMe"
+          label={t("form.rememberMe")}
+        />
+      </Box>
+    </Formik>
+  );
+};
+```
+
+`2` The `handleRememberMe` function is simply and just removes tokens from localStorage:
+
+```tsx
+// src/features/core/store/userSlice.tsx
+
+import { removeTokens } from "common/auth/tokens.tsx";
+
+export const handleRememberMe = () => {
+  const tokens = getTokens(); // assign tokens to const to still have access then the tokens are removed from localStorage
+  axiosInstance.post("/cms/logout", tokens); // additionally, send the tokens to server to blacklist them
+  removeTokens(); // this is the most important thing, to remove tokens from localstorage
+};
+```
+
+`3` Additionally, you can remove the eventListener every time you logout because you no longer need to remove tokens, they are removed already because you logged out so in logout action:
+
+```tsx
+//src/core/store/usersSlice.tsx
+
+export const logout = createAsyncThunk(
+  "logout",
+  async (_, { rejectWithValue }) => {
+    const tokens = getTokens();
+    try {
+      removeRefreshingTimeout();
+      removeTokens();
+
+      window.removeEventListener("unload", handleRememberMe); // remove event listener as it is no longer needed becaucse you remove tokens anyway
+
+      const response = await axiosInstance.post("/cms/logout", tokens);
+      return response.data;
+    } catch (error) {
+      removeTokens();
+      return rejectWithValue((error as FailedReqMsg).message);
+    }
+  }
+);
+```
+
 # How to install private GitHub/npm package via ssh
 
 To install package via `ssh` you can follow th instructions listed [here](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/checking-for-existing-ssh-keys).
