@@ -1,3 +1,53 @@
+# How to make `component` prop:
+
+You can create `component` prop that will allow you to pass any kind of html tag passed as a string (or another component like `Link` from `react-router-dom`) by creating a prop typed as `ElementType`:
+
+```tsx
+import { ElementType } from "react";
+
+export interface ButtonWithCompProps {
+  children: React.ReactNode;
+  /**
+   * The component used for the root node. Either a string to use a HTML element or a component.
+   */
+  component?: ElementType;
+}
+
+const ButtonWithComponentProp = ({
+  children,
+  component = "button",
+}: ButtonWithCompProps) => {
+  const Component = component as ElementType<JSX.IntrinsicElements["button"]>; // without this Component's props won't be typed at all because plain ElementType is in real ElementType<any> so you wouldn't have any onClick prop or anything like that
+
+  // now Component is fully typed as `button` html tag so you have types for `onClick` and other props
+  return <Component>{children}</Component>;
+};
+
+export default ButtonWithComponentProp;
+```
+
+It will allow you to pass `button` or any other html tag. It will also allow you to pass other components like `Link`. If you pass `Link`, you would also need to pass prop `to` so you will have to add this prop `to` to `ButtonWithCompProps` interface or extend that interface with another interface.
+
+taken from [Material UI Button props](https://mui.com/material-ui/api/button/#props)
+
+`Additional Info:` If you want to rename destructured prop and give it default value at the same time you can do it like this:
+
+```tsx
+import { ElementType } from "react";
+
+export interface ButtonWithCompProps {
+  component?: ElementType;
+}
+
+const ButtonWithComponentProp = ({
+  component: Component = "button", // destructure prop, change its name and give it a default value. Note that it's not possible to additionaly cast a type by `as SomeType`. It doesn't work. The fact it's not possible found here: https://github.com/microsoft/TypeScript/issues/7576#issuecomment-198443953
+}: ButtonWithCompProps) => {
+  return <Component>{children}</Component>;
+};
+
+export default ButtonWithComponentProp;
+```
+
 # How to create RefreshAccessTokenWrapper that will refresh accessToken in the background
 
 First, you will need to create a function, that will calculate how much time is left before accessToken will be expired. You can create something like this:
