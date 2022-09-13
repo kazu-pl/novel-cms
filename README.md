@@ -1,5 +1,7 @@
 # How to make `component` prop:
 
+`Without styled-components:`
+
 You can create `component` prop that will allow you to pass any kind of html tag passed as a string (or another component like `Link` from `react-router-dom`) by creating a prop typed as `ElementType`:
 
 ```tsx
@@ -29,6 +31,43 @@ export default ButtonWithComponentProp;
 It will allow you to pass `button` or any other html tag. It will also allow you to pass other components like `Link`. If you pass `Link`, you would also need to pass prop `to` so you will have to add this prop `to` to `ButtonWithCompProps` interface or extend that interface with another interface.
 
 taken from [Material UI Button props](https://mui.com/material-ui/api/button/#props)
+
+`With styled-components:`
+
+If you use `styled-components` library, you can use `as` prop of styled component to render different DOM element:
+
+```tsx
+import { ElementType } from "react";
+import styled from "styled-components";
+
+const StyledButton = styled.button``;
+
+export interface ButtonWithCompProps {
+  children: React.ReactNode;
+  /**
+   * The component used for the root node. Either a string to use a HTML element or a component.
+   */
+  component?: ElementType;
+  to?: string;
+}
+
+const ButtonWithComponentProp = ({
+  children,
+  component = "button",
+  ...rest
+}: ButtonWithCompProps) => {
+  return (
+    // `as` prop comes form styled components library
+    <StyledButton as={component} {...rest}>
+      {children}
+    </StyledButton>
+  );
+};
+
+export default ButtonWithComponentProp;
+```
+
+More info [here](https://styled-components.com/docs/api#as-polymorphic-prop)
 
 `Additional Info:` If you want to rename destructured prop and give it default value at the same time you can do it like this:
 
