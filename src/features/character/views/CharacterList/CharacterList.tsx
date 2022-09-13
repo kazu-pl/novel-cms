@@ -24,6 +24,7 @@ import { useSnackbar } from "notistack";
 import ActionModal from "components/ActionModal";
 import TextField from "novel-ui/lib/inputs/TextField";
 import debounce from "lodash.debounce";
+import Highlighter from "react-highlight-words";
 
 const SceneryList = () => {
   const { t, i18n } = useTranslation();
@@ -160,7 +161,12 @@ const SceneryList = () => {
             {
               title: t("CharacterPages.list.table.columns.title"),
               key: "title",
-              render: (row) => row.title,
+              render: (row) => (
+                <Highlighter
+                  searchWords={[searchParams.search]}
+                  textToHighlight={row.title}
+                />
+              ),
               isSortable: true,
             },
             {

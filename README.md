@@ -1,3 +1,29 @@
+# How to highliht searching part of a text with `react-highlight-words`:
+
+```tsx
+import Highlighter from "react-highlight-words";
+
+const SomeComponent = () => {
+  return (
+    <Table
+      columns={[
+        {
+          title: t("CharacterPages.list.table.columns.title"),
+          key: "title",
+          render: (row) => (
+            <Highlighter
+              searchWords={[searchParams.search]} // searchWords are words that should be highlighted, here I pass only search word
+              textToHighlight={row.title} // textToHighlight is the whole text
+            />
+          ),
+          isSortable: true,
+        },
+      ]}
+    />
+  );
+};
+```
+
 # How to make `component` prop:
 
 `Without styled-components:`
