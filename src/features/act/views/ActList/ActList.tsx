@@ -23,6 +23,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Button from "novel-ui/lib/buttons/Button";
 import ActionModal from "components/ActionModal";
+import Highlighter from "react-highlight-words";
 
 const ActList = () => {
   const { t, i18n } = useTranslation();
@@ -139,7 +140,12 @@ const ActList = () => {
             {
               title: t("actsPages.list.table.columns.title"),
               key: "title",
-              render: (row) => row.title,
+              render: (row) => (
+                <Highlighter
+                  searchWords={[searchParams.search]}
+                  textToHighlight={row.title}
+                />
+              ),
               isSortable: true,
             },
             {

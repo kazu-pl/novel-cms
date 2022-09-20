@@ -2,11 +2,11 @@ import { RequestScenery, SuccessfulReqMsg } from "types/novel-server.types";
 import { useAppSelector, useAppDispatch } from "common/store/hooks";
 import { Formik, Form, FormikHelpers } from "formik";
 import {
-  fetchSingleScenery,
+  // fetchSingleScenery,
   selectSingleSceneryData,
   updateSceneryBasicData,
 } from "features/scenery/store/scenerySlice";
-import { useParams } from "react-router-dom";
+// import { useParams } from "react-router-dom";
 import TextFieldFormik from "novel-ui/lib/formik/TextFieldFormik";
 import Box from "@mui/material/Box";
 import Button from "novel-ui/lib/buttons/Button";
@@ -14,17 +14,36 @@ import { useTranslation } from "react-i18next";
 import { useLocalizedYup } from "common/yup";
 import { useSnackbar } from "notistack";
 
-const BasicDataForm = () => {
+interface BasicDataFormProps {
+  maxWidth?: number | string;
+  onSubmitSideEffect?: () => void;
+  onCancelBtnClick?: (values: RequestScenery) => void;
+  descriptionTextAreaRef?: React.RefObject<HTMLTextAreaElement> | null;
+  initialValues?: RequestScenery;
+}
+const BasicDataForm = ({
+  maxWidth,
+  onSubmitSideEffect,
+  onCancelBtnClick,
+  descriptionTextAreaRef,
+  initialValues,
+}: BasicDataFormProps) => {
   const scenery = useAppSelector(selectSingleSceneryData);
   const dispatch = useAppDispatch();
-  const { id } = useParams();
+  // const { id } = useParams();
   const { t } = useTranslation();
   const yup = useLocalizedYup();
   const { enqueueSnackbar } = useSnackbar();
 
   const initialBasicDataValues: RequestScenery = {
-    title: scenery?.title || "",
-    description: scenery?.description || "",
+    title:
+      typeof initialValues?.title === "string"
+        ? initialValues.title
+        : scenery?.title || "",
+    description:
+      typeof initialValues?.description === "string"
+        ? initialValues.description
+        : scenery?.description || "",
   };
 
   const validationBasicDataSchema = yup.object({
@@ -44,7 +63,8 @@ const BasicDataForm = () => {
       enqueueSnackbar(payload.message, {
         variant: "success",
       });
-      dispatch(fetchSingleScenery(id!));
+      // dispatch(fetchSingleScenery(id!)); // this is not needed here becasue in onSubmitSideEffect I fetch data and focus editableDiv after that
+      onSubmitSideEffect && onSubmitSideEffect();
     } catch (error) {
       enqueueSnackbar(error as string, {
         variant: "error",
@@ -60,9 +80,9 @@ const BasicDataForm = () => {
         validationSchema={validationBasicDataSchema}
         enableReinitialize
       >
-        {({ isSubmitting }) => (
+        {({ isSubmitting, values }) => (
           <Form>
-            <Box maxWidth={700} width="100%">
+            <Box maxWidth={maxWidth || 700} width="100%">
               <Box mb={2}>
                 <TextFieldFormik
                   name="title"
@@ -74,6 +94,7 @@ const BasicDataForm = () => {
               </Box>
               <Box mb={2}>
                 <TextFieldFormik
+                  inputRef={descriptionTextAreaRef}
                   name="description"
                   type="text"
                   label={t("form.enterDescription")}
@@ -90,6 +111,19 @@ const BasicDataForm = () => {
                 display="flex"
                 justifyContent="flex-end"
               >
+                {onCancelBtnClick && (
+                  <Box mr={1}>
+                    <Button
+                      variant="text"
+                      color="error"
+                      onClick={(e) => {
+                        onCancelBtnClick(values);
+                      }}
+                    >
+                      {t("buttons.cancel")}
+                    </Button>
+                  </Box>
+                )}
                 <Button
                   variant="contained"
                   type="submit"

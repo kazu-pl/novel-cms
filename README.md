@@ -1,4 +1,291 @@
+# how to auto open modal when CTRL + V was clicked and paste clipboard data into input:
+
+There are 2 ways to open modal after hitting CTRL + V:
+1 - add eventListener that will listen to this specific key combination (PREFFERED)
+2 - make invisivble input and use its paste event (it often losses focus so it's easy to broke it or stop working and user would need to refresh page to make it work again)
+
+Both of below implementations overrides the initial form data so after initial paste action, closing modal and opening it again user will see the previously pasted content instead of the still current data fetched from API
+
+### Open modal and paste clipboard data to using eventListener
+
+```tsx
+// full code: src/features/character/views/CharacterEdit/CharacterEdit.tsx
+
+const CharacterEdit = () => {
+  // initial values for form rendered inside of modal. It's needed to update the initial values after ctrl + v was clicked and user closed the modal. Right before closing  the modal you override the initialValues so the next time is open, you will see the previously pasted data even thou it was not updated yet
+  const [initialValues, setInitialValues] = useState<RequestCharacter>({
+    title: character.data?.title || "",
+    description: character.data?.description || "",
+  });
+
+  // this is just to update the initial data after fetching data of concrete character from API
+  useEffect(() => {
+    setInitialValues((prev) => ({
+      ...prev,
+      title: character.data?.title || "",
+      description: character.data?.description || "",
+    }));
+  }, [character.data]);
+
+  // just fetching character data
+  useEffect(() => {
+    fetchCharacter();
+  }, []);
+  // -----------------------------------------------------------------------
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+
+  const descriptionTextAreaRef = useRef<HTMLTextAreaElement | null>(null);
+
+  const handleOpenEditingModalOnCTRL_V = useCallback((e: KeyboardEvent) => {
+    // detects when CTRL + V was clicked. It won't work on MAC because CTRL does not exist there (it has `command` btn instead)
+    if (e.key === "v" && e.ctrlKey) {
+      setIsUpdateModalOpen(true);
+      setInitialValues((prev) => ({ ...prev, description: "" })); // reset the initial description (otherwise when you paste text it will be pasted BEFORE the previous text and the previous text will be still there but that's not what we want, we want to paste the copied text and nothing more, no previous text)
+      descriptionTextAreaRef && descriptionTextAreaRef.current?.focus(); // focus textArea so the text will be pasted into the textArea
+    }
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleOpenEditingModalOnCTRL_V);
+
+    return () => {
+      window.removeEventListener("keydown", handleOpenEditingModalOnCTRL_V);
+    };
+  }, [handleOpenEditingModalOnCTRL_V]);
+
+  return (
+    <div>
+      <Modal
+        open={isUpdateModalOpen}
+        onClose={() => {
+          setIsUpdateModalOpen(false);
+          // below setInitialValues is needed to update description value after user presed ctrl + v and clicked outside the form to close the modal. onClose will save the pasted value as new initialValue so when user opens modal again via edit btn they will see the previously pasted value, not an empty string or the original data
+          setInitialValues((prev) => ({
+            ...prev,
+            description:
+              descriptionTextAreaRef.current?.textContent || prev.description, // set the current textContent from textArea as new initial value for description key so when you open the modal again via button it will show the previously pasted text, and not empty field (empty because you set to to empty string riht before you focus it just to be able to paste something there without seeing the previous content)
+          }));
+        }}
+      >
+        <BasicDataForm
+          maxWidth="100%"
+          onSubmitSideEffect={() => {
+            setIsUpdateModalOpen(false); // just close the modal when update was successful
+          }}
+          onCancelBtnClick={(values) => {
+            setInitialValues(values); // values are values obtained from Formnik via destructurizing them from children prop used as a function. It's:
+            // <Formik>
+            //   {({ isSubmitting, values }) => (
+            //     <Button
+            //       variant="text"
+            //       color="error"
+            //       onClick={(e) => {
+            //         onCancelBtnClick(values);
+            //       }}
+            //     >
+            //       {t("buttons.cancel")}
+            //     </Button>
+            //   )}
+            // </Formik>;
+            // you have to override initial values here so when the modal is open and you click `cancel` button and open  the modal again, it will have the previously pasted value, not the real one
+            setIsUpdateModalOpen(false);
+          }}
+          descriptionTextAreaRef={descriptionTextAreaRef} // just regular ref passed down to the TextArea input
+          initialValues={initialValues}
+        />
+      </Modal>
+    </div>
+  );
+};
+```
+
+### Open modal and paste clipboard data via invisible div with contentEditable prop
+
+```tsx
+// full code: src/features/scenery/views/SceneryEdit/SceneryEdit.tsx
+
+const SceneryEdit = () => {
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+
+  const descriptionTextAreaRef = useRef<HTMLTextAreaElement | null>(null);
+
+  const editableDivRef = useRef<HTMLDivElement | null>(null);
+
+  // this is just to update the initial data after fetching data of concrete character from API
+  useEffect(() => {
+    setInitialValues((prev) => ({
+      ...prev,
+      title: singleScenery.data?.title || "",
+      description: singleScenery.data?.description || "",
+    }));
+  }, [singleScenery.data]);
+
+  const fetchScenery = useCallback(async () => {
+    try {
+      await dispatch(fetchSingleScenery());
+      editableDivRef.current?.focus({ preventScroll: true }); // focus editableDiv after data was fetched to allow opening modal on paste event
+    } catch (error) {}
+  }, [dispatch, enqueueSnackbar]);
+
+  useEffect(() => {
+    fetchScenery();
+  }, [fetchScenery]);
+
+  useEffect(() => {
+    // auto focuses the editableDiv so it is focuesed already when you enter the page and you can use paste event to open modal
+    editableDivRef.current?.focus({ preventScroll: true });
+    // this does not really work right now because editableDiv is inside of NotFoundWrapper which will render it after the data is fetched (that's why the edditableDivRef is also focused after the data was successfuly downwloaded in fetchCharacter function)
+  }, [editableDivRef]);
+
+  const handlePasteEditableDiv = (e: React.ClipboardEvent<HTMLDivElement>) => {
+    e.preventDefault(); // prevents pasting text into the div
+
+    const pastedText = e.clipboardData.getData("text");
+
+    if (typeof pastedText === "string") {
+      setInitialValues((prev) => ({ ...prev, description: pastedText })); // saves new initial value with the pasted content as description
+      setIsUpdateModalOpen(true);
+
+      // // setTimeout with 0 timeout to make this async so it'll focus textArea AFTER the modal with textArea was mounted (it will be mounted once you call setIsUpdateModalOpen(true) function above)
+      setTimeout(() => {
+        descriptionTextAreaRef.current?.focus({ preventScroll: true });
+      }, 0);
+    }
+  };
+
+  const onEditableDivKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    e.preventDefault();
+  };
+
+  return (
+    <DashboardLayoutWrapper>
+      {/*  */}
+      <div
+        ref={editableDivRef}
+        onPaste={handlePasteEditableDiv}
+        contentEditable // this prop allows to paste some text into this div, it acts like an input tag
+        onKeyPress={onEditableDivKeyPress}
+        // for some reason this div needs border property (at least 1px). Otherwise it won't work on chrome
+        style={{ width: 0, height: 0, border: "1px solid transparent" }}
+      />
+      {/*  */}
+      <NovelUIModal
+        headlineText={t("buttons.update")}
+        open={isUpdateModalOpen}
+        onClose={() => {
+          setIsUpdateModalOpen(false);
+          setInitialValues((prev) => ({
+            ...prev,
+            description:
+              descriptionTextAreaRef.current?.textContent || // save current textContent of textArea input. TextArea was focued right after opening modal which means it has pasted data from clipboard so we can use it here and save as the new initial value so when user opens the modal again, they will see the previously pasted data
+              prev.description,
+          }));
+          editableDivRef.current?.focus({ preventScroll: true }); // focus editableDiv so it can again open modal on paste event
+        }}
+        maxWidthOnDesktop={1000}
+        widthOnDesktop="100%"
+      >
+        <BasicDataForm
+          onSubmitSideEffect={() => {
+            fetchScenery(); // fetch and focus item after updating item (updating logic is inside of BasicDataForm)
+            setIsUpdateModalOpen(false);
+            editableDivRef.current?.focus({ preventScroll: true }); // focus editableDiv so it can again open modal on paste event
+          }}
+          onCancelBtnClick={(values) => {
+            setInitialValues(values); // values are `values` key (formik form values) destructured from children prop of Formik used as a function
+            setIsUpdateModalOpen(false);
+            editableDivRef.current?.focus({ preventScroll: true }); // focus editableDiv so it can again open modal on paste event
+          }}
+          descriptionTextAreaRef={descriptionTextAreaRef}
+          initialValues={initialValues}
+        />
+      </NovelUIModal>
+    </DashboardLayoutWrapper>
+  );
+};
+```
+
+# How to create Markdown component that will render markdown:
+
+```tsx
+// src/components/Markdown/Markdown.tsx
+
+import remarkGfm from "remark-gfm";
+import ReactMarkdown from "react-markdown";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+import "katex/dist/katex.min.css"; // `rehype-katex` does not import the CSS for you
+
+export interface MarkdownProps {
+  children?: string;
+}
+
+const Markdown = ({ children }: MarkdownProps) => {
+  if (!children) return null;
+
+  return (
+    <ReactMarkdown
+      remarkPlugins={[remarkGfm, remarkMath]}
+      rehypePlugins={[rehypeKatex]}
+      components={{
+        code({ node, inline, className, children, ...props }) {
+          const match = /language-(\w+)/.exec(className || "");
+          return !inline && match ? (
+            <SyntaxHighlighter
+              children={String(children).replace(/\n$/, "")}
+              // @ts-ignore
+              style={vscDarkPlus}
+              language={match[1]}
+              PreTag="div"
+              {...props}
+            />
+          ) : (
+            <code className={className} {...props}>
+              {children}
+            </code>
+          );
+        },
+      }}
+    >
+      {children}
+    </ReactMarkdown>
+  );
+};
+
+export default Markdown;
+```
+
+# How to highliht searching part of a text with `react-highlight-words`:
+
+```tsx
+import Highlighter from "react-highlight-words";
+
+const SomeComponent = () => {
+  return (
+    <Table
+      columns={[
+        {
+          title: t("CharacterPages.list.table.columns.title"),
+          key: "title",
+          render: (row) => (
+            <Highlighter
+              searchWords={[searchParams.search]} // searchWords are words that should be highlighted, here I pass only search word
+              textToHighlight={row.title} // textToHighlight is the whole text
+            />
+          ),
+          isSortable: true,
+        },
+      ]}
+    />
+  );
+};
+```
+
 # How to make `component` prop:
+
+`Without styled-components:`
 
 You can create `component` prop that will allow you to pass any kind of html tag passed as a string (or another component like `Link` from `react-router-dom`) by creating a prop typed as `ElementType`:
 
@@ -29,6 +316,43 @@ export default ButtonWithComponentProp;
 It will allow you to pass `button` or any other html tag. It will also allow you to pass other components like `Link`. If you pass `Link`, you would also need to pass prop `to` so you will have to add this prop `to` to `ButtonWithCompProps` interface or extend that interface with another interface.
 
 taken from [Material UI Button props](https://mui.com/material-ui/api/button/#props)
+
+`With styled-components:`
+
+If you use `styled-components` library, you can use `as` prop of styled component to render different DOM element:
+
+```tsx
+import { ElementType } from "react";
+import styled from "styled-components";
+
+const StyledButton = styled.button``;
+
+export interface ButtonWithCompProps {
+  children: React.ReactNode;
+  /**
+   * The component used for the root node. Either a string to use a HTML element or a component.
+   */
+  component?: ElementType;
+  to?: string;
+}
+
+const ButtonWithComponentProp = ({
+  children,
+  component = "button",
+  ...rest
+}: ButtonWithCompProps) => {
+  return (
+    // `as` prop comes form styled components library
+    <StyledButton as={component} {...rest}>
+      {children}
+    </StyledButton>
+  );
+};
+
+export default ButtonWithComponentProp;
+```
+
+More info [here](https://styled-components.com/docs/api#as-polymorphic-prop)
 
 `Additional Info:` If you want to rename destructured prop and give it default value at the same time you can do it like this:
 
