@@ -33,6 +33,8 @@ const de: Translation = {
     edit: "bearbeiten",
     pasteBtnsCombination:
       "Wenn Sie Daten bearbeiten möchten, drücken Sie CTRL + V, um Modal zu öffnen, oder klicken Sie auf die Schaltfläche",
+    pasteEvent:
+      "Sie können hier direkt eine neue Beschreibung einfügen oder auf die Schaltfläche Bearbeiten klicken",
   },
   dashboardSidebarItems: {
     dashboard: "Dashboard",

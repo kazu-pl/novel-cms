@@ -1,5 +1,13 @@
 # how to auto open modal when CTRL + V was clicked and paste clipboard data into input:
 
+There are 2 ways to open modal after hitting CTRL + V:
+1 - add eventListener that will listen to this specific key combination (PREFFERED)
+2 - make invisivble input and use its paste event (it often losses focus so it's easy to broke it or stop working and user would need to refresh page to make it work again)
+
+Both of below implementations overrides the initial form data so after initial paste action, closing modal and opening it again user will see the previously pasted content instead of the still current data fetched from API
+
+### Open modal and paste clipboard data to using eventListener
+
 ```tsx
 // full code: src/features/character/views/CharacterEdit/CharacterEdit.tsx
 
@@ -28,7 +36,7 @@ const CharacterEdit = () => {
 
   const descriptionTextAreaRef = useRef<HTMLTextAreaElement | null>(null);
 
-  const hnadleOpenEditingModalOnCTR_V = useCallback((e: KeyboardEvent) => {
+  const handleOpenEditingModalOnCTRL_V = useCallback((e: KeyboardEvent) => {
     // detects when CTRL + V was clicked. It won't work on MAC because CTRL does not exist there (it has `command` btn instead)
     if (e.key === "v" && e.ctrlKey) {
       setIsUpdateModalOpen(true);
@@ -38,12 +46,12 @@ const CharacterEdit = () => {
   }, []);
 
   useEffect(() => {
-    window.addEventListener("keydown", hnadleOpenEditingModalOnCTR_V);
+    window.addEventListener("keydown", handleOpenEditingModalOnCTRL_V);
 
     return () => {
-      window.removeEventListener("keydown", hnadleOpenEditingModalOnCTR_V);
+      window.removeEventListener("keydown", handleOpenEditingModalOnCTRL_V);
     };
-  }, [hnadleOpenEditingModalOnCTR_V]);
+  }, [handleOpenEditingModalOnCTRL_V]);
 
   return (
     <div>
@@ -87,6 +95,112 @@ const CharacterEdit = () => {
         />
       </Modal>
     </div>
+  );
+};
+```
+
+### Open modal and paste clipboard data via invisible div with contentEditable prop
+
+```tsx
+// full code: src/features/scenery/views/SceneryEdit/SceneryEdit.tsx
+
+const SceneryEdit = () => {
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+
+  const descriptionTextAreaRef = useRef<HTMLTextAreaElement | null>(null);
+
+  const editableDivRef = useRef<HTMLDivElement | null>(null);
+
+  // this is just to update the initial data after fetching data of concrete character from API
+  useEffect(() => {
+    setInitialValues((prev) => ({
+      ...prev,
+      title: singleScenery.data?.title || "",
+      description: singleScenery.data?.description || "",
+    }));
+  }, [singleScenery.data]);
+
+  const fetchScenery = useCallback(async () => {
+    try {
+      await dispatch(fetchSingleScenery());
+      editableDivRef.current?.focus({ preventScroll: true }); // focus editableDiv after data was fetched to allow opening modal on paste event
+    } catch (error) {}
+  }, [dispatch, enqueueSnackbar]);
+
+  useEffect(() => {
+    fetchScenery();
+  }, [fetchScenery]);
+
+  useEffect(() => {
+    // auto focuses the editableDiv so it is focuesed already when you enter the page and you can use paste event to open modal
+    editableDivRef.current?.focus({ preventScroll: true });
+    // this does not really work right now because editableDiv is inside of NotFoundWrapper which will render it after the data is fetched (that's why the edditableDivRef is also focused after the data was successfuly downwloaded in fetchCharacter function)
+  }, [editableDivRef]);
+
+  const handlePasteEditableDiv = (e: React.ClipboardEvent<HTMLDivElement>) => {
+    e.preventDefault(); // prevents pasting text into the div
+
+    const pastedText = e.clipboardData.getData("text");
+
+    if (typeof pastedText === "string") {
+      setInitialValues((prev) => ({ ...prev, description: pastedText })); // saves new initial value with the pasted content as description
+      setIsUpdateModalOpen(true);
+
+      // // setTimeout with 0 timeout to make this async so it'll focus textArea AFTER the modal with textArea was mounted (it will be mounted once you call setIsUpdateModalOpen(true) function above)
+      setTimeout(() => {
+        descriptionTextAreaRef.current?.focus({ preventScroll: true });
+      }, 0);
+    }
+  };
+
+  const onEditableDivKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    e.preventDefault();
+  };
+
+  return (
+    <DashboardLayoutWrapper>
+      {/*  */}
+      <div
+        ref={editableDivRef}
+        onPaste={handlePasteEditableDiv}
+        contentEditable // this prop allows to paste some text into this div, it acts like an input tag
+        onKeyPress={onEditableDivKeyPress}
+        // for some reason this div needs border property (at least 1px). Otherwise it won't work on chrome
+        style={{ width: 0, height: 0, border: "1px solid transparent" }}
+      />
+      {/*  */}
+      <NovelUIModal
+        headlineText={t("buttons.update")}
+        open={isUpdateModalOpen}
+        onClose={() => {
+          setIsUpdateModalOpen(false);
+          setInitialValues((prev) => ({
+            ...prev,
+            description:
+              descriptionTextAreaRef.current?.textContent || // save current textContent of textArea input. TextArea was focued right after opening modal which means it has pasted data from clipboard so we can use it here and save as the new initial value so when user opens the modal again, they will see the previously pasted data
+              prev.description,
+          }));
+          editableDivRef.current?.focus({ preventScroll: true }); // focus editableDiv so it can again open modal on paste event
+        }}
+        maxWidthOnDesktop={1000}
+        widthOnDesktop="100%"
+      >
+        <BasicDataForm
+          onSubmitSideEffect={() => {
+            fetchScenery(); // fetch and focus item after updating item (updating logic is inside of BasicDataForm)
+            setIsUpdateModalOpen(false);
+            editableDivRef.current?.focus({ preventScroll: true }); // focus editableDiv so it can again open modal on paste event
+          }}
+          onCancelBtnClick={(values) => {
+            setInitialValues(values); // values are `values` key (formik form values) destructured from children prop of Formik used as a function
+            setIsUpdateModalOpen(false);
+            editableDivRef.current?.focus({ preventScroll: true }); // focus editableDiv so it can again open modal on paste event
+          }}
+          descriptionTextAreaRef={descriptionTextAreaRef}
+          initialValues={initialValues}
+        />
+      </NovelUIModal>
+    </DashboardLayoutWrapper>
   );
 };
 ```
