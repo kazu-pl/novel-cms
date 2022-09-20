@@ -14,7 +14,21 @@ import { useTranslation } from "react-i18next";
 import { useLocalizedYup } from "common/yup";
 import { useSnackbar } from "notistack";
 
-const BasicDataForm = () => {
+interface BasicDataFormProps {
+  maxWidth?: number | string;
+  onSubmitSideEffect?: () => void;
+  onCancelBtnClick?: (values: RequestCharacter) => void;
+  descriptionTextAreaRef?: React.RefObject<HTMLTextAreaElement> | null;
+  initialValues?: RequestCharacter;
+}
+
+const BasicDataForm = ({
+  maxWidth,
+  onSubmitSideEffect,
+  onCancelBtnClick,
+  descriptionTextAreaRef,
+  initialValues,
+}: BasicDataFormProps) => {
   const character = useAppSelector(selectSingleCharacterData);
   const dispatch = useAppDispatch();
   const params = useParams();
@@ -24,8 +38,14 @@ const BasicDataForm = () => {
   const { enqueueSnackbar } = useSnackbar();
 
   const initialBasicDataValues: RequestCharacter = {
-    title: character?.title || "",
-    description: character?.description || "",
+    title:
+      typeof initialValues?.title === "string"
+        ? initialValues?.title
+        : character?.title || "",
+    description:
+      typeof initialValues?.description === "string"
+        ? initialValues?.description
+        : character?.description || "",
   };
 
   const validationBasicDataSchema = yup.object({
@@ -47,6 +67,7 @@ const BasicDataForm = () => {
         variant: "success",
       });
       dispatch(fetchSingleCharacter(id));
+      onSubmitSideEffect && onSubmitSideEffect();
     } catch (error) {
       enqueueSnackbar(error as string, {
         variant: "error",
@@ -62,9 +83,14 @@ const BasicDataForm = () => {
         validationSchema={validationBasicDataSchema}
         enableReinitialize
       >
-        {({ isSubmitting }) => (
+        {({ isSubmitting, values }) => (
           <Form>
-            <Box maxWidth={700} width="100%">
+            <Box
+              maxWidth={maxWidth || 700}
+              width="100%"
+              display="flex"
+              flexDirection="column"
+            >
               <Box mb={2}>
                 <TextFieldFormik
                   name="title"
@@ -76,6 +102,7 @@ const BasicDataForm = () => {
               </Box>
               <Box mb={2}>
                 <TextFieldFormik
+                  inputRef={descriptionTextAreaRef} // pass ref here to focus this input
                   name="description"
                   type="text"
                   label={t("form.enterDescription")}
@@ -92,6 +119,19 @@ const BasicDataForm = () => {
                 display="flex"
                 justifyContent="flex-end"
               >
+                {onCancelBtnClick && (
+                  <Box mr={1}>
+                    <Button
+                      variant="text"
+                      color="error"
+                      onClick={(e) => {
+                        onCancelBtnClick(values);
+                      }}
+                    >
+                      {t("buttons.cancel")}
+                    </Button>
+                  </Box>
+                )}
                 <Button
                   variant="contained"
                   type="submit"

@@ -172,7 +172,10 @@ const SceneryList = () => {
             {
               title: t("CharacterPages.list.table.columns.description"),
               key: "description",
-              render: (row) => row.description,
+              render: (row) =>
+                row.description.length > 150
+                  ? `${row.description.slice(0, 150)}...`
+                  : row.description,
               isSortable: true,
             },
             {
