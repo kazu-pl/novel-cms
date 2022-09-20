@@ -30,6 +30,8 @@ const en: Translation = {
     delete: "Delete",
     selectFile: "Select file",
     edit: "Edit",
+    pasteBtnsCombination:
+      "If you want to edit data press CTRL + V to open modal or click the button",
   },
   dashboardSidebarItems: {
     dashboard: "Dashboard",

@@ -1,3 +1,96 @@
+# how to auto open modal when CTRL + V was clicked and paste clipboard data into input:
+
+```tsx
+// full code: src/features/character/views/CharacterEdit/CharacterEdit.tsx
+
+const CharacterEdit = () => {
+  // initial values for form rendered inside of modal. It's needed to update the initial values after ctrl + v was clicked and user closed the modal. Right before closing  the modal you override the initialValues so the next time is open, you will see the previously pasted data even thou it was not updated yet
+  const [initialValues, setInitialValues] = useState<RequestCharacter>({
+    title: character.data?.title || "",
+    description: character.data?.description || "",
+  });
+
+  // this is just to update the initial data after fetching data of concrete character from API
+  useEffect(() => {
+    setInitialValues((prev) => ({
+      ...prev,
+      title: character.data?.title || "",
+      description: character.data?.description || "",
+    }));
+  }, [character.data]);
+
+  // just fetching character data
+  useEffect(() => {
+    fetchCharacter();
+  }, []);
+  // -----------------------------------------------------------------------
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+
+  const descriptionTextAreaRef = useRef<HTMLTextAreaElement | null>(null);
+
+  const hnadleOpenEditingModalOnCTR_V = useCallback((e: KeyboardEvent) => {
+    // detects when CTRL + V was clicked. It won't work on MAC because CTRL does not exist there (it has `command` btn instead)
+    if (e.key === "v" && e.ctrlKey) {
+      setIsUpdateModalOpen(true);
+      setInitialValues((prev) => ({ ...prev, description: "" })); // reset the initial description (otherwise when you paste text it will be pasted BEFORE the previous text and the previous text will be still there but that's not what we want, we want to paste the copied text and nothing more, no previous text)
+      descriptionTextAreaRef && descriptionTextAreaRef.current?.focus(); // focus textArea so the text will be pasted into the textArea
+    }
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("keydown", hnadleOpenEditingModalOnCTR_V);
+
+    return () => {
+      window.removeEventListener("keydown", hnadleOpenEditingModalOnCTR_V);
+    };
+  }, [hnadleOpenEditingModalOnCTR_V]);
+
+  return (
+    <div>
+      <Modal
+        open={isUpdateModalOpen}
+        onClose={() => {
+          setIsUpdateModalOpen(false);
+          // below setInitialValues is needed to update description value after user presed ctrl + v and clicked outside the form to close the modal. onClose will save the pasted value as new initialValue so when user opens modal again via edit btn they will see the previously pasted value, not an empty string or the original data
+          setInitialValues((prev) => ({
+            ...prev,
+            description:
+              descriptionTextAreaRef.current?.textContent || prev.description, // set the current textContent from textArea as new initial value for description key so when you open the modal again via button it will show the previously pasted text, and not empty field (empty because you set to to empty string riht before you focus it just to be able to paste something there without seeing the previous content)
+          }));
+        }}
+      >
+        <BasicDataForm
+          maxWidth="100%"
+          onSubmitSideEffect={() => {
+            setIsUpdateModalOpen(false); // just close the modal when update was successful
+          }}
+          onCancelBtnClick={(values) => {
+            setInitialValues(values); // values are values obtained from Formnik via destructurizing them from children prop used as a function. It's:
+            // <Formik>
+            //   {({ isSubmitting, values }) => (
+            //     <Button
+            //       variant="text"
+            //       color="error"
+            //       onClick={(e) => {
+            //         onCancelBtnClick(values);
+            //       }}
+            //     >
+            //       {t("buttons.cancel")}
+            //     </Button>
+            //   )}
+            // </Formik>;
+            // you have to override initial values here so when the modal is open and you click `cancel` button and open  the modal again, it will have the previously pasted value, not the real one
+            setIsUpdateModalOpen(false);
+          }}
+          descriptionTextAreaRef={descriptionTextAreaRef} // just regular ref passed down to the TextArea input
+          initialValues={initialValues}
+        />
+      </Modal>
+    </div>
+  );
+};
+```
+
 # How to create Markdown component that will render markdown:
 
 ```tsx

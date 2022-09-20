@@ -17,11 +17,17 @@ import { useSnackbar } from "notistack";
 interface BasicDataFormProps {
   maxWidth?: number | string;
   onSubmitSideEffect?: () => void;
+  onCancelBtnClick?: (values: RequestCharacter) => void;
+  descriptionTextAreaRef?: React.RefObject<HTMLTextAreaElement> | null;
+  initialValues?: RequestCharacter;
 }
 
 const BasicDataForm = ({
   maxWidth,
   onSubmitSideEffect,
+  onCancelBtnClick,
+  descriptionTextAreaRef,
+  initialValues,
 }: BasicDataFormProps) => {
   const character = useAppSelector(selectSingleCharacterData);
   const dispatch = useAppDispatch();
@@ -32,8 +38,14 @@ const BasicDataForm = ({
   const { enqueueSnackbar } = useSnackbar();
 
   const initialBasicDataValues: RequestCharacter = {
-    title: character?.title || "",
-    description: character?.description || "",
+    title:
+      typeof initialValues?.title === "string"
+        ? initialValues?.title
+        : character?.title || "",
+    description:
+      typeof initialValues?.description === "string"
+        ? initialValues?.description
+        : character?.description || "",
   };
 
   const validationBasicDataSchema = yup.object({
@@ -71,7 +83,7 @@ const BasicDataForm = ({
         validationSchema={validationBasicDataSchema}
         enableReinitialize
       >
-        {({ isSubmitting }) => (
+        {({ isSubmitting, values }) => (
           <Form>
             <Box
               maxWidth={maxWidth || 700}
@@ -90,6 +102,7 @@ const BasicDataForm = ({
               </Box>
               <Box mb={2}>
                 <TextFieldFormik
+                  inputRef={descriptionTextAreaRef} // pass ref here to focus this input
                   name="description"
                   type="text"
                   label={t("form.enterDescription")}
@@ -106,6 +119,19 @@ const BasicDataForm = ({
                 display="flex"
                 justifyContent="flex-end"
               >
+                {onCancelBtnClick && (
+                  <Box mr={1}>
+                    <Button
+                      variant="text"
+                      color="error"
+                      onClick={(e) => {
+                        onCancelBtnClick(values);
+                      }}
+                    >
+                      {t("buttons.cancel")}
+                    </Button>
+                  </Box>
+                )}
                 <Button
                   variant="contained"
                   type="submit"

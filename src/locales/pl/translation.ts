@@ -30,6 +30,8 @@ const pl: Translation = {
     delete: "usuń",
     selectFile: "wybierz plik",
     edit: "edytuj",
+    pasteBtnsCombination:
+      "Aby edytować dane naciśnij CTRL + V lub kliknij przycisk",
   },
   dashboardSidebarItems: {
     dashboard: "Dashboard",

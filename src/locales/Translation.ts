@@ -28,6 +28,7 @@ export interface Translation {
     delete: string;
     selectFile: string;
     edit: string;
+    pasteBtnsCombination: string;
   };
   dashboardSidebarItems: {
     dashboard: string;

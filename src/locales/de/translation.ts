@@ -31,6 +31,8 @@ const de: Translation = {
     delete: "löschen",
     selectFile: "Datei aussuchen",
     edit: "bearbeiten",
+    pasteBtnsCombination:
+      "Wenn Sie Daten bearbeiten möchten, drücken Sie CTRL + V, um Modal zu öffnen, oder klicken Sie auf die Schaltfläche",
   },
   dashboardSidebarItems: {
     dashboard: "Dashboard",

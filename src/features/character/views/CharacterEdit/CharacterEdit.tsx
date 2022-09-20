@@ -10,13 +10,13 @@ import {
   selectSingleCharacter,
 } from "features/character/store/characterSlice";
 import { useParams } from "react-router-dom";
-import { useEffect, useCallback, useState } from "react";
+import { useEffect, useCallback, useState, useRef } from "react";
 import NovelUIModal from "novel-ui/lib/modals/Modal";
 import NewCharacterImagesForm from "./NewCharacterImagesForm";
 import Typography from "@mui/material/Typography";
 import ImagesGallery from "./ImagesGallery";
 import BasicDataForm from "./BasicDataForm";
-import { SuccessfulReqMsg } from "types/novel-server.types";
+import { RequestCharacter, SuccessfulReqMsg } from "types/novel-server.types";
 import { useSnackbar } from "notistack";
 import NotFoundWrapper from "common/wrappers/NotFoundWrapper";
 import Markdown from "components/Markdown/Markdown";
@@ -35,7 +35,42 @@ const CharacterEdit = () => {
     isOpen: false,
     filename: "",
   });
+
+  // initial values for form rendered inside of modal. It's needed to update the initial values after ctrl + v was clicked and user closed the modal. Right before closing  the modal you override the initialValues so the next time is open, you will see the previously pasted data even thou it was not updated yet
+  const [initialValues, setInitialValues] = useState<RequestCharacter>({
+    title: character.data?.title || "",
+    description: character.data?.description || "",
+  });
+
+  // this is just to update the initial data after fetching data of concrete character from API
+  useEffect(() => {
+    setInitialValues((prev) => ({
+      ...prev,
+      title: character.data?.title || "",
+      description: character.data?.description || "",
+    }));
+  }, [character.data]);
+
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+
+  const descriptionTextAreaRef = useRef<HTMLTextAreaElement | null>(null);
+
+  const handleOpenEditingModalOnCTRL_V = useCallback((e: KeyboardEvent) => {
+    // detects when CTRL + V was clicked. It won't work on MAC because CTRL does not exist there (it has `command` btn instead)
+    if (e.key === "v" && e.ctrlKey) {
+      setIsUpdateModalOpen(true);
+      setInitialValues((prev) => ({ ...prev, description: "" })); // reset the initial description (otherwise when you paste text it will be pasted BEFORE the previous)
+      descriptionTextAreaRef && descriptionTextAreaRef.current?.focus(); // focus textArea so the text will be pasted into the textArea
+    }
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleOpenEditingModalOnCTRL_V);
+
+    return () => {
+      window.removeEventListener("keydown", handleOpenEditingModalOnCTRL_V);
+    };
+  }, [handleOpenEditingModalOnCTRL_V]);
 
   const fetchCharacter = useCallback(async () => {
     try {
@@ -111,15 +146,32 @@ const CharacterEdit = () => {
           </Box>
 
           <NovelUIModal
-            headlineText={"update"}
+            headlineText={t("buttons.update")}
             open={isUpdateModalOpen}
-            onClose={() => setIsUpdateModalOpen(false)}
+            onClose={() => {
+              setIsUpdateModalOpen(false);
+              // below setInitialValues is needed to update description value after user presed ctrl + v and clicked outside the form to close the modal. onClose will save the pasted value as new initialValue so when user opens modal again via edit btn they will see the previously pasted value, not an empty string or the original data
+              setInitialValues((prev) => ({
+                ...prev,
+                description:
+                  descriptionTextAreaRef.current?.textContent || // save current textContent of textArea input. TextArea was focued right after opening modal which means it has pasted data from clipboard so we can use it here and save as the new initial value so when user opens the modal again, they will see the previously pasted data
+                  prev.description,
+              }));
+            }}
             maxWidthOnDesktop={1000}
             widthOnDesktop="100%"
           >
             <BasicDataForm
               maxWidth="100%"
-              onSubmitSideEffect={() => setIsUpdateModalOpen(false)}
+              onSubmitSideEffect={() => {
+                setIsUpdateModalOpen(false);
+              }}
+              onCancelBtnClick={(values) => {
+                setInitialValues(values); // values are `values` key (formik form values) destructured from children prop of Formik used as a function
+                setIsUpdateModalOpen(false);
+              }}
+              descriptionTextAreaRef={descriptionTextAreaRef}
+              initialValues={initialValues}
             />
           </NovelUIModal>
 
@@ -128,7 +180,13 @@ const CharacterEdit = () => {
             width="100%"
             display="flex"
             justifyContent="flex-end"
+            alignItems="center"
           >
+            <Box mr={1}>
+              <Typography variant="overline">
+                {t("buttons.pasteBtnsCombination")}
+              </Typography>
+            </Box>
             <Button
               variant="contained"
               type="submit"
