@@ -1,6 +1,8 @@
 import { Translation } from "../Translation";
 
 const en: Translation = {
+  title: "Title",
+  description: "Description",
   notifications: {
     sessionEnd: "Session ended. login to go to the previous page",
   },
@@ -27,6 +29,7 @@ const en: Translation = {
     update: "Update",
     delete: "Delete",
     selectFile: "Select file",
+    edit: "Edit",
   },
   dashboardSidebarItems: {
     dashboard: "Dashboard",

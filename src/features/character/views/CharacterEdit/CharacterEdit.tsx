@@ -11,7 +11,7 @@ import {
 } from "features/character/store/characterSlice";
 import { useParams } from "react-router-dom";
 import { useEffect, useCallback, useState } from "react";
-import ActionModal from "components/ActionModal";
+import NovelUIModal from "novel-ui/lib/modals/Modal";
 import NewCharacterImagesForm from "./NewCharacterImagesForm";
 import Typography from "@mui/material/Typography";
 import ImagesGallery from "./ImagesGallery";
@@ -19,6 +19,9 @@ import BasicDataForm from "./BasicDataForm";
 import { SuccessfulReqMsg } from "types/novel-server.types";
 import { useSnackbar } from "notistack";
 import NotFoundWrapper from "common/wrappers/NotFoundWrapper";
+import Markdown from "components/Markdown/Markdown";
+import ActionModal from "components/ActionModal";
+import Button from "novel-ui/lib/buttons/Button";
 
 const CharacterEdit = () => {
   const { t } = useTranslation();
@@ -32,6 +35,8 @@ const CharacterEdit = () => {
     isOpen: false,
     filename: "",
   });
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+
   const fetchCharacter = useCallback(async () => {
     try {
       await dispatch(fetchSingleCharacter(id));
@@ -94,16 +99,56 @@ const CharacterEdit = () => {
               {t("CharacterPages.edit.basicDataFormTitle")}
             </Typography>
           </Box>
-          <BasicDataForm />
+
+          <Box maxWidth={700} width="100%" mb={2}>
+            <Typography variant="h6">{t("title")}:</Typography>
+            <Typography>{character.data?.title}</Typography>
+          </Box>
+
+          <Box maxWidth={1000} width="100%" mb={2}>
+            <Typography variant="h6">{t("description")}:</Typography>
+            <Markdown>{character.data?.description}</Markdown>
+          </Box>
+
+          <NovelUIModal
+            headlineText={"update"}
+            open={isUpdateModalOpen}
+            onClose={() => setIsUpdateModalOpen(false)}
+            maxWidthOnDesktop={1000}
+            widthOnDesktop="100%"
+          >
+            <BasicDataForm
+              maxWidth="100%"
+              onSubmitSideEffect={() => setIsUpdateModalOpen(false)}
+            />
+          </NovelUIModal>
+
+          <Box
+            maxWidth={700}
+            width="100%"
+            display="flex"
+            justifyContent="flex-end"
+          >
+            <Button
+              variant="contained"
+              type="submit"
+              onClick={() => setIsUpdateModalOpen(true)}
+            >
+              {t("buttons.edit")}
+            </Button>
+          </Box>
+
           <Box maxWidth={700} width="100%">
             <Box mb={2}>
-              <Typography>{t("CharacterPages.edit.newImagesTitle")}</Typography>
+              <Typography variant="h6">
+                {t("CharacterPages.edit.newImagesTitle")}
+              </Typography>
             </Box>
             <NewCharacterImagesForm />
           </Box>
           <Box maxWidth={700} width="100%">
             <Box mb={2}>
-              <Typography>
+              <Typography variant="h6">
                 {t("CharacterPages.edit.imagesGalleryTitle")}
               </Typography>
             </Box>

@@ -1,4 +1,6 @@
 export interface Translation {
+  title: string;
+  description: string;
   notifications: {
     sessionEnd: string;
   };
@@ -25,6 +27,7 @@ export interface Translation {
     update: string;
     delete: string;
     selectFile: string;
+    edit: string;
   };
   dashboardSidebarItems: {
     dashboard: string;

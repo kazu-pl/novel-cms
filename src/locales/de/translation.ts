@@ -1,6 +1,8 @@
 import { Translation } from "../Translation";
 
 const de: Translation = {
+  title: "Titel",
+  description: "Bezeichnung",
   notifications: {
     sessionEnd:
       "Sitzung beendet. Einloggen um zur vorherigen Seite zu gelangen",
@@ -28,6 +30,7 @@ const de: Translation = {
     update: "Aktualisieren",
     delete: "löschen",
     selectFile: "Datei aussuchen",
+    edit: "bearbeiten",
   },
   dashboardSidebarItems: {
     dashboard: "Dashboard",
