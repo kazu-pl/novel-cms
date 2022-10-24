@@ -3,6 +3,11 @@ import { Translation } from "../Translation";
 const en: Translation = {
   title: "Title",
   description: "Description",
+  loading: "Loading",
+  customizeTable: "Customize table",
+  search: "Search",
+  default: "Default",
+  fixedColumnWarning: "Cannot change order of fixed column",
   notifications: {
     sessionEnd: "Session ended. login to go to the previous page",
   },
@@ -29,11 +34,10 @@ const en: Translation = {
     update: "Update",
     delete: "Delete",
     selectFile: "Select file",
+    selectAll: "Select all",
     edit: "Edit",
     pasteBtnsCombination:
       "If you want to edit data press CTRL + V to open modal or click the button",
-    pasteEvent:
-      "You can paste new description here directly or click the edit button",
   },
   dashboardSidebarItems: {
     dashboard: "Dashboard",

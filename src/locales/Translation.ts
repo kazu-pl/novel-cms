@@ -1,6 +1,11 @@
 export interface Translation {
   title: string;
   description: string;
+  loading: string;
+  customizeTable: string;
+  search: string;
+  default: string;
+  fixedColumnWarning: string;
   notifications: {
     sessionEnd: string;
   };
@@ -27,9 +32,9 @@ export interface Translation {
     update: string;
     delete: string;
     selectFile: string;
+    selectAll: string;
     edit: string;
     pasteBtnsCombination: string;
-    pasteEvent: string;
   };
   dashboardSidebarItems: {
     dashboard: string;

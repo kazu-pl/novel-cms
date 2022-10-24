@@ -25,6 +25,7 @@ import ActionModal from "components/ActionModal";
 import TextField from "novel-ui/lib/inputs/TextField";
 import debounce from "lodash.debounce";
 import Highlighter from "react-highlight-words";
+import renderMaxLengthText from "components/DynamicTable/utils/renderMaxLengthText";
 
 const SceneryList = () => {
   const { t, i18n } = useTranslation();
@@ -172,10 +173,7 @@ const SceneryList = () => {
             {
               title: t("CharacterPages.list.table.columns.description"),
               key: "description",
-              render: (row) =>
-                row.description.length > 150
-                  ? `${row.description.slice(0, 150)}...`
-                  : row.description,
+              render: (row) => renderMaxLengthText(row.description, 100),
               isSortable: true,
             },
             {
