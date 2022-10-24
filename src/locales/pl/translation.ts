@@ -38,8 +38,6 @@ const pl: Translation = {
     edit: "edytuj",
     pasteBtnsCombination:
       "Aby edytować dane naciśnij CTRL + V lub kliknij przycisk",
-    pasteEvent:
-      "Możesz tutaj bezpośrednio wkleić nowy opis lub nacisnąć przycisk edycji",
   },
   dashboardSidebarItems: {
     dashboard: "Dashboard",

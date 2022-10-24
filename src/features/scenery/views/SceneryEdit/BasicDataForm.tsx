@@ -2,11 +2,11 @@ import { RequestScenery, SuccessfulReqMsg } from "types/novel-server.types";
 import { useAppSelector, useAppDispatch } from "common/store/hooks";
 import { Formik, Form, FormikHelpers } from "formik";
 import {
-  // fetchSingleScenery,
+  fetchSingleScenery,
   selectSingleSceneryData,
   updateSceneryBasicData,
 } from "features/scenery/store/scenerySlice";
-// import { useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import TextFieldFormik from "novel-ui/lib/formik/TextFieldFormik";
 import Box from "@mui/material/Box";
 import Button from "novel-ui/lib/buttons/Button";
@@ -30,7 +30,7 @@ const BasicDataForm = ({
 }: BasicDataFormProps) => {
   const scenery = useAppSelector(selectSingleSceneryData);
   const dispatch = useAppDispatch();
-  // const { id } = useParams();
+  const { id } = useParams();
   const { t } = useTranslation();
   const yup = useLocalizedYup();
   const { enqueueSnackbar } = useSnackbar();
@@ -63,7 +63,7 @@ const BasicDataForm = ({
       enqueueSnackbar(payload.message, {
         variant: "success",
       });
-      // dispatch(fetchSingleScenery(id!)); // this is not needed here becasue in onSubmitSideEffect I fetch data and focus editableDiv after that
+      dispatch(fetchSingleScenery(id!));
       onSubmitSideEffect && onSubmitSideEffect();
     } catch (error) {
       enqueueSnackbar(error as string, {
