@@ -1,7 +1,14 @@
-import { createSlice, createAsyncThunk, isAnyOf } from "@reduxjs/toolkit";
+import {
+  createSlice,
+  createAsyncThunk,
+  isAnyOf,
+  PayloadAction,
+} from "@reduxjs/toolkit";
 import { axiosSecureInstance } from "common/axios";
 import { RootState } from "common/store";
 import { SortDirection } from "novel-ui/lib/Table";
+
+import { CustomizedColumnFromStore } from "components/DynamicTable/CustomizeDynamicTable";
 
 import {
   ActExtended,
@@ -27,7 +34,45 @@ interface CharacterState {
     data: ActDictionary["data"] | null;
     isFetching: boolean;
   };
+  actsTableColumns: {
+    initial: CustomizedColumnFromStore[]; // initial keys, when you change columns in table and hit "default" the table will be reset to initial columns
+    current: CustomizedColumnFromStore[]; // just current state of columns in table
+  };
 }
+
+/**
+ * List of initially visible columns in table. They are the same columns you see in `allPossibleColumns` from `ActList.tsx`
+ */
+const initalActsTableColumns: CustomizedColumnFromStore[] = [
+  {
+    key: "title",
+    isActive: true,
+  },
+  {
+    key: "description",
+    isActive: true,
+  },
+  {
+    key: "scenes",
+    isActive: true,
+  },
+  {
+    key: "nextAct",
+    isActive: true,
+  },
+  {
+    key: "createdAt",
+    isActive: true,
+  },
+  {
+    key: "type",
+    isActive: true,
+  },
+  {
+    key: "actions",
+    isActive: true,
+  },
+];
 
 const initialState: CharacterState = {
   acts: {
@@ -42,6 +87,10 @@ const initialState: CharacterState = {
   actsDictionary: {
     data: null,
     isFetching: false,
+  },
+  actsTableColumns: {
+    initial: initalActsTableColumns,
+    current: initalActsTableColumns,
   },
 };
 
@@ -141,7 +190,14 @@ export const removeAct = createAsyncThunk(
 const actSlice = createSlice({
   name: "act",
   initialState,
-  reducers: {},
+  reducers: {
+    updateActsTableColumns(
+      state,
+      action: PayloadAction<CustomizedColumnFromStore[]>
+    ) {
+      state.actsTableColumns.current = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchActsDictionary.pending, (state, action) => {
       state.actsDictionary.isFetching = true;
@@ -186,10 +242,17 @@ const actSlice = createSlice({
   },
 });
 
+export const { updateActsTableColumns } = actSlice.actions;
+
 export const selectActDictionary = (state: RootState) =>
   state.act.actsDictionary.data;
 
 export const selectActs = (state: RootState) => state.act.acts;
 export const selectSingleAct = (state: RootState) => state.act.singleAct;
+
+export const selectActsTableInitialColumns = (state: RootState) =>
+  state.act.actsTableColumns.initial;
+export const selectActsTableCurrentColumns = (state: RootState) =>
+  state.act.actsTableColumns.current;
 
 export default actSlice.reducer;

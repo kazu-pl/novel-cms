@@ -1,4 +1,4 @@
-import Dashboard from "novel-ui/lib/layouts/Dashboard";
+import Dashboard, { DashboardProps } from "novel-ui/lib/layouts/Dashboard";
 import AcUnitIcon from "@mui/icons-material/AcUnit";
 import LogoutIcon from "@mui/icons-material/Logout";
 import AccountIcon from "@mui/icons-material/Person";
@@ -27,14 +27,16 @@ import { useTranslation } from "react-i18next";
 
 import { API_URL } from "common/constants/env";
 
-export interface DashboardLayoutWrapperProps {
+export interface DashboardLayoutWrapperProps
+  extends Pick<DashboardProps, "additionalControls"> {
   children: React.ReactNode;
-  title?: string;
+  title?: DashboardProps["title"];
 }
 
 const DashboardLayoutWrapper = ({
   children,
   title = "Dashboard",
+  ...rest
 }: DashboardLayoutWrapperProps) => {
   const { path } = getLocalizedPath();
   const userProfileData = useAppSelector(selectUserProfile);
@@ -166,6 +168,7 @@ const DashboardLayoutWrapper = ({
           },
         ],
       }}
+      {...rest}
     >
       {children}
     </Dashboard>

@@ -1,4 +1,9 @@
-import { createSlice, createAsyncThunk, isAnyOf } from "@reduxjs/toolkit";
+import {
+  createSlice,
+  createAsyncThunk,
+  isAnyOf,
+  PayloadAction,
+} from "@reduxjs/toolkit";
 // import { createAction } from "@reduxjs/toolkit";
 import { axiosSecureInstance } from "common/axios";
 import { RootState } from "common/store";
@@ -12,6 +17,8 @@ import {
   SingleSceneryResponse,
   SceneriesDictionary,
 } from "types/novel-server.types";
+
+import { CustomizedColumnFromStore } from "components/DynamicTable/CustomizeDynamicTable";
 
 interface SceneryState {
   sceneries: {
@@ -27,7 +34,37 @@ interface SceneryState {
     data: SceneriesDictionary["data"] | null;
     isFetching: boolean;
   };
+  sceneryTableColumns: {
+    initial: CustomizedColumnFromStore[]; // initial keys, when you change columns in table and hit "default" the table will be reset to initial columns
+    current: CustomizedColumnFromStore[]; // just current state of columns in table
+  };
 }
+
+/**
+ * List of initially visible columns in table. They are the same columns you see in `allPossibleColumns` from `SceneryList.tsx`
+ */
+const initalActsTableColumns: CustomizedColumnFromStore[] = [
+  {
+    key: "title",
+    isActive: true,
+  },
+  {
+    key: "description",
+    isActive: true,
+  },
+  {
+    key: "imagesList",
+    isActive: true,
+  },
+  {
+    key: "createdAt",
+    isActive: true,
+  },
+  {
+    key: "actions",
+    isActive: true,
+  },
+];
 
 const initialState: SceneryState = {
   sceneries: {
@@ -42,6 +79,10 @@ const initialState: SceneryState = {
   sceneryDictionary: {
     data: null,
     isFetching: false,
+  },
+  sceneryTableColumns: {
+    initial: initalActsTableColumns,
+    current: initalActsTableColumns,
   },
 };
 
@@ -199,6 +240,12 @@ const scenerySlice = createSlice({
         data: null,
       };
     },
+    updateSceneryTableColumns(
+      state,
+      action: PayloadAction<CustomizedColumnFromStore[]>
+    ) {
+      state.sceneryTableColumns.current = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchSceneries.pending, (state) => {
@@ -243,6 +290,13 @@ const scenerySlice = createSlice({
     // });
   },
 });
+
+export const { updateSceneryTableColumns } = scenerySlice.actions;
+
+export const selectSceneryTableInitialColumns = (state: RootState) =>
+  state.scenery.sceneryTableColumns.initial;
+export const selectSceneryTableCurrentColumns = (state: RootState) =>
+  state.scenery.sceneryTableColumns.current;
 
 export const selectSceneries = (state: RootState) => state.scenery.sceneries;
 export const selectSingleScenery = (state: RootState) =>
