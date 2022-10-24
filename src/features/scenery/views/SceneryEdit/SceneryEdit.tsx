@@ -37,12 +37,6 @@ const SceneryEdit = () => {
   const { enqueueSnackbar } = useSnackbar();
   const singleScenery = useAppSelector(selectSingleScenery);
 
-  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
-
-  const descriptionTextAreaRef = useRef<HTMLTextAreaElement | null>(null);
-
-  const editableDivRef = useRef<HTMLDivElement | null>(null);
-
   // initial values for form rendered inside of modal. It's needed to update the initial values after ctrl + v was clicked and user closed the modal. Right before closing  the modal you override the initialValues so the next time is open, you will see the previously pasted data even thou it was not updated yet
   const [initialValues, setInitialValues] = useState<RequestScenery>({
     title: singleScenery.data?.title || "",
@@ -58,10 +52,30 @@ const SceneryEdit = () => {
     }));
   }, [singleScenery.data]);
 
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+
+  const descriptionTextAreaRef = useRef<HTMLTextAreaElement | null>(null);
+
+  const handleOpenEditingModalOnCTRL_V = useCallback((e: KeyboardEvent) => {
+    // detects when CTRL + V was clicked. It won't work on MAC because CTRL does not exist there (it has `command` btn instead)
+    if (e.key === "v" && e.ctrlKey) {
+      setIsUpdateModalOpen(true);
+      setInitialValues((prev) => ({ ...prev, description: "" })); // reset the initial description (otherwise when you paste text it will be pasted BEFORE the previous text and the previous text will be still there but that's not what we want, we want to paste the copied text and nothing more, no previous text)
+      descriptionTextAreaRef && descriptionTextAreaRef.current?.focus(); // focus textArea so the text will be pasted into the textArea
+    }
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleOpenEditingModalOnCTRL_V);
+
+    return () => {
+      window.removeEventListener("keydown", handleOpenEditingModalOnCTRL_V);
+    };
+  }, [handleOpenEditingModalOnCTRL_V]);
+
   const fetchScenery = useCallback(async () => {
     try {
       await dispatch(fetchSingleScenery(id));
-      editableDivRef.current?.focus({ preventScroll: true }); // focus editableDiv after data was fetched to allow opening modal on paste event
     } catch (error) {
       if (error) {
         enqueueSnackbar(error as string, {
@@ -110,32 +124,6 @@ const SceneryEdit = () => {
     });
   };
 
-  useEffect(() => {
-    // auto focuses the editableDiv so it is focuesed already when you enter the page and you can use paste event to open modal
-    editableDivRef.current?.focus({ preventScroll: true });
-    // this does not really work right now because editableDiv is inside of NotFoundWrapper which will render it after the data is fetched (that's why the edditableDivRef is also focused after the data was successfuly downwloaded in fetchCharacter function)
-  }, [editableDivRef]);
-
-  const handlePasteEditableDiv = (e: React.ClipboardEvent<HTMLDivElement>) => {
-    e.preventDefault(); // prevents pasting text into the div
-
-    const pastedText = e.clipboardData.getData("text");
-
-    if (typeof pastedText === "string") {
-      setInitialValues((prev) => ({ ...prev, description: pastedText }));
-      setIsUpdateModalOpen(true);
-
-      // // setTimeout with 0 timeout to make this async so it'll focus textArea AFTER the modal with textArea was mounted (it will be mounted once you call setIsUpdateModalOpen(true) function above)
-      setTimeout(() => {
-        descriptionTextAreaRef.current?.focus({ preventScroll: true });
-      }, 0);
-    }
-  };
-
-  const onEditableDivKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    e.preventDefault();
-  };
-
   return (
     <>
       <HelmetDecorator
@@ -148,15 +136,6 @@ const SceneryEdit = () => {
           isLoadingData={singleScenery.isFetching}
           isNotFound={!singleScenery.data}
         >
-          <div
-            ref={editableDivRef}
-            onPaste={handlePasteEditableDiv}
-            contentEditable
-            onKeyPress={onEditableDivKeyPress}
-            // for some reason this div needs border property (at least 1px). Otherwise it won't work on chrome
-            style={{ width: 0, height: 0, border: "1px solid transparent" }}
-          />
-
           <Box mb={2}>
             <Typography>{t("SceneryPages.edit.basicDataFormTitle")}</Typography>
           </Box>
@@ -176,13 +155,13 @@ const SceneryEdit = () => {
             open={isUpdateModalOpen}
             onClose={() => {
               setIsUpdateModalOpen(false);
+              // below setInitialValues is needed to update description value after user presed ctrl + v and clicked outside the form to close the modal. onClose will save the pasted value as new initialValue so when user opens modal again via edit btn they will see the previously pasted value, not an empty string or the original data
               setInitialValues((prev) => ({
                 ...prev,
                 description:
-                  descriptionTextAreaRef.current?.textContent || // save current textContent of textArea input. TextArea was focued right after opening modal which means it has pasted data from clipboard so we can use it here and save as the new initial value so when user opens the modal again, they will see the previously pasted data
-                  prev.description,
+                  descriptionTextAreaRef.current?.textContent ||
+                  prev.description, // set the current textContent from textArea as new initial value for description key so when you open the modal again via button it will show the previously pasted text, and not empty field (empty because you set to to empty string riht before you focus it just to be able to paste something there without seeing the previous content)
               }));
-              editableDivRef.current?.focus({ preventScroll: true }); // focus editableDiv so it can again open modal on paste event
             }}
             maxWidthOnDesktop={1000}
             widthOnDesktop="100%"
@@ -190,14 +169,25 @@ const SceneryEdit = () => {
             <BasicDataForm
               maxWidth="100%"
               onSubmitSideEffect={() => {
-                fetchScenery();
-                setIsUpdateModalOpen(false);
-                editableDivRef.current?.focus({ preventScroll: true }); // focus editableDiv so it can again open modal on paste event
+                setIsUpdateModalOpen(false); // just close the modal when update was successful
               }}
               onCancelBtnClick={(values) => {
-                setInitialValues(values); // values are `values` key (formik form values) destructured from children prop of Formik used as a function
+                setInitialValues(values); // values are values obtained from Formnik via destructurizing them from children prop used as a function. It's:
+                // <Formik>
+                //   {({ isSubmitting, values }) => (
+                //     <Button
+                //       variant="text"
+                //       color="error"
+                //       onClick={(e) => {
+                //         onCancelBtnClick(values);
+                //       }}
+                //     >
+                //       {t("buttons.cancel")}
+                //     </Button>
+                //   )}
+                // </Formik>;
+                // you have to override initial values here so when the modal is open and you click `cancel` button and open  the modal again, it will have the previously pasted value, not the real one
                 setIsUpdateModalOpen(false);
-                editableDivRef.current?.focus({ preventScroll: true }); // focus editableDiv so it can again open modal on paste event
               }}
               descriptionTextAreaRef={descriptionTextAreaRef}
               initialValues={initialValues}
@@ -212,7 +202,7 @@ const SceneryEdit = () => {
           >
             <Box mr={1}>
               <Typography variant="overline">
-                {t("buttons.pasteEvent")}
+                {t("buttons.pasteBtnsCombination")}
               </Typography>
             </Box>
             <Button

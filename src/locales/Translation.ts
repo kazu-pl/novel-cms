@@ -35,7 +35,6 @@ export interface Translation {
     selectAll: string;
     edit: string;
     pasteBtnsCombination: string;
-    pasteEvent: string;
   };
   dashboardSidebarItems: {
     dashboard: string;
