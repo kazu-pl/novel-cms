@@ -1,6 +1,6 @@
 import DashboardLayoutWrapper from "common/wrappers/DashboardLayoutWrapper";
 import HelmetDecorator from "components/HelmetDecorator";
-import Table, { SortDirection } from "novel-ui/lib/Table";
+import { SortDirection } from "novel-ui/lib/Table";
 import { useTranslation } from "react-i18next";
 import { useAppDispatch, useAppSelector } from "common/store/hooks";
 import {
@@ -9,6 +9,9 @@ import {
   selectActs,
   fetchActsDictionary,
   selectActDictionary,
+  selectActsTableInitialColumns,
+  selectActsTableCurrentColumns,
+  updateActsTableColumns,
 } from "features/act/store/actSlice";
 import useLocalizedPath from "common/router/useLocalizedPath";
 import { useNavigate } from "react-router";
@@ -24,6 +27,13 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import Button from "novel-ui/lib/buttons/Button";
 import ActionModal from "components/ActionModal";
 import Highlighter from "react-highlight-words";
+import DynamicTable, { DynamicTableColumn } from "components/DynamicTable";
+import CustomizeDynamicTable, {
+  CustomizedColumnFromStore,
+} from "components/DynamicTable/CustomizeDynamicTable";
+import renderMaxLengthText from "components/DynamicTable/utils/renderMaxLengthText";
+import generateActiveColumnsToDisplay from "components/DynamicTable/utils/generateActiveColumnsToDisplay";
+import generateCustomizeDynamicTableColumns from "components/DynamicTable/CustomizeDynamicTable/utils/generateCustomizeDynamicTableColumns";
 
 const ActList = () => {
   const { t, i18n } = useTranslation();
@@ -46,6 +56,8 @@ const ActList = () => {
     sortBy: "createdAt",
     search: "",
   });
+
+  const initialTableColumns = useAppSelector(selectActsTableInitialColumns);
 
   const handleOnChangePage = (page: number) => {
     setSearchParams({ currentPage: page });
@@ -109,6 +121,95 @@ const ActList = () => {
     }
   };
 
+  /**
+   * List of all columns that can be seen in the table. The actual visible columns are in redux. In this component, the currently visible ones are called `tableCurrentColumnsFromRedux`. Store keeps only `key`, `isActive and `isCustomColumn` props. You can't keep all cols in redux because there are functions like `render` which acan't be serialized (by default it can't be)
+   */
+  const allPossibleColumns: DynamicTableColumn<ActExtended>[] = [
+    {
+      title: t("actsPages.list.table.columns.title"),
+      key: "title",
+      fixed: true,
+      render: (row) => (
+        <Highlighter
+          searchWords={[searchParams.search]}
+          textToHighlight={row.title}
+        />
+      ),
+      isSortable: true,
+    },
+    {
+      title: t("actsPages.list.table.columns.description"),
+      key: "description",
+      render: (row) => renderMaxLengthText(row.description, 50),
+      isSortable: true,
+    },
+    {
+      title: t("actsPages.list.table.columns.scenesTotal"),
+      key: "scenes",
+      render: (row) => row.scenes.length,
+    },
+    {
+      title: t("actsPages.list.table.columns.nextAct"),
+      key: "nextAct",
+      render: (row) =>
+        !!row.nextAct
+          ? actsDisctionary?.find((item) => item.id === row.nextAct)?.title
+          : "",
+    },
+    {
+      title: t("actsPages.list.table.columns.createdAt"),
+      key: "createdAt",
+      render: (row) => new Date(row.createdAt).toLocaleString(),
+      isSortable: true,
+    },
+    {
+      title: t("actsPages.list.table.columns.type"),
+      key: "type",
+      render: (row) => row.type,
+    },
+    {
+      title: t("actsPages.list.table.columns.actions"),
+      key: "actions",
+      noWrap: true,
+      render: (row) => (
+        <Box display="flex">
+          <IconButton onClick={() => navigate(path(PATHS_ACT.EDIT(row._id)))}>
+            <EditIcon />
+          </IconButton>
+
+          <IconButton
+            onClick={() =>
+              setActToRemoveModalData((prev) => ({
+                ...prev,
+                id: row._id,
+                isOpen: true,
+                name: row.title,
+              }))
+            }
+          >
+            <DeleteIcon />
+          </IconButton>
+        </Box>
+      ),
+    },
+  ];
+
+  /**
+   * Redux stores current tables but only their `key` prop, `isActive` prop and optional `isCustomColumn` prop. List of all possible columns that can be passed to the table are here above, called `allPossibleColumns`
+   */
+  const tableCurrentColumnsFromRedux = useAppSelector(
+    selectActsTableCurrentColumns
+  );
+
+  const handleSetColumns = (columns: CustomizedColumnFromStore[]) => {
+    dispatch(updateActsTableColumns(columns));
+  };
+
+  const activeColumnsToDisplay = generateActiveColumnsToDisplay(
+    tableCurrentColumnsFromRedux,
+    allPossibleColumns
+  );
+
   return (
     <>
       <HelmetDecorator
@@ -118,8 +219,21 @@ const ActList = () => {
         lang={i18n.language}
         title={t("actsPages.list.metaData.title")}
       />
-      <DashboardLayoutWrapper title={t("actsPages.list.title")}>
-        <Table
+      <DashboardLayoutWrapper
+        title={t("actsPages.list.title")}
+        additionalControls={
+          <CustomizeDynamicTable
+            isCustomColumnsLoading={acts.isFetching}
+            setColumns={handleSetColumns}
+            initialColumns={initialTableColumns}
+            columns={generateCustomizeDynamicTableColumns(
+              tableCurrentColumnsFromRedux,
+              allPossibleColumns
+            )}
+          />
+        }
+      >
+        <DynamicTable
           isLoading={acts.isFetching}
           // I need to pass `([] as ActExtended[])` because for some reason passing just acts.data throws an error when running react-snap connected to TypeScript?
           data={acts.data || ([] as ActExtended[])}
@@ -136,80 +250,7 @@ const ActList = () => {
           onChangePage={handleOnChangePage}
           onChangeRowsPerPage={onChangeRowsPerPage}
           onChangeSort={onChangeSort}
-          columns={[
-            {
-              title: t("actsPages.list.table.columns.title"),
-              key: "title",
-              render: (row) => (
-                <Highlighter
-                  searchWords={[searchParams.search]}
-                  textToHighlight={row.title}
-                />
-              ),
-              isSortable: true,
-            },
-            {
-              title: t("actsPages.list.table.columns.description"),
-              key: "description",
-              render: (row) =>
-                row.description.length > 50
-                  ? `${row.description.slice(0, 50)}...`
-                  : row.description,
-              isSortable: true,
-            },
-            {
-              title: t("actsPages.list.table.columns.scenesTotal"),
-              key: "scenes",
-              render: (row) => row.scenes.length,
-            },
-            {
-              title: t("actsPages.list.table.columns.nextAct"),
-              key: "nextAct",
-              render: (row) =>
-                !!row.nextAct
-                  ? actsDisctionary?.find((item) => item.id === row.nextAct)
-                      ?.title
-                  : "",
-            },
-            {
-              title: t("actsPages.list.table.columns.createdAt"),
-              key: "createdAt",
-              render: (row) => new Date(row.createdAt).toLocaleString(),
-              isSortable: true,
-            },
-            {
-              title: t("actsPages.list.table.columns.type"),
-              key: "type",
-              render: (row) => row.type,
-            },
-            {
-              title: t("actsPages.list.table.columns.actions"),
-              key: "actions",
-              noWrap: true,
-              render: (row) => (
-                <Box display="flex">
-                  <IconButton
-                    onClick={() => navigate(path(PATHS_ACT.EDIT(row._id)))}
-                  >
-                    <EditIcon />
-                  </IconButton>
-
-                  <IconButton
-                    onClick={() =>
-                      setActToRemoveModalData((prev) => ({
-                        ...prev,
-                        id: row._id,
-                        isOpen: true,
-                        name: row.title,
-                      }))
-                    }
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </Box>
-              ),
-            },
-          ]}
+          columns={activeColumnsToDisplay}
         />
         <Box display="flex" justifyContent="flex-end">
           <Button to={path(PATHS_ACT.ADD)} variant="contained">

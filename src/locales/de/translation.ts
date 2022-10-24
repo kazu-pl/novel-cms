@@ -3,6 +3,12 @@ import { Translation } from "../Translation";
 const de: Translation = {
   title: "Titel",
   description: "Bezeichnung",
+  loading: "Wird geladen",
+  customizeTable: "ändern Sie die Tabelle",
+  search: "Suche",
+  default: "Ursprünglich",
+  fixedColumnWarning:
+    "Die Reihenfolge der festen Spalte kann nicht geändert werden",
   notifications: {
     sessionEnd:
       "Sitzung beendet. Einloggen um zur vorherigen Seite zu gelangen",
@@ -30,6 +36,7 @@ const de: Translation = {
     update: "Aktualisieren",
     delete: "löschen",
     selectFile: "Datei aussuchen",
+    selectAll: "Wählen Sie Alle",
     edit: "bearbeiten",
     pasteBtnsCombination:
       "Wenn Sie Daten bearbeiten möchten, drücken Sie CTRL + V, um Modal zu öffnen, oder klicken Sie auf die Schaltfläche",
