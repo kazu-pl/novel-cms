@@ -13,6 +13,9 @@ const de: Translation = {
     sessionEnd:
       "Sitzung beendet. Einloggen um zur vorherigen Seite zu gelangen",
   },
+  cancelNotifications: {
+    login: "Login-Aktion abgebrochen",
+  },
   form: {
     rememberMe: "behalte mich in Erinnerung",
     requiredFieldInputMsg: "Dieses Feld wird benötigt",

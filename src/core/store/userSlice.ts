@@ -16,6 +16,7 @@ import {
   getRefreshingTimeout,
   removeRefreshingTimeout,
 } from "common/wrappers/RefreshAccessTokenWrapper/refreshAccessTokenLSTokens";
+import { CancelToken } from "axios";
 
 interface UserState {
   userProfile: UserProfile | null;
@@ -29,9 +30,17 @@ const initialState: UserState = {
 
 export const login = createAsyncThunk(
   "login",
-  async (values: RequestLoginCredentials, { rejectWithValue }) => {
+  async (
+    {
+      values,
+      cancelToken,
+    }: { values: RequestLoginCredentials; cancelToken?: CancelToken },
+    { rejectWithValue }
+  ) => {
     try {
-      const response = await axiosInstance.post<Tokens>("/cms/login", values);
+      const response = await axiosInstance.post<Tokens>("/cms/login", values, {
+        cancelToken,
+      });
       saveTokens(response.data);
       return response.data;
     } catch (error) {

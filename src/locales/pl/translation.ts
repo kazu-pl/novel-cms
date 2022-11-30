@@ -11,6 +11,9 @@ const pl: Translation = {
   notifications: {
     sessionEnd: "Wygasły token. Zaloguj się aby przejść na poprzednią stronę",
   },
+  cancelNotifications: {
+    login: "Logowanie zostało przerwane",
+  },
   form: {
     rememberMe: "Zapamiętaj mnie",
     requiredFieldInputMsg: "To pole jest wymagane",

@@ -9,7 +9,7 @@ import { useAppDispatch } from "common/store/hooks";
 import { RequestLoginCredentials } from "types/novel-server.types";
 import { useNavigate, useLocation, Navigate } from "react-router-dom";
 import { PATHS_CORE, PATHS_DASHBOARD } from "common/constants/paths";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { getTokens, isTokenExpired } from "common/auth/tokens";
 import { useSnackbar } from "notistack";
 import useLocalizedPath from "common/router/useLocalizedPath";
@@ -18,6 +18,10 @@ import HelmetDecorator from "components/HelmetDecorator";
 import CoreViewsLayoutWrapper, {
   LowerFormLink,
 } from "common/wrappers/CoreViewsLayoutWrapper";
+import axios from "axios";
+
+const { CancelToken } = axios;
+// const loginSource = CancelToken.source(); // it can't be here because once the action got canceled, you won't be able to perform it again
 
 export const urlLogoutReasonQuery = {
   key: "reason",
@@ -44,6 +48,8 @@ const LoginView = () => {
   const { enqueueSnackbar } = useSnackbar();
   const location = useLocation();
 
+  const loginSource = useMemo(() => CancelToken.source(), []); // loginSource has to be inside of component to make sure it is created every time user enters the page, otherwise (when loginSource is moved above loginView) once the action was canceled, you won't be able to perform it again (clicking the login button will dispaly `login action cancelled` message). Additionally, I wrapped it in useMemo so the loginSource won't be changing every time any state changes - this is just small performance improvement.
+
   const validationSchema = yup.object({
     email: yup.string().email().required(),
     password: yup.string().required(),
@@ -69,7 +75,8 @@ const LoginView = () => {
     }
 
     try {
-      await dispatch(login(values));
+      await dispatch(login({ values, cancelToken: loginSource.token }));
+
       if (location.state && location.state[urlFromQuery]) {
         navigate(location.state[urlFromQuery]); // I can't use path() here because location.state[urlFromQuery] can be from axiosInterceptor where I can't use PathWithoutLang to pass only path without lang prefix
       } else {
@@ -81,6 +88,12 @@ const LoginView = () => {
       });
     }
   };
+
+  useEffect(() => {
+    return () => {
+      loginSource.cancel(i18n.t("cancelNotifications.login")); // here i use i18n.t() instead of plain t() because t() will be updated/changed after language change so when you put it in this useEffect array dependency it will immediately run the useEffect return function which will cancel action. In another words: after language change when you click the login btn the login action will be canceled. To overcome this I use i18n.t() because it will always be the same object with the same reference so even if I put it into the array dependency it won't cancel anything
+    };
+  }, [loginSource, i18n]);
 
   const tokens = getTokens();
   if (
