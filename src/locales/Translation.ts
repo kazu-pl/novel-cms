@@ -9,6 +9,9 @@ export interface Translation {
   notifications: {
     sessionEnd: string;
   };
+  cancelNotifications: {
+    login: string;
+  };
   form: {
     rememberMe: string;
     requiredFieldInputMsg: string;

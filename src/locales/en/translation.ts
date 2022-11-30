@@ -11,6 +11,9 @@ const en: Translation = {
   notifications: {
     sessionEnd: "Session ended. login to go to the previous page",
   },
+  cancelNotifications: {
+    login: "Login action aborted",
+  },
   form: {
     rememberMe: "Remember me",
     requiredFieldInputMsg: "This field is required",
