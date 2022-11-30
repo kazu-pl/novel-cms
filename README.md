@@ -1,4 +1,183 @@
-# how to auto open modal when CTRL + V was clicked and paste clipboard data into input:
+# how to cancel request with axios
+
+`1` - using `source` from `CancelToken`:
+
+```tsx
+// src/core/views/Login/Login.tsx
+
+import axios from "axios";
+
+const { CancelToken } = axios;
+// const loginSource = CancelToken.source(); // it can't be here because once the action got canceled, you won't be able to perform it again
+
+const LoginView = () => {
+  const { i18n } = useTranslation();
+
+  const loginSource = useMemo(() => CancelToken.source(), []); // loginSource has to be inside of component to make sure it is created every time user enters the page, otherwise (when loginSource is moved above loginView) once the action was canceled, you won't be able to perform it again (clicking the login button will dispaly `login action cancelled` message). Additionally, I wrapped it in useMemo so the loginSource won't be changing every time any state changes - this is just small performance improvement.
+
+  const handleSubmit = async (values) => {
+    try {
+      await dispatch(login({ values, cancelToken: loginSource.token }));
+    } catch (err) {
+      enqueueSnackbar(err as string, {
+        variant: "error",
+      });
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      // cancel login request when user changes page
+      loginSource.cancel(i18n.t("cancelNotifications.login")); // here i use i18n.t() instead of plain t() because t() will be updated/changed after language change so when you put it in this useEffect array dependency it will immediately run the useEffect return function which will cancel action. In another words: after language change when you click the login btn the login action will be canceled. To overcome this I use i18n.t() because it will always be the same object with the same reference so even if I put it into the array dependency it won't cancel anything
+    };
+  }, [loginSource, i18n]);
+
+  return <button onClick={handleSubmit}>login</button>;
+};
+```
+
+and the login action:
+
+```ts
+// src/core/store/uerSlice.ts
+
+import { CancelToken } from "axios";
+
+export const login = createAsyncThunk(
+  "login",
+  async (
+    {
+      values,
+      cancelToken,
+    }: { values: RequestLoginCredentials; cancelToken?: CancelToken },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await axiosInstance.post<Tokens>("/cms/login", values, {
+        cancelToken, // pass here cancelToken
+      });
+      saveTokens(response.data);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue((error as FailedReqMsg).message);
+    }
+  }
+);
+```
+
+`2` - using `canceler` argument from `CancelToken`:
+
+```tsx
+// src/core/views/Login/Login.tsx
+
+import axios, { Canceler } from "axios";
+
+const { CancelToken } = axios;
+
+const LoginView = () => {
+  const loginCancelerRef = useRef<Canceler | null>(null);
+
+  const handleSubmit = async (values: LoginFormValues) => {
+    try {
+      let canceler: Canceler | null = null;
+
+      const cancelToken = new CancelToken((c) => {
+        canceler = c;
+      });
+
+      loginCancelerRef.current = canceler;
+
+      await dispatch(login({ values, cancelToken }));
+    } catch (err) {
+      enqueueSnackbar(err as string, {
+        variant: "error",
+      });
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      loginCancelerRef.current &&
+        loginCancelerRef.current("login was cancelled");
+    };
+  }, []);
+
+  return <button>login</button>;
+};
+```
+
+The `login()` action from store is the same as in the `1` example.
+
+`3` - using `AbortController` from `Web API`:
+
+```tsx
+const LoginView = () => {
+  const controller = useMemo(() => new AbortController(), []);
+  const signal = controller.signal;
+
+  const handleSubmit = async (values: LoginFormValues) => {
+    try {
+      await dispatch(login({ values, abortSignal: signal }));
+    } catch (err) {
+      if (
+        // @ts-ignore
+        signal.aborted &&
+        // @ts-ignore // for some reason here in CRA you won't be able to compile the project as it says that `reason` does not exist on `signal`
+        signal.reason &&
+        // @ts-ignore // but in Next it worked fine
+        typeof signal.reason === "string"
+      ) {
+        // @ts-ignore
+        enqueueSnackbar(signal.reason, {
+          variant: "error",
+        });
+      } else {
+        enqueueSnackbar(err as string, {
+          variant: "error",
+        });
+      }
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      // @ts-ignore
+      controller.abort("login action was aborted");
+    };
+  }, [controller]);
+
+  return <button>login</button>;
+};
+```
+
+And the `login` action from store:
+
+```ts
+export const login = createAsyncThunk(
+  "login",
+  async (
+    {
+      values,
+      abortSignal,
+    }: { values: RequestLoginCredentials; abortSignal?: AbortSignal },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await axiosInstance.post<Tokens>("/cms/login", values, {
+        signal: abortSignal,
+      });
+      saveTokens(response.data);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue((error as FailedReqMsg).message);
+    }
+  }
+);
+```
+
+Examples taken from [here](https://axios-http.com/docs/cancellation)
+
+# how to auto open modal when CTRL + V was clicked and paste clipboard data into input
 
 There are 2 ways to open modal after hitting CTRL + V:
 1 - add eventListener that will listen to this specific key combination (PREFFERED)
