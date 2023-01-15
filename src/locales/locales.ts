@@ -1,4 +1,9 @@
-export type Lang = "pl" | "en" | "de"; // those literals are names of folders with tranalstions
+import flagPL from "./pl/flagPL.svg";
+import flagEN from "./en/flagEN.svg";
+import flagDE from "./de/flagDE.svg";
+
+// those literals are names of folders with tranalstions
+export type Lang = "pl" | "en" | "de";
 
 export const extendedAvaliableLangs: {
   langFullName: string;
@@ -8,20 +13,23 @@ export const extendedAvaliableLangs: {
   {
     langFullName: "Polski",
     lang: "pl",
-    iconUrl:
-      "https://upload.wikimedia.org/wikipedia/en/1/12/Flag_of_Poland.svg",
+    iconUrl: flagPL,
+    // iconUrl:
+    // "https://upload.wikimedia.org/wikipedia/en/1/12/Flag_of_Poland.svg",
   },
   {
     langFullName: "English",
     lang: "en",
-    iconUrl:
-      "https://upload.wikimedia.org/wikipedia/commons/a/ae/Flag_of_the_United_Kingdom.svg",
+    iconUrl: flagEN,
+    // iconUrl:
+    // "https://upload.wikimedia.org/wikipedia/commons/8/83/Flag_of_the_United_Kingdom_%283-5%29.svg",
   },
   {
     langFullName: "Germany",
     lang: "de",
-    iconUrl:
-      "https://upload.wikimedia.org/wikipedia/commons/b/ba/Flag_of_Germany.svg",
+    iconUrl: flagDE,
+    // iconUrl:
+    // "https://upload.wikimedia.org/wikipedia/commons/b/ba/Flag_of_Germany.svg",
   },
 ];
 
