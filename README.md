@@ -1,3 +1,45 @@
+# `Error [ERR_PACKAGE_PATH_NOT_EXPORTED]: Package subpath './lib/tokenize' is not defined by "exports"` error:
+
+If you have updated node version or pushed new version of this repo to Vercel (and Vercel's node version got updated) you will probably get error like this:
+
+```powershell
+$ yarn build
+yarn run v1.22.4
+$ react-scripts build
+node:internal/modules/cjs/loader:535
+      throw e;
+      ^
+
+Error [ERR_PACKAGE_PATH_NOT_EXPORTED]: Package subpath './lib/tokenize' is not defined by "exports" in D:\MY-VISUAL-NOVEL-P
+ROJECT\novel-cms\node_modules\postcss-safe-parser\node_modules\postcss\package.json
+    at new NodeError (node:internal/errors:393:5)
+    at throwExportsNotFound (node:internal/modules/esm/resolve:358:9)
+    at packageExportsResolve (node:internal/modules/esm/resolve:668:3)
+    at resolveExports (node:internal/modules/cjs/loader:529:36)
+    at Module._findPath (node:internal/modules/cjs/loader:569:31)
+    at Module._resolveFilename (node:internal/modules/cjs/loader:981:27)
+    at Module._load (node:internal/modules/cjs/loader:841:27)
+    at Module.require (node:internal/modules/cjs/loader:1061:19)
+    at require (node:internal/modules/cjs/helpers:103:18)
+    at Object.<anonymous> (D:\MY-VISUAL-NOVEL-PROJECT\novel-cms\node_modules\postcss-safe-parser\lib\safe-parser.js:1:17) {
+
+  code: 'ERR_PACKAGE_PATH_NOT_EXPORTED'
+}
+
+Node.js v18.12.1
+error Command failed with exit code 1.
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
+
+```
+
+It happened to me because I was developing this project with node `14.18.2` but Vercel at some point updated node to `18.12.1` and when I updated node on my computer to `18.12.1` then `yarn build` was throwing the same error as Vercel so I could check what happened.
+
+`SOLUTION:`
+
+1 - I still had installed node modules
+2 - I removed react-scripts
+3 - I installed latest react scrips via `yarn add react-scripts@latest`
+
 # how to cancel request with axios
 
 `1` - using `source` from `CancelToken`:
