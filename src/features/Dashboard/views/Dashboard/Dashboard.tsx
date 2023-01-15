@@ -53,11 +53,29 @@ const Dashboard = () => {
   } = useAppSelector(selectActDialogsCount);
 
   useEffect(() => {
-    dispatch(fetchCharactersImagesCount());
-    dispatch(fetchSceneriesImagesCount());
-    dispatch(fetchActsScenesCount());
-    dispatch(fetchActsDialogsCount());
-  }, [dispatch]);
+    if (charactersImagesCount === null) {
+      dispatch(fetchCharactersImagesCount());
+    }
+  }, [dispatch, charactersImagesCount]);
+
+  useEffect(() => {
+    if (sceneriesImagesCount === null) {
+      dispatch(fetchSceneriesImagesCount());
+    }
+  }, [dispatch, sceneriesImagesCount]);
+
+  useEffect(() => {
+    if (actScenesCount === null) {
+      dispatch(fetchActsScenesCount());
+    }
+  }, [dispatch, actScenesCount]);
+
+  useEffect(() => {
+    if (actDialogsCount === null) {
+      dispatch(fetchActsDialogsCount());
+    }
+  }, [dispatch, actDialogsCount]);
+
   return (
     <>
       <HelmetDecorator
