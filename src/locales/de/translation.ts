@@ -16,6 +16,15 @@ const de: Translation = {
   cancelNotifications: {
     login: "Login-Aktion abgebrochen",
   },
+  graphs: {
+    charactersImagesCounter: "Anzahl der Fotos einzelner Charaktere",
+    sceneriesImagesCounter: "Anzahl Fotos einzelner Szenerien",
+    actScenesAmount: "Anzahl Szenen einzelner Akte",
+    actDialogsAmount: "Anzahl Dialoge einzelner Akte",
+    imagesAmount: "Bilder Menge",
+    scenesAmount: "Szenen Menge",
+    dialogsAmount: "Dialoge Menge",
+  },
   form: {
     rememberMe: "behalte mich in Erinnerung",
     requiredFieldInputMsg: "Dieses Feld wird benötigt",

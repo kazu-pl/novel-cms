@@ -237,6 +237,27 @@ export interface SceneriesDictionary {
 }
 
 /**
+ * @example {"data":[]}
+ */
+export interface ImagesCountResponse {
+  data: SingleCharacterFromImagesCount[];
+}
+
+/**
+ * @example {"data":[]}
+ */
+export interface ScenesCountResponse {
+  data: SingleItemFromActScenesOrDialogCount[];
+}
+
+/**
+ * @example {"data":[]}
+ */
+export interface DialogsCountResponse {
+  data: SingleItemFromActScenesOrDialogCount[];
+}
+
+/**
  * type of request data passed in request when creating new character or update basic character data
  * @example {"title":"Yuuta","description":"main character"}
  */
@@ -318,6 +339,26 @@ export interface SingleCharacterFromDictionary {
  */
 export interface CharactersDictionary {
   data: SingleCharacterFromDictionary[];
+}
+
+/**
+ * type of single entity of character from images count list
+ * @example {"title":"Yuuta","id":"0000-0000-0000-0000","imagesCount":6}
+ */
+export interface SingleCharacterFromImagesCount {
+  id: string;
+  name: string;
+  imagesCount: number;
+}
+
+/**
+ * type of single entity of act scenes count
+ * @example {"title":"Yuuta","id":"0000-0000-0000-0000","count":6}
+ */
+export interface SingleItemFromActScenesOrDialogCount {
+  id: string;
+  name: string;
+  count: number;
 }
 
 /**
