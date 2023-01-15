@@ -12,6 +12,15 @@ export interface Translation {
   cancelNotifications: {
     login: string;
   };
+  graphs: {
+    charactersImagesCounter: string;
+    sceneriesImagesCounter: string;
+    actScenesAmount: string;
+    actDialogsAmount: string;
+    imagesAmount: string;
+    scenesAmount: string;
+    dialogsAmount: string;
+  };
   form: {
     rememberMe: string;
     requiredFieldInputMsg: string;

@@ -14,6 +14,15 @@ const pl: Translation = {
   cancelNotifications: {
     login: "Logowanie zostało przerwane",
   },
+  graphs: {
+    charactersImagesCounter: "Ilość zdjęć poszczególnych postaci",
+    sceneriesImagesCounter: "Ilość zdjęć poszczególnych scenerii",
+    actScenesAmount: "Ilość scen w poszczególnych rozdziałach",
+    actDialogsAmount: "Ilość dialogów w poszczególnych rozdziałach",
+    imagesAmount: "Ilość zdjęć",
+    scenesAmount: "Ilość scen",
+    dialogsAmount: "Ilość dialogów",
+  },
   form: {
     rememberMe: "Zapamiętaj mnie",
     requiredFieldInputMsg: "To pole jest wymagane",

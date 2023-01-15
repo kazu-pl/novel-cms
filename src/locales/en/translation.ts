@@ -14,6 +14,15 @@ const en: Translation = {
   cancelNotifications: {
     login: "Login action aborted",
   },
+  graphs: {
+    charactersImagesCounter: "Number of photos of individual characters",
+    sceneriesImagesCounter: "Number of photos of individual sceneries",
+    actScenesAmount: "Number of scenes of individual acts",
+    actDialogsAmount: "Number of dialogs of individual acts",
+    imagesAmount: "Images amount",
+    scenesAmount: "Scenes amount",
+    dialogsAmount: "Dialogs amount",
+  },
   form: {
     rememberMe: "Remember me",
     requiredFieldInputMsg: "This field is required",

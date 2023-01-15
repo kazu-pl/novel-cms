@@ -3,12 +3,14 @@ import userSlice, { logout } from "core/store/userSlice";
 import scenerySlice from "features/scenery/store/scenerySlice";
 import characterSlice from "features/character/store/characterSlice";
 import actSlice from "features/act/store/actSlice";
+import dashboardSlice from "features/Dashboard/store/dashboardSlice";
 
 const combinedReducer = combineReducers({
   user: userSlice,
   scenery: scenerySlice,
   character: characterSlice,
   act: actSlice,
+  dashbard: dashboardSlice,
 });
 
 // if you export RootState here, then import it in store.ts and re-rexport it and then export it in src/commo/store/index.ts then when you will try to import RootState VSC will import it from store.ts, not from here (rootReducer.ts)
