@@ -6,7 +6,6 @@ import { useLocalizedYup } from "common/yup";
 import {
   RequestRenewPassword,
   RequestUpdateUser,
-  FailedReqMsg,
   SuccessfulReqMsg,
 } from "types/novel-server.types";
 import {
@@ -105,8 +104,7 @@ const Account = () => {
       });
       dispatch(fetchUserData());
     } catch (error) {
-      const { message } = error as FailedReqMsg;
-      enqueueSnackbar(message, {
+      enqueueSnackbar(error as string, {
         variant: "error",
       });
     }
