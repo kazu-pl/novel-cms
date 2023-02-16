@@ -95,9 +95,13 @@ export const fetchUserData = createAsyncThunk("user/getUserData", async () => {
 
 export const updateUserData = createAsyncThunk(
   "user/updateUserData",
-  async (values: RequestUpdateUser) => {
-    const response = await axiosSecureInstance.put("/users/me", values);
-    return response.data;
+  async (values: RequestUpdateUser, { rejectWithValue }) => {
+    try {
+      const response = await axiosSecureInstance.put("/users/me", values);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue((error as FailedReqMsg).message);
+    }
   }
 );
 
