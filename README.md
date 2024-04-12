@@ -1,3 +1,52 @@
+# How to make custom yup validation where there's a component with 2 inputs connected to Formik and one input's value depends on the other's
+
+example below:
+
+```tsx
+const validationSchema = yup.object({
+  dateYearStartFilter: yup.string().test(
+    "dateYearStartFilter",
+    () => i18n.t("onlyNumbersAllowed"), // message to show when test() test fails (it can be just string or a function like here)
+    (value, ctx) => {
+      if (`dateYearEndFilter` in ctx.parent) {
+        return value === undefined || !isNaN(value); // value === undefined means that the input can be empty (when the other is NOT empty) and form still can be submited
+      } else {
+        return !isNaN(value); // !isNaN(value) is in fact checking if is a valid number
+      }
+    }
+  ),
+  dateYearEndFilter: yup.string().test(
+    "dateYearEndFilter",
+    () => i18n.t("onlyNumbersAllowed"),
+    (value, ctx) => {
+      if (`dateYearStartFilter` in ctx.parent) {
+        return value === undefined || !isNaN(value);
+      } else {
+        return !isNaN(value);
+      }
+    }
+  ),
+});
+```
+
+# How to stop autofilling array dependencies in React hooks after saving:
+
+When you create react hook with missing dependencies like this:
+
+```tsx
+const MyComp = ({ name }: { name: string }) => {
+  useEffect(() => {
+    console.log({ name });
+  }, []); // react hook is missing the dependency: name. Either include it or remove the array dependency
+
+  return <div></div>;
+};
+```
+
+then it's because you have old version of package called `eslint-plugin-react-hooks` or maybe old version of `esling` itself. You need to upgrate this `react-hooks` package.
+
+found[here](https://github.com/facebook/react/issues/16313#issuecomment-587149109)
+
 # `Error [ERR_PACKAGE_PATH_NOT_EXPORTED]: Package subpath './lib/tokenize' is not defined by "exports"` error:
 
 If you have updated node version or pushed new version of this repo to Vercel (and Vercel's node version got updated) you will probably get error like this:
@@ -39,6 +88,188 @@ It happened to me because I was developing this project with node `14.18.2` but 
 1 - I still had installed node modules
 2 - I removed react-scripts
 3 - I installed latest react scrips via `yarn add react-scripts@latest`
+
+# How to send files to server with a delay so requests won't be canceled by cancelToken (axios) or API
+
+```tsx
+class PrintTemplatesUploader extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      files: [],
+      isUploading: false,
+    };
+  }
+
+  /**
+   * This action removes file already send and fulfiled so they can be no longer dispalyed on the list of files pending to be uploaded
+   */
+  removeFile = (file) => {
+    this.setState((state) => ({
+      files: filter(state.files, (item) => item !== file),
+    }));
+  };
+
+  /**
+   * set files to be uploaded when user selects files form their disk
+   */
+  handleFilesChange = (files) => {
+    this.setState({
+      files,
+    });
+  };
+
+  /**
+   * Set loading flag to true so user can see CircularProgress when files are uploaded
+   */
+  handleUploadStart = (files) => {
+    this.setState({
+      uploading: true,
+    });
+  };
+
+  /**
+   * Set loading flag to false so user no longer can see CircularProgress and fetch fresh data
+   */
+  handleUploadEnd = ({ uploaded, rejected }) => {
+    //  you can do something wit uploaded and rejected here
+
+    this.setState({
+      uploading: false,
+    });
+
+    actions.fetchPrintTemplatesForProcedure(this.procedureTargetType);
+  };
+
+  /**
+   * @param {*} request request that uploads a file
+   * @param {*} file it's a file to be uploaded
+   * @param {*} delayMultiplier
+   *
+   * This funciton is used to delay a uplading template - without it backend will thrown 500 error for most of uploading requests as they comes too fast or axios will cancel request with cancelToken (if you use cancelToken)
+   */
+  makeRequestWithDelay = async (request, file, delayMultiplier = 0) => {
+    const delay = (delayMultiplier + 1) * 500;
+
+    await new Promise((res) =>
+      setTimeout(() => {
+        res();
+      }, delay)
+    );
+
+    return request(file);
+  };
+
+  handleMultiUpload = (files) => {
+    const { onUploadEnd } = this.props;
+
+    handleUploadStart(); // set uploading flag to true so user can see CircularProgress for the time files are uploading
+
+    const promises = map(files, (file, index) =>
+      this.makeRequestWithDelay(this.handleSingleUpload, file, index).catch(
+        (error) => error
+      )
+    );
+
+    Promise.all(promises).then((res) => {
+      if (handleUploadEnd) {
+        // below code is usually not really needed. Just the Promise.all(promises) is needed but below code usually won't be needed
+        const uploaded = [];
+        const rejected = [];
+
+        each(res, (item, index) => {
+          if (item.error) {
+            rejected.push(files[index]);
+          } else {
+            uploaded.push(get(item, "payload.data[0]"));
+          }
+        });
+
+        // only this handleUploadEnd is needed - to hide CircularProgress
+        handleUploadEnd({
+          uploaded: compact(uploaded),
+          rejected: compact(rejected),
+        });
+      }
+    });
+  };
+
+  /**
+   * @param {*} file It's the file to be uploaded to server
+   * @returns redux action object with meta, payload, type
+   */
+  handleSingleUpload = async (file) => {
+    const { actions } = this.props;
+
+    return actions.uploadPrintTemplate(file, file.name).then((res) => {
+      this.removeFile(file); // remove uploaaded file from list displaying files wainting to be uploaded as it has just got uploaded
+      return res;
+    });
+  };
+
+  render() {
+    const { multiple = true } = this.props;
+    const { files } = this.state;
+    return (
+      <PrintTemplatesUpload
+        files={files}
+        onChange={this.handleFilesChange}
+        onUpload={this.handleMultiUpload}
+        multiple={multiple} // allow user to select multiple files in files explorer window
+      />
+    );
+  }
+}
+
+const mapDispatchToProps = (dispatch) => ({
+  actions: bindActionCreators(
+    {
+      uploadPrintTemplate,
+    },
+    dispatch
+  ),
+});
+
+export default connect(null, mapDispatchToProps)(PrintTemplatesUploader);
+```
+
+# oCancelTokenInterceptor for axios:
+
+You can create global interceptor that cancels too rapid requests like this:
+
+```js
+import axios from "axios";
+// Store requests
+let sourceRequest = {};
+
+const oCancelTokenInterceptor = (undefined, request) => {
+  // If the application exists cancel
+  if (request && sourceRequest[`${request.method}-${request.url}`]) {
+    sourceRequest[`${request.method}-${request.url}`].cancel(
+      "Automatic cancellation"
+    );
+  }
+
+  // Store or update application token
+  if (
+    request &&
+    (request.url === "/api/v1/files/" || request.url === "/template") &&
+    request.method === "post"
+  ) {
+    // skip for upload files
+  } else if (request) {
+    const axiosSource = axios.CancelToken.source();
+    sourceRequest[`${request.method}-${request.url}`] = {
+      cancel: axiosSource.cancel,
+    };
+    request.cancelToken = axiosSource.token;
+  }
+  return request;
+};
+
+export default oCancelTokenInterceptor;
+```
 
 # how to cancel request with axios
 
