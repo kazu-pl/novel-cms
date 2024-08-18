@@ -1,3 +1,399 @@
+# Node versions
+
+The project was developed with node: `14.18.2`.
+
+# Contents:
+
+- How to add MSW to Jest tests (I could not finish it and it might not work properly)
+- How to run TS file from command line (for example run MSW file written in TS (TypeScript))
+- How to use different tsconfig settings for some single command
+- How to make general `useFetch` hook
+- How to make custom yup validation where there's a component with 2 inputs connected to Formik and one input's value depends on the - other's
+- How to stop autofilling array dependencies in React hooks after saving
+- `Error [ERR_PACKAGE_PATH_NOT_EXPORTED]: Package subpath './lib/tokenize' is not defined by "exports"` error
+- How to send files to server with a delay so requests won't be canceled by cancelToken (axios) or API
+- oCancelTokenInterceptor for axios
+- how to cancel request with axios
+- how to auto open modal when CTRL + V was clicked and paste clipboard data into input
+- How to create Markdown component that will render markdown
+- How to highliht searching part of a text with `react-highlight-words`
+- How to make `component` prop
+- How to create RefreshAccessTokenWrapper that will refresh accessToken in the background
+- How to create `remember me` checkbox (or actually radio button) and its behavior
+- How to install private GitHub/npm package via ssh
+- How to add `Accept-Language` header to axios headers to have API response in the right language
+- `In browser redirect` warning/issue/message when creating index.html files with `yarn react-snap` AND HOW TO PRE-RENDER PROTECTED ROUTES
+- `i18next::languageUtils: rejecting language code not found in supportedLngs: dev` warning in console
+- `Failed to load resource: net::ERR_CONNECTION_REFUSED` Error while trying to generate static `index.html` files
+- `TypeError: Cannot read property 'map' of undefined` Error while trying to generate static `index.html` files
+- IMPORTANT: rename `"postbuild": "react-snap"` script to `"snap": "react-snap"`
+- How to redirect users after successful login to the page from which they were logged out due to expired session
+- Error: Command "yarn install" exited with 128 on Vercel
+- Redirect users to `/dashbaord` when they are logged in but manually enter `/login` or `/` url and hit enter
+- Axios interceptor that returns error sent by server so it's possible to display server response message on front application
+- Axios after refreshing AccessToken does not send body
+- How to use `Try/Catch` block in component where you dispatch redux-toolkit action and do something in catch if error occured
+- How to replace item in array and return new array with replaced element at the same time
+- How to create input type file with formik or other form library
+- How to reset globally whole store on logoutHow to keep users logged in when they close tab and then open again on /login route
+- How to keep users logged in when they close tab and then open again on /login route
+- How to logout user from all tabs once logout occured
+
+# How to add MSW to Jest tests (I could not finish it and it might not work properly):
+
+To be able to use MSW in testing environment with Jest you have to create msw server and its handlers. First create handlers like this:
+
+```ts
+// src/mocks/handlers.js
+import { API_URL } from "common/constants/env";
+import { http, HttpResponse } from "msw";
+import { RequestLoginCredentials, Tokens } from "types/novel-server.types";
+
+export const handlers = [
+  // Intercept "GET https://example.com/user" requests...
+  http.get("https://example.com/user", (res) => {
+    // // below is how to get query params. More here: https://mswjs.io/docs/recipes/query-parameters
+
+    // ...and respond to them using this JSON response.
+    return HttpResponse.json({
+      id: "c7b3d8e0-5e0b-4b0f-8b3a-3b9f4b3d3b3d",
+      firstName: "John",
+      lastName: "Maverick",
+    });
+  }),
+];
+```
+
+and then server like this:
+
+```ts
+// src/mocks/node.js
+
+import { setupServer } from "msw/node";
+import { handlers } from "./handlers";
+
+export const server = setupServer(...handlers);
+```
+
+and then paste the following code into the `setupTests.ts` file:
+
+```ts
+// src\setupTests.ts
+
+import { server } from "mocks/node";
+
+beforeAll(() => server.listen());
+afterEach(() => server.resetHandlers());
+afterAll(() => server.close());
+
+server.events.on("request:start", ({ request }) => {
+  console.log("MSW intercepted:", request.method, request.url);
+});
+```
+
+But then you will see `ReferenceError: TextEncoder is not defined` issue. To solve it do the following:
+
+`a)` - create file called `custom-test-env.js` for example in `src` folder and paste the following:
+
+```js
+const Environment = require("jest-environment-jsdom");
+
+/**
+ * A custom environment to set the TextEncoder that is required by TensorFlow.js.
+ */
+module.exports = class CustomTestEnvironment extends Environment {
+  async setup() {
+    await super.setup();
+    if (typeof this.global.TextEncoder === "undefined") {
+      const { TextEncoder } = require("util");
+      this.global.TextEncoder = TextEncoder;
+    }
+  }
+};
+```
+
+`b)` - update `test` script from package.json to this:
+
+```json
+{
+  "scripts": {
+    "test": "react-scripts test --env=./src/custom-test-env.js"
+  }
+}
+```
+
+Found [here](https://stackoverflow.com/a/57713960)
+
+But then you might get error like this:
+
+```
+
+Test suite failed to run
+
+    ReferenceError: require is not defined in ES module scope, you can use import instead
+    This file is being treated as an ES module because it has a '.js' file extension and 'D:\myProject\package.json' contains "ty
+
+pe": "module". To treat it as a CommonJS script, rename it to use the '.cjs' file extension.
+
+    > 1 | import Environment from "jest-environment-jsdom";
+        |                     ^
+      2 |
+      3 | /**
+      4 |  * A custom environment to set the TextEncoder that is required by TensorFlow.js.
+
+      at file:/D:/myProject/src/custom-test-env.js:1:21
+
+```
+
+and it's in the `custom-test-env.js` file so to solve the issue replace import statement:
+
+```js
+const Environment = require("jest-environment-jsdom");
+```
+
+with the following version:
+
+```js
+import Environment from "jest-environment-jsdom";
+```
+
+which will give you in the following content of the file:
+
+```js
+import Environment from "jest-environment-jsdom";
+
+/**
+ * A custom environment to set the TextEncoder that is required by TensorFlow.js.
+ */
+class CustomTestEnvironment extends Environment {
+  async setup() {
+    await super.setup();
+    if (typeof this.global.TextEncoder === "undefined") {
+      const { TextEncoder } = require("util");
+      this.global.TextEncoder = TextEncoder;
+    }
+  }
+}
+
+export default CustomTestEnvironment;
+```
+
+But then you will get another error:
+
+```
+
+ SyntaxError: Unexpected token 'export'
+
+      1 | // src/mocks/handlers.js
+      2 | import { API_URL } from "common/constants/env";
+    > 3 | import { http, HttpResponse } from "msw";
+        | ^
+      4 | import { RequestLoginCredentials, Tokens } from "types/novel-server.types";
+      5 |
+      6 | export const handlers = ...
+```
+
+or it can be like this:
+
+```
+D:\myProject\node_modules\@bundled-es-modules\statuses\index-esm.js:172
+    export {
+    ^^^^^^
+
+    SyntaxError: Unexpected token 'export'
+
+      at Runtime.createScriptFromCode (node_modules/jest-runtime/build/index.js:1728:14)
+      at Object.<anonymous> (node_modules/msw/src/core/utils/logging/serializeResponse.ts:1:22)
+
+```
+
+and to solve it simply follow [this](https://github.com/mswjs/msw/issues/1810#issuecomment-1786816140) instruction. TL;DR: you have to add `"jest"` key in your `package.json` file like so:
+
+```json
+// package.json
+{
+  "jest": {
+    "transformIgnorePatterns": [
+      "[/\\\\]node_modules[/\\\\].+[^esm]\\.(js|jsx|mjs|cjs|ts|tsx)$",
+      "^.+\\.module\\.(css|sass|scss)$"
+    ]
+  }
+}
+```
+
+Then you might get error like this:
+
+```
+
+ReferenceError: TextDecoder is not defined
+```
+
+And to solve it add this:
+
+```js
+if (typeof this.global.TextDecoder === "undefined") {
+  const { TextDecoder } = require("util");
+  this.global.TextDecoder = TextDecoder;
+}
+```
+
+to the `custom-test-env.js` file so in total you will have:
+
+```js
+// custom-test-env.js
+
+import Environment from "jest-environment-jsdom";
+
+/**
+ * A custom environment to set the TextEncoder that is required by TensorFlow.js.
+ */
+class CustomTestEnvironment extends Environment {
+  async setup() {
+    await super.setup();
+    if (typeof this.global.TextEncoder === "undefined") {
+      const { TextEncoder } = require("util");
+      this.global.TextEncoder = TextEncoder;
+    }
+
+    if (typeof this.global.TextDecoder === "undefined") {
+      const { TextDecoder } = require("util");
+      this.global.TextDecoder = TextDecoder;
+    }
+  }
+}
+
+export default CustomTestEnvironment;
+```
+
+Found [here](https://github.com/apache/arrow/issues/11662#issuecomment-1049166247)
+
+# How to run TS file from command line (for example run MSW file written in TS (TypeScript)):
+
+`1` - install `ts-node` OR `ts-node-dev` via `yarn add ts-node -D`
+`2` - set the `module` option in `tsconfig.json` to `CommonJS`
+
+To run ts file in node you have to make sure you use `CommonJS` value of `module` option in `compilerOptions` object in `tsconfig.json`:
+
+```json
+// tsconfig.json
+{
+  "compilerOptions": {
+    "module": "CommonJS"
+  }
+}
+```
+
+Found [here](https://stackoverflow.com/a/68829817)
+
+`3` - run command `ts-code ./src/mocks/index.ts` or if the command doesn't work use `npx ts-node ./src/mocks/index.ts`
+
+However if the code you write is gonna be bundled, you should use `esnext` value. Found [here](https://www.typescriptlang.org/tsconfig/#module). You can check the docs says `(..) You very likely want "nodenext" for modern Node.js projects and preserve or esnext for code that will be bundled.`
+
+Found [here](https://stackoverflow.com/a/64655153)
+
+So if you doesn't want to mess with your original `tsconfig.json` file but you still need `"module": "CommonJS"` option you can create new tsconfig file and point it with `--project` flag when using `ts-node`. You can also create new script so you don't have to point to the newly created tsconfig file every time. So to do so:
+
+`a)` - create new file claled `tsconfig.msw.json` in you root directory and paste the following content:
+
+```json
+// tsconfig.msw.json
+{
+  "extends": "./tsconfig.json", // link do your tsconfig.json file
+  "compilerOptions": {
+    "module": "CommonJS"
+  }
+}
+```
+
+You can also make sure your original `tsconfig.json` file has `"module": "esnext"` so it will work when `create-react-app` will try to bundle your application
+
+`b)` - add new script in your `package.json` file:
+
+```json
+{
+  "scripts": {
+    "msw": "npx ts-node --project tsconfig.msw.json ./src/mocks/index.ts"
+  }
+}
+```
+
+Now when you want to run `Mock Service Worker` you can just run `yarn msw` command
+
+# How to use different tsconfig settings for some single command:
+
+Check `How to run TS file from command line (for example run MSW file written in TS (TypeScript)):` title and search for text:
+
+> _if you doesn't want to mess with your original `tsconfig.json` file but you still need `"module": "CommonJS"` option you can create new tsconfig file_
+
+# How to make general `useFetch` hook:
+
+```ts
+import axios, { AxiosError, AxiosRequestConfig } from "axios";
+import { useCallback, useEffect, useState } from "react";
+
+type Method = Exclude<
+  Lowercase<Exclude<AxiosRequestConfig["method"], undefined>>,
+  "head" | "options" | "link" | "unlink" | "purge"
+>;
+
+type MethodWithBody = Extract<Method, "post" | "put" | "patch">;
+type MethodWithoutBody = Exclude<Method, MethodWithBody>;
+
+interface UseFetchData<R, E> {
+  data: null | R;
+  isFetching: boolean;
+  error: null | AxiosError<E>;
+  refetch: () => void;
+}
+
+function useFetch<R, E>(
+  url: string,
+  method: MethodWithBody,
+  params?: AxiosRequestConfig["params"],
+  body?: any
+): UseFetchData<R, E>;
+function useFetch<R, E>(
+  url: string,
+  method: MethodWithoutBody,
+  params?: AxiosRequestConfig["params"]
+): UseFetchData<R, E>;
+function useFetch<R, E>(
+  url: string,
+  method: MethodWithBody | MethodWithoutBody,
+  params?: AxiosRequestConfig["params"],
+  body?: any
+): UseFetchData<R, E> {
+  const [data, setData] = useState<R | null>(null);
+  const [isFetching, setIsFetching] = useState(true);
+  const [error, setError] = useState<AxiosError<E> | null>(null);
+
+  const fetch = useCallback(async () => {
+    try {
+      const response = await axios({ url, method, params, data: body });
+
+      setData(response.data as R);
+    } catch (error) {
+      setError(error as AxiosError<E>);
+    } finally {
+      setIsFetching(false);
+    }
+  }, [body, params, url, method]);
+
+  useEffect(() => {
+    fetch();
+  }, [fetch]);
+
+  return {
+    data,
+    isFetching,
+    error,
+    refetch: fetch,
+  };
+}
+
+export default useFetch;
+```
+
 # How to make custom yup validation where there's a component with 2 inputs connected to Formik and one input's value depends on the other's
 
 example below:
