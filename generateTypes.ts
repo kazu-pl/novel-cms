@@ -11,3 +11,11 @@ generateApi({
   generateClient: false,
   generateRouteTypes: false,
 }).catch((e) => console.error(e));
+
+//// you can also make script without the need of making this generateTypes.ts file and put all info into the script
+// ```json
+
+// {
+//  "generateTypes": "npx swagger-typescript-api -p ./docs/schema/swagger.json -o ./src/types -n conduit-api.types.ts"
+// }
+// ```

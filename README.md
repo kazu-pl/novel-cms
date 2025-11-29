@@ -1,9 +1,12 @@
 # Node versions
 
 The project was developed with node: `14.18.2`.
+Installed with yarn: `1.22.4`
 
 # Contents:
 
+- Any TypeScript error when building Docker image
+- How to add JWT token stored in Redux to axios headers via interceptor
 - How to add MSW to Jest tests (I could not finish it and it might not work properly)
 - How to run TS file from command line (for example run MSW file written in TS (TypeScript))
 - How to use different tsconfig settings for some single command
@@ -38,6 +41,129 @@ The project was developed with node: `14.18.2`.
 - How to reset globally whole store on logoutHow to keep users logged in when they close tab and then open again on /login route
 - How to keep users logged in when they close tab and then open again on /login route
 - How to logout user from all tabs once logout occured
+
+# Any TypeScript error when building Docker image
+
+If you have some TypeScript errors when building docker image like the following ones:
+
+```
+19.00 src/features/profiles/store/profilesSlice.selectors.ts
+19.00 Syntax error: Missing semicolon (4:48)
+19.00
+19.00   2 | import { ProfilesState } from "./profilesSlice";
+19.00   3 |
+19.00 > 4 | export const selectProfile = (state: RootState): ProfilesState["profile"] => state.profiles.profile;
+19.00     |                                                ^
+19.00   5 | export const selectArticlesWrittenByProfile = (state: RootState): ProfilesState["articles"] => state.profiles.articles;
+19.00   6 |
+19.00
+19.00 src/store/middlewares/throwMiddleware.ts
+19.00 Syntax error: Unexpected token, expected "," (6:15)
+19.00
+19.00   4 |   next(action);
+19.00   5 |
+19.00 > 6 |   if ((action as UnknownAction)?.error) {
+19.00     |               ^
+19.00   7 |     throw (action as UnknownAction).payload;
+19.00   8 |   }
+
+```
+
+and you can build your app then it means there's probably eslint file missing in the docker image. To fix it you can do one of the following:
+
+1 - fix / change / remove code that generates the issues
+2 - ass your eslint config from `.eslintrc.json` to `package.json` file so you can be sure it will be used by docker when building the image
+3 - check `.dockerignore` if eslint file is excluded. That file may ignore ALL FILES EXCEPT some of them and if .eslintrc.json was not specified - it will be ignored:
+
+```
+// .dockerignore
+
+# Ignore all files...
+*
+
+# ...except
+!@types
+!src
+!public
+
+!.env
+!nginx.conf
+!package.json
+!package-lock.json
+!tsconfig.json
+
+
+# this file ignores everything (due to `*` character at the top) except those with `!` character like .env or package.json so if you don't put `!.eslintrc.json` here it will be ignored and it's gonna cause all of that typescript issues
+```
+
+# How to add JWT token stored in Redux to axios headers via interceptor:
+
+`1` - in the file with axios create function that will receive store and use it to get token and apply it:
+
+```tsx
+import axios from "axios";
+
+import { API_URL } from "constants/env";
+import { Store } from "store/store";
+
+const axiosInstance = axios.create({
+  baseURL: API_URL,
+});
+
+export default axiosInstance;
+
+/**
+ * Use this function to add JWT token stored in redux to request headers
+ */
+export const applyAuthInterceptor = (store: Store): void => {
+  axiosInstance.interceptors.request.use((config) => {
+    const token = store.getState().user.data?.user.token;
+
+    if (token) {
+      config.headers.Authorization = `bearer ${token}`;
+    }
+    return config;
+  });
+};
+```
+
+`Store` type is the following one:
+
+```tsx
+// store.ts
+
+export const store = configureStore({
+  reducer: rootReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(throwMiddleware),
+});
+
+export type Store = typeof store; // its this one
+```
+
+`2` - use `applyAuthInterceptor` function in the place you init redux:
+
+```tsx
+import React from "react";
+import ReactDOM from "react-dom";
+import { Provider } from "react-redux";
+
+import App from "./App";
+import { store } from "store";
+
+import { applyAuthInterceptor } from "libs/axios/axiosInstance";
+
+applyAuthInterceptor(store); // use it here
+
+ReactDOM.render(
+  <React.StrictMode>
+    <Provider store={store}>
+      <App />
+    </Provider>
+  </React.StrictMode>,
+  document.getElementById("root")
+);
+```
 
 # How to add MSW to Jest tests (I could not finish it and it might not work properly):
 
