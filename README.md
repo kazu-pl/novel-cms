@@ -5,6 +5,7 @@ Installed with yarn: `1.22.4`
 
 # Contents:
 
+- `HTTP Basic: Access denied` error when trying to fetch repo from GitLab
 - Any TypeScript error when building Docker image
 - How to add JWT token stored in Redux to axios headers via interceptor
 - How to add MSW to Jest tests (I could not finish it and it might not work properly)
@@ -41,6 +42,28 @@ Installed with yarn: `1.22.4`
 - How to reset globally whole store on logoutHow to keep users logged in when they close tab and then open again on /login route
 - How to keep users logged in when they close tab and then open again on /login route
 - How to logout user from all tabs once logout occured
+
+# HTTP Basic: Access denied error when trying to fetch repo from GitLab
+
+If you try to fetch some repo from GitLab via https link and you get this error:
+
+```
+MY-PC-ACCOUNT@DESKTOP-1234567 MINGW64 /d/project/kod/rightly
+$ git clone https://gitlab.com/some-company/rightly.git .
+Cloning into '.'...
+remote: HTTP Basic: Access denied. If a password was provided for Git authentication, the password was incorrect or you're required to use a token instead of a pa
+ssword. If a token was provided, it was either incorrect, expired, or improperly scoped. See https://gitlab.com/help/topics/git/troubleshooting_git.md#error-on-git-fetch-http-basic-access-denied
+fatal: Authentication failed for 'https://gitlab.com/some-company/rightly.git'
+
+```
+
+Then it might be because enabled OTP (Email one-time password) so the code/token/email that is send every time you try to log in into GitLab. If you disable it you should be able to fetch that GitLab repo again
+
+To disable it follow those steps:
+1 - Top right corner and click your avatar
+2 - click `Edit profile`
+3 - from `User settings` menu displayed on the left click `Access` and select `Password and authentication`
+4 - scroll to the bottom to the `Email one-time password (email OTP)` section and UNCHECK `Enable email OTP` checkbox and `Save changes`
 
 # Any TypeScript error when building Docker image
 
@@ -161,7 +184,7 @@ ReactDOM.render(
       <App />
     </Provider>
   </React.StrictMode>,
-  document.getElementById("root")
+  document.getElementById("root"),
 );
 ```
 
@@ -476,18 +499,18 @@ function useFetch<R, E>(
   url: string,
   method: MethodWithBody,
   params?: AxiosRequestConfig["params"],
-  body?: any
+  body?: any,
 ): UseFetchData<R, E>;
 function useFetch<R, E>(
   url: string,
   method: MethodWithoutBody,
-  params?: AxiosRequestConfig["params"]
+  params?: AxiosRequestConfig["params"],
 ): UseFetchData<R, E>;
 function useFetch<R, E>(
   url: string,
   method: MethodWithBody | MethodWithoutBody,
   params?: AxiosRequestConfig["params"],
-  body?: any
+  body?: any,
 ): UseFetchData<R, E> {
   const [data, setData] = useState<R | null>(null);
   const [isFetching, setIsFetching] = useState(true);
@@ -535,7 +558,7 @@ const validationSchema = yup.object({
       } else {
         return !isNaN(value); // !isNaN(value) is in fact checking if is a valid number
       }
-    }
+    },
   ),
   dateYearEndFilter: yup.string().test(
     "dateYearEndFilter",
@@ -546,9 +569,23 @@ const validationSchema = yup.object({
       } else {
         return !isNaN(value);
       }
-    }
+    },
   ),
 });
+```
+
+or:
+
+```tsx
+
+  const schema = yup.object({
+      password: Yup.string()
+        .required()
+      repeatedPassword: Yup.string()
+        .required()
+        .oneOf([Yup.ref('password')], t('validation.passwordNotMatch')),
+    })
+
 ```
 
 # How to stop autofilling array dependencies in React hooks after saving:
@@ -677,7 +714,7 @@ class PrintTemplatesUploader extends Component {
     await new Promise((res) =>
       setTimeout(() => {
         res();
-      }, delay)
+      }, delay),
     );
 
     return request(file);
@@ -690,8 +727,8 @@ class PrintTemplatesUploader extends Component {
 
     const promises = map(files, (file, index) =>
       this.makeRequestWithDelay(this.handleSingleUpload, file, index).catch(
-        (error) => error
-      )
+        (error) => error,
+      ),
     );
 
     Promise.all(promises).then((res) => {
@@ -749,7 +786,7 @@ const mapDispatchToProps = (dispatch) => ({
     {
       uploadPrintTemplate,
     },
-    dispatch
+    dispatch,
   ),
 });
 
@@ -769,7 +806,7 @@ const oCancelTokenInterceptor = (undefined, request) => {
   // If the application exists cancel
   if (request && sourceRequest[`${request.method}-${request.url}`]) {
     sourceRequest[`${request.method}-${request.url}`].cancel(
-      "Automatic cancellation"
+      "Automatic cancellation",
     );
   }
 
@@ -845,7 +882,7 @@ export const login = createAsyncThunk(
       values,
       cancelToken,
     }: { values: RequestLoginCredentials; cancelToken?: CancelToken },
-    { rejectWithValue }
+    { rejectWithValue },
   ) => {
     try {
       const response = await axiosInstance.post<Tokens>("/cms/login", values, {
@@ -856,7 +893,7 @@ export const login = createAsyncThunk(
     } catch (error) {
       return rejectWithValue((error as FailedReqMsg).message);
     }
-  }
+  },
 );
 ```
 
@@ -955,7 +992,7 @@ export const login = createAsyncThunk(
       values,
       abortSignal,
     }: { values: RequestLoginCredentials; abortSignal?: AbortSignal },
-    { rejectWithValue }
+    { rejectWithValue },
   ) => {
     try {
       const response = await axiosInstance.post<Tokens>("/cms/login", values, {
@@ -966,7 +1003,7 @@ export const login = createAsyncThunk(
     } catch (error) {
       return rejectWithValue((error as FailedReqMsg).message);
     }
-  }
+  },
 );
 ```
 
@@ -1428,7 +1465,7 @@ export const logout = createAsyncThunk(
     } catch (error) {
       // handle error
     }
-  }
+  },
 );
 ```
 
@@ -1449,7 +1486,7 @@ import {
  * 2 - Clears LocalStorage key (the key is responsible for indicating whether any tab refreshes access token) on `unload` event - when closing tab.
  */
 const useRemoveRefreshingTokensKeyListener = (
-  timeoutIndex: React.MutableRefObject<number | null>
+  timeoutIndex: React.MutableRefObject<number | null>,
 ) => {
   const handleStorageChange = useCallback(
     (e: StorageEvent) => {
@@ -1457,7 +1494,7 @@ const useRemoveRefreshingTokensKeyListener = (
         timeoutIndex.current && window.clearInterval(timeoutIndex.current);
       }
     },
-    [timeoutIndex]
+    [timeoutIndex],
   );
 
   useEffect(() => {
@@ -1525,7 +1562,7 @@ const RefreshAccessTokenWrapper = ({
 
           const nextTimeout = setTimeout(
             handleRefreshAccessToken,
-            tokenExpiresInSeconds(resWithTokens.accessToken) * 1000 * 0.75
+            tokenExpiresInSeconds(resWithTokens.accessToken) * 1000 * 0.75,
           ) as unknown as number;
 
           setRefreshingTimeout(nextTimeout);
@@ -1537,14 +1574,14 @@ const RefreshAccessTokenWrapper = ({
           removeRefreshingTimeout();
 
           navigate(
-            `${PATHS_CORE.LOGOUT}?${urlLogoutReasonQuery.key}=${urlLogoutReasonQuery.value}`
+            `${PATHS_CORE.LOGOUT}?${urlLogoutReasonQuery.key}=${urlLogoutReasonQuery.value}`,
           );
         }
       };
 
       const timeout = setTimeout(
         handleRefreshAccessToken,
-        tokenExpiresInSeconds(tokens.accessToken) * 1000 * 0.75
+        tokenExpiresInSeconds(tokens.accessToken) * 1000 * 0.75,
       ) as unknown as number;
 
       setRefreshingTimeout(timeout);
@@ -1659,7 +1696,7 @@ export const logout = createAsyncThunk(
       removeTokens();
       return rejectWithValue((error as FailedReqMsg).message);
     }
-  }
+  },
 );
 ```
 
@@ -2145,12 +2182,12 @@ axiosInstance.interceptors.response.use(
         return Promise.reject(error.response.data); // returns data object which is the data send my server so i can dispaly msg that server send to front
       } else {
         return Promise.reject(
-          `An error occurred but server didn't send any error data`
+          `An error occurred but server didn't send any error data`,
         );
       }
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 export default axiosInstance;
@@ -2248,7 +2285,7 @@ export const login = createAsyncThunk(
       // return rejectWithValue(message); // <---  with axios interceptor
       return rejectWithValue((error as FailedReqMsg).message); // <---  with axios interceptor with better version without making message const
     }
-  }
+  },
 );
 ```
 
@@ -2270,7 +2307,7 @@ USAGE:
 const newArrayWithReplacedItem = replaceAt(
   charactersOnScreenArray,
   indexOfCharacterToEdit,
-  newCharacterValues
+  newCharacterValues,
 );
 ```
 
@@ -2384,7 +2421,7 @@ export type AppReducerType = ReturnType<typeof combinedReducer>;
 
 const rootReducer = (
   rootState: AppReducerType | undefined,
-  action: AnyAction
+  action: AnyAction,
 ) => {
   if (action.type === logout.fulfilled.type) {
     // instead of logout.fulfilled.type you can pass stirng like "/logout/fulfilled"
@@ -2418,7 +2455,7 @@ export type RootState = ReturnType<typeof combinedReducer>;
 
 const rootReducer = (
   rootState: RootState | undefined, // notice that rootState arg type changed from AppReducerType to RootState
-  action: AnyAction
+  action: AnyAction,
 ) => {
   if (action.type === logout.fulfilled.type) {
     if (rootState) {
@@ -2497,7 +2534,7 @@ const useTokenListener = () => {
         history.push(PATHS_CORE.LOGOUT);
       }
     },
-    [history]
+    [history],
   );
 
   useEffect(() => {
@@ -2553,7 +2590,7 @@ export const logout = createAsyncThunk(
       removeTokens();
       return rejectWithValue(error.response.data);
     }
-  }
+  },
 );
 ```
 
