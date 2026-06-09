@@ -5,6 +5,7 @@ Installed with yarn: `1.22.4`
 
 # Contents:
 
+- Many `npm` versions managed with `nvm`
 - Any TypeScript error when building Docker image
 - How to add JWT token stored in Redux to axios headers via interceptor
 - How to add MSW to Jest tests (I could not finish it and it might not work properly)
@@ -41,6 +42,18 @@ Installed with yarn: `1.22.4`
 - How to reset globally whole store on logoutHow to keep users logged in when they close tab and then open again on /login route
 - How to keep users logged in when they close tab and then open again on /login route
 - How to logout user from all tabs once logout occured
+
+
+# Many `npm` versions managed with `nvm`
+
+To manage many `npm` versions with a single command line you need to:
+1 - install `nvm`. To do so, visit this [link](https://www.nvmnode.com/guide/download.html) and download `1.1.12` version as the latest one won't be able to install npm due to some error described [here](https://stackoverflow.com/questions/79339258/nvm-installation-error-on-windows-cannot-find-the-npm-file)
+2 - add to `path` the folder in which you installed `nvm` so you can use it in your `cmd` or `powershell`
+3 - open `cmd` and you should be able to use `nvm`.
+Type `nvm list` to check what `npm` packages you already have.
+Type `nvm install 14.18.2` to install some node version
+Type `nvm use 13.18.2` to use any version you installed
+
 
 # Any TypeScript error when building Docker image
 
