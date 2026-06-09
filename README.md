@@ -76,6 +76,28 @@ To disable it follow those steps:
 3 - from `User settings` menu displayed on the left click `Access` and select `Password and authentication`
 4 - scroll to the bottom to the `Email one-time password (email OTP)` section and UNCHECK `Enable email OTP` checkbox and `Save changes`
 
+UPDATE: now it's not possible to disable OTP so you need to create `personal token` and use it:
+1 - Top right corner and click your avatar
+2 - click `Edit profile`
+3 - from `User settings` menu displayed on the left click `Access` and select `Personal access tokens`
+4 - Generate token (it can be "fine-grained token") and you will get some token, copy it
+5 - when you push try to use this command:
+
+```
+git clone https://gitlab-ci-token:<private token>@git.example.com/myuser/myrepo.git
+```
+
+so for GitLab it would be:
+
+```
+git clone https://gitlab-ci-token:<private token>@gitlab.com/myuser/myrepo.git
+```
+
+Instead of `clone` you can use any other git command like `push` or `fetch`
+
+found [here](https://stackoverflow.com/a/35003812)
+
+
 # Any TypeScript error when building Docker image
 
 If you have some TypeScript errors when building docker image like the following ones:
